@@ -1,0 +1,294 @@
+{% extends 'NetrunnerdbBuilderBundle::layout.html.twig' %}
+
+{% block head %}
+<script src="{{ asset('/web/bundles/netrunnerdbbuilder/js/nrdb.js') }}"></script>
+<script src="{{ asset('/web/bundles/netrunnerdbbuilder/js/decks.js') }}"></script>
+<script type="text/javascript">
+var CardDB = null,
+	SetDB = null,
+	Identity = null,
+	SelectedDeck = null,
+	Decks = {{ decks|json_encode|raw }}, 
+	DeckDB = TAFFY(Decks);
+	
+</script>
+{% endblock %}
+
+{% block body %}
+
+{% if decks|length %}
+
+<div class="container decks">
+
+<div class="row">
+
+<!-- Left-side Column -->
+<div class="col-md-5">
+
+<div class="row" id="no-deck-selected">
+<div class="jumbotron">
+    <h1>Your decks.</h1>
+    <p>Decks are private. You can have up to {{ nbmax }} decks (increased by reputation).</p>
+    <p>You can <span class="fake-inline-button text-primary"><span class="glyphicon glyphicon-pencil"></span> Edit</span> and
+     <span class="fake-inline-button text-primary"><span class="glyphicon glyphicon-share"></span> Publish</span> them. When you publish, 
+     the content of your deck is copied into a new public decklist that other players can comment and add to their favorites.
+      It's a great way to share your ideas.<p>
+    <p>You can also <span class="fake-inline-button text-primary"><span class="glyphicon glyphicon-download"></span> Download</span>
+    	 your decks (plain text for storage or octgn for online play) and
+    	<span class="fake-inline-button text-primary"><span class="glyphicon glyphicon-export"></span> Export</span> them in various formats{#
+    	and even <span class="fake-inline-button text-primary"><span class="glyphicon glyphicon-envelope"></span> Email</span> them to yourself#}.</p>
+    <p>Click on a deck in the list to see its content and manage it.</p>
+  </div>
+</div>
+
+<div id="deck" style="display:none">
+
+<div class="" id="btn-group-deck">
+	<button type="button" id="btn-edit" class="btn btn-primary"><span class="glyphicon glyphicon-pencil"></span> Edit</button>
+	
+	<button type="button" id="btn-publish" disabled="disabled" class="btn btn-success"><span class="glyphicon glyphicon-share"></span> Publish</button>
+	
+	<button type="button" id="btn-delete" class="btn btn-danger"><span class="glyphicon glyphicon-remove"></span> Delete</button>
+	
+	<div class="btn-group">
+		<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+			More <span class="caret"></span>
+		</button>
+		<ul class="dropdown-menu" role="menu">
+			{#<li><a href="#" id="btn-mail"><span class="glyphicon glyphicon-envelope"></span> Mail</a></li>#}
+			<li class="dropdown-header"><span class="glyphicon glyphicon-download"></span> Download</li>
+			<li><a href="#" id="btn-download-text">Text file</a></li>
+			<li><a href="#" id="btn-download-octgn">Octgn file</a></li>
+			<li class="dropdown-header"><span class="glyphicon glyphicon-export"></span> Export</li>
+			<li><a href="#" id="btn-export-bbcode">bbCode</a></li>
+			<li><a href="#" id="btn-export-markdown">Markdown (Reddit)</a></li>
+			<li><a href="#" id="btn-export-plaintext">plain text</a></li>
+		</ul>
+	</div>
+</div>
+	
+<h3 id="deck-name"></h3>
+
+<!-- Identity and Stats -->
+<div class="row">
+	<div class="col-sm-3">
+		<img id="img_identity" src="" class="img-responsive  hidden-xs">
+	</div><!-- /.col-md-3 -->
+	<div class="col-sm-9">
+		<h4 id="identity"></h4>
+		<div id="influence"></div>
+		<div id="agendapoints"></div>
+		<div id="cardcount"></div>
+		<div id="latestpack"></div>
+	</div><!-- /.col-md-9 -->
+</div><!-- /.row -->
+<!-- Identity and Stats -->
+
+<!-- Deck Content -->
+<div class="row" id="deck-content" style="margin-bottom:10px">
+	<div class="col-sm-6">
+		<h5><img class="type-icon" src="/web/bundles/netrunnerdbbuilder/images/types-gray-light/Event.png"> Event (<span></span>)</h5><div class="deck-event"></div>
+		<h5><img class="type-icon" src="/web/bundles/netrunnerdbbuilder/images/types-gray-light/Hardware.png"> Hardware (<span></span>)</h5><div class="deck-hardware"></div>
+		<h5><img class="type-icon" src="/web/bundles/netrunnerdbbuilder/images/types-gray-light/Resource.png"> Resource (<span></span>)</h5><div class="deck-resource"></div>
+		<h5><img class="type-icon" src="/web/bundles/netrunnerdbbuilder/images/types-gray-light/Agenda.png"> Agenda (<span></span>)</h5><div class="deck-agenda"></div>
+		<h5><img class="type-icon" src="/web/bundles/netrunnerdbbuilder/images/types-gray-light/Asset.png"> Asset (<span></span>)</h5><div class="deck-asset"></div>
+		<h5><img class="type-icon" src="/web/bundles/netrunnerdbbuilder/images/types-gray-light/Upgrade.png"> Upgrade (<span></span>)</h5><div class="deck-upgrade"></div>
+		<h5><img class="type-icon" src="/web/bundles/netrunnerdbbuilder/images/types-gray-light/Operation.png"> Operation (<span></span>)</h5><div class="deck-operation"></div>
+	</div><!-- /.col-sm-6 -->
+	<div class="col-sm-6">
+		<h5><img class="type-icon" src="/web/bundles/netrunnerdbbuilder/images/types-gray-light/Program.png"> Icebreaker (<span></span>)</h5><div class="deck-icebreaker"></div>
+		<h5><img class="type-icon" src="/web/bundles/netrunnerdbbuilder/images/types-gray-light/Program.png"> Program (<span></span>)</h5><div class="deck-program"></div>
+		<h5><img class="type-icon" src="/web/bundles/netrunnerdbbuilder/images/types-gray-light/ICE.png"> Barrier (<span></span>)</h5><div class="deck-barrier"></div>
+		<h5><img class="type-icon" src="/web/bundles/netrunnerdbbuilder/images/types-gray-light/ICE.png"> Code Gate (<span></span>)</h5><div class="deck-code-gate"></div>
+		<h5><img class="type-icon" src="/web/bundles/netrunnerdbbuilder/images/types-gray-light/ICE.png"> Sentry (<span></span>)</h5><div class="deck-sentry"></div>
+		<h5><img class="type-icon" src="/web/bundles/netrunnerdbbuilder/images/types-gray-light/ICE.png"> ICE (<span></span>)</h5><div class="deck-ice"></div>
+	</div><!-- /.col-sm-6 -->
+</div><!-- /#deck-content -->
+<!-- Deck Content -->
+
+<p><small id="deck-description"></small></p>
+
+</div><!-- /#deck -->
+
+</div>
+<!-- Left-side Column -->
+
+<div class="col-md-7">
+
+<div class="row">
+<div class="col-md-12">
+		<a href="/{{ app.request.locale }}/deck/new/corp" class="btn btn-default"><span class="glyphicon glyphicon-plus color-corp"></span> Corp</a>
+		<a href="/{{ app.request.locale }}/deck/new/runner" class="btn btn-default"><span class="glyphicon glyphicon-plus color-runner"></span> Runner</a>
+		<a href="/{{ app.request.locale }}/deck/import" class="btn btn-default"><span class="glyphicon glyphicon-import"></span> Import</a>
+		<button type="button" class="btn btn-default" onclick="$('#fileModal').modal('show')"><span class="glyphicon glyphicon-upload"></span> File</button>
+</div>
+</div>
+<div class="row">
+<div class="col-md-12">
+<table class="table table-hover">
+<thead>
+<tr>
+	<th>Name</th>
+	<th class="text-center">Faction</th>
+	<th class="hidden-xs">Identity</th>
+{#	<th class="hidden-xs">Size</th>
+	<th class="hidden-xs">Inf.</th>#}
+</tr>
+</thead>
+<tbody id="decks">
+{% for deck in decks %}
+<tr data-id="{{ deck.id }}" data-problem="{{ deck.problem }}">
+	<td>{{ deck.name }}{% if deck.message %} <span class="glyphicon glyphicon-exclamation-sign text-danger" title="{{ deck.message }}"></span>{% endif %}</td>
+	<td class="text-center">{% if deck.faction_code %}<img class="faction-icon" src="/web/bundles/netrunnerdbbuilder/images/factions/38px/{{ deck.faction_code }}.png">{% endif %}</td>
+	<td class="hidden-xs">{% if deck.identity_title %}{{ deck.identity_title|replace({': ':'<br>'})|raw }}{% else %}No Identity{% endif %}</td>
+	</tr>
+{% endfor %}
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+
+</div><!-- /.container -->
+
+{% else %}
+
+<div class="jumbotron" id="no-deck-available">
+  <div class="container">
+    <h1>What, no deck?</h1>
+    <p>Decks are awesome. You can <span class="fake-inline-button text-primary"><span class="glyphicon glyphicon-pencil"></span> Edit</span> them until you're satisfied, 
+    	then <span class="fake-inline-button text-primary"><span class="glyphicon glyphicon-share"></span> Publish</span> them for others to discuss.
+    	And if you want to keep to yourself, you can still <span class="fake-inline-button text-primary"><span class="glyphicon glyphicon-download"></span> Download</span> them,
+    	<span class="fake-inline-button text-primary"><span class="glyphicon glyphicon-export"></span> Export</span> them 
+    	or even <span class="fake-inline-button text-primary"><span class="glyphicon glyphicon-envelope"></span> Email</span> them.</p>
+    <p>So what are you waiting for? To create your first deck, you can either <span class="fake-inline-button text-primary"><span class="glyphicon glyphicon-plus"></span> Build</span> one from scratch using the Deckbuilder, 
+    	<span class="fake-inline-button text-primary"><span class="glyphicon glyphicon-import"></span> Import</span> one from the web,
+    	or <span class="fake-inline-button text-primary"><span class="glyphicon glyphicon-upload"></span> Upload</span> a deck file in Octgn or simple text format.</p>
+  </div>
+</div>
+<div style="text-align:center">
+		<a href="/{{ app.request.locale }}/deck/new/corp" class="btn btn-default btn-lg"><span class="glyphicon glyphicon-plus color-corp"></span> Build Corp</a>
+		<a href="/{{ app.request.locale }}/deck/new/runner" class="btn btn-default btn-lg"><span class="glyphicon glyphicon-plus color-runner"></span> Build Runner</a>
+		<a href="/{{ app.request.locale }}/deck/import" class="btn btn-default btn-lg"><span class="glyphicon glyphicon-import"></span> Paste</a>
+		<button type="button" class="btn btn-default btn-lg" onclick="$('#fileModal').modal('show')"><span class="glyphicon glyphicon-upload"></span> Upload</button>
+</div>
+
+{% endif %}
+
+<!-- Modal -->
+<div class="modal fade" id="fileModal" tabindex="-1" role="dialog" aria-labelledby="fileModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				<h3 class="modal-title">Upload deck file</h3>
+			</div>
+			<div class="modal-body">
+				<div class="row">
+					<div class="col-md-12">
+						<form action="/{{ app.request.locale }}/deck/fileimport" method="POST" enctype="multipart/form-data">
+							<div class="form-group">
+								<label for="upfile">File</label>
+								<input class="form-control" type="file" name="upfile">
+							</div>
+							<div class="form-group">
+								<label for="type">File type</label>
+								<select class="form-control" name="type"><option value="auto">auto</option><option value="octgn">OCTGN</option><option value="text">Text</option></select>
+							</div>
+							<div class="pull-right">
+								<button type="submit" class="btn btn-success">Upload</button>
+								<button type="button" class="btn btn-default" onclick="$('#fileModal').modal('hide')">Cancel</button>
+							</div>
+						</form>
+					</div><!-- /#modal-info -->
+				</div><!-- /.row -->
+			</div><!-- /.modal-body -->
+		</div><!-- /.modal-content -->
+	</div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+<!-- Modal -->
+
+<!-- Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				<h3 class="modal-title">Delete deck</h3>
+			</div>
+			<div class="modal-body">
+				<div class="row">
+					<div class="col-md-12">
+						<form action="/{{ app.request.locale }}/deck/delete" method="POST" enctype="multipart/form-data" id="delete-deck-form">
+							<input type="hidden" name="deck_id" id="delete-deck-id" value="">
+							<p>
+							Are you sure that you want to delete the deck <b id="delete-deck-name"></b>?
+							</p>
+							<div class="pull-right">
+								<button type="submit" class="btn btn-danger">Yes, delete</button>
+								<button type="button" class="btn btn-default" onclick="$('#deleteModal').modal('hide')">Cancel</button>
+							</div>
+						</form>
+					</div><!-- /#modal-info -->
+				</div><!-- /.row -->
+			</div><!-- /.modal-body -->
+		</div><!-- /.modal-content -->
+	</div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+<!-- Modal -->
+
+<!-- Modal -->
+<div class="modal fade" id="publishModal" tabindex="-1" role="dialog" aria-labelledby="publishModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				<h3 class="modal-title">Publish decklist</h3>
+			</div>
+			<div class="modal-body">
+				<div class="row">
+					<div class="col-md-12">
+						<form action="{{ path('decklist_new') }}" method="POST" enctype="multipart/form-data" id="publish-deck-form">
+							<input type="hidden" name="deck_id" id="publish-deck-id" value="">
+							<div class="form-group">
+								<label for="publish-name">Name</label>
+								<input type="text" class="form-control" name="name" id="publish-deck-name" maxlength="60" placeholder="Enter a name for this decklist">
+							</div>
+							<div class="form-group">
+								<label for="publish-name">Description</label>
+								<textarea class="form-control" name="description" id="publish-deck-description" rows="5" placeholder="Enter a brief explanation of the deck strategy and your significant choices"></textarea>
+							</div>
+							<div class="pull-right">
+								<button type="submit" id="btn-publish-submit" class="btn btn-success">Go</button>
+								<button type="button" class="btn btn-default" onclick="$('#publishModal').modal('hide')">Cancel</button>
+							</div>
+						</form>
+					</div><!-- /#modal-info -->
+				</div><!-- /.row -->
+			</div><!-- /.modal-body -->
+		</div><!-- /.modal-content -->
+	</div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+<!-- Modal -->
+
+<!-- Modal -->
+<div class="modal fade" id="exportModal" tabindex="-1" role="dialog" aria-labelledby="exportModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-body">
+				<div class="row">
+					<div class="col-md-12">
+						<div class="form-group">
+							<textarea class="form-control" id="export-deck" rows="20"></textarea>
+						</div>
+						</form>
+					</div><!-- /#modal-info -->
+				</div><!-- /.row -->
+			</div><!-- /.modal-body -->
+		</div><!-- /.modal-content -->
+	</div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+<!-- Modal -->
+
+{% endblock %}

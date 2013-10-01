@@ -1,0 +1,25 @@
+{% extends 'NetrunnerdbCardsBundle:Search:display.html.twig' %}
+
+{% import "NetrunnerdbCardsBundle:Search:cardlayouts.html.twig" as cardlayouts %}
+
+{% block main %}
+
+<table class="table table-striped">
+<thead>
+<tr>
+<th>{% trans %}Title{% endtrans %}</th>
+<th>{% trans %}Faction{% endtrans %}</th>
+<th title="Cost"><img src="/web/bundles/netrunnerdbcards/images/credit.png" class="glyph"></th>
+<th>{% trans %}Type{% endtrans %}</th>
+<th title="Strength/Agenda Points/Trash Cost">&hellip;</th>
+<th>{% trans %}Subtype{% endtrans %}</th>
+<th title="Influence">&bullet;</th>
+<th>{% trans %}Set{% endtrans %}</th>
+</tr>
+</thead>
+{% for i in 0..cards|length-1 %}
+<tr class="{% if i%2==0 %}even{% else %}odd{% endif %}">{{ cardlayouts.as_list(cards[i]) }}</tr>
+{% endfor %}
+</table>
+
+{% endblock %}

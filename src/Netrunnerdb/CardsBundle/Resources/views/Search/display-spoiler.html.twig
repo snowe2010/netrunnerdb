@@ -1,0 +1,15 @@
+{% extends 'NetrunnerdbCardsBundle:Search:display.html.twig' %}
+
+{% import "NetrunnerdbCardsBundle:Search:cardlayouts.html.twig" as cardlayouts %}
+
+{% block main %}
+
+{% for row in 0..(cards|length-1)//4 %}
+<div class="row">
+{% for col in 0..3 %}
+{{ cardlayouts.as_grid(cards[row*4+col]) }}
+{% endfor %}
+</div>
+{% endfor %}
+
+{% endblock %}

@@ -1,0 +1,24 @@
+<div class="row">
+	<form method="GET" action="{{ path('netrunnerdb_netrunner_cards_find') }}" id="search-form" class="form-inline" role="form">
+		<div class="col-sm-4 form-group">
+			<input style="width:70%" class="form-control" size="30" name="q" id="search-input" tabindex="1" value="{{ q|default('') }}" title="Search tips:
+   e: extension (word)
+   t: type (word)
+   s: subtype (word)
+   f: faction (letter)
+   x: text (word)
+   p: strength (number)
+   o: cost (number)
+   n: influence (number)
+   d: side (letter)
+   c: cycle (number)
+   a: flavor (word)
+   i: illustrator (word)
+   r: release date (date)
+
+Example: [ t:asset f:j ] displays all Jinteki assets">
+			<button class="btn btn-default" type="submit">{% trans %}Search{% endtrans %}</button>
+		</div>
+		{% include 'NetrunnerdbCardsBundle:Default:searchoptions.html.twig' %}
+	</form>
+</div>

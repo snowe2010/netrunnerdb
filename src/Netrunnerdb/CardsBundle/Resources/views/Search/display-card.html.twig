@@ -1,0 +1,12 @@
+{% extends 'NetrunnerdbCardsBundle:Search:display.html.twig' %}
+
+{% import "NetrunnerdbCardsBundle:Search:cardlayouts.html.twig" as cardlayouts %}
+
+{% block main %}
+
+{% for i in 0..cards|length-1 %}
+{{ cardlayouts.with_scan(cards[i]) }}
+{% endfor %}
+
+{% endblock %}
+

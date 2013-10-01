@@ -1,0 +1,46 @@
+{% extends 'NetrunnerdbBuilderBundle::layout.html.twig' %}
+
+{% block body %}
+
+<script type="text/javascript">
+$(function() {
+	$('.list-group').on({
+		mouseenter: function(event) {
+			var card_code = $(this).data('code');
+			$('#cardimg').prop('src', '/web/bundles/netrunnerdbcards/images/cards/en/'+card_code+'.png');
+		}	
+	}, 'a');
+	
+});
+</script>
+
+<div class="container">
+
+<div class="row">
+
+<div class="col-sm-8">
+<div class="panel panel-default">
+  <!-- Default panel contents -->
+  <div class="panel-heading"><b>Choose your identity</b></div>
+  <!-- List group -->
+<div class="list-group">
+{% for identity in identities %}
+<a href="/{{ app.request.locale }}/deck/build/{{ identity.code }}" class="list-group-item" data-code="{{ identity.code }}">
+	<img class="faction-icon" src="/web/bundles/netrunnerdbbuilder/images/factions/16px/{{ identity.faction.code }}.png"> 
+	<span>{{ identity.title }}</span>
+</a>
+{% endfor %}
+</div>
+</div>
+</div>
+<div class="col-sm-4">
+<img src="" class="img-responsive" id="cardimg">
+</div>
+
+</div>
+
+
+
+</div>
+
+{% endblock %}

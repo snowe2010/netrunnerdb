@@ -1,0 +1,31 @@
+{% extends 'NetrunnerdbCardsBundle::main.html.twig' %}
+
+{% block title %}About{% endblock %}
+
+{% block content %}
+
+<h1>{{ block('title') }}</h1>
+
+<p>This website is dedicated to providing a fast, powerful and exhaustive deck builder and search engine for Android:Netrunner cards, along with card descriptions and card scans.</p>
+<p>This website is optimized for mobile browsing (WebKit), and I will try to keep it that way.</p>
+<p>All Android:Netrunner texts and images are © Fantasy Flight Games</p>
+
+<h2>Contact</h2>
+
+<p>If you encounter a bug, have a feature request, notice a mistake in a card description, or just want to buy me a beer, please send me an email:<p>
+<p class="text-center"><img src="{{ asset('/web/bundles/netrunnerdbcards/images/contact.png') }}"></p>
+
+<h2>Links</h2>
+
+<p>Returning soon...</p>
+{#
+Because Google doesn't have a monopoly on indexing the web, here are a few resources on Android:Netrunner
+<ul>
+<li><a href="http://www.run4games.com/">run4games</a> | french discussion forum</li>
+<li><a href="http://www.reddit.com/r/Netrunner/">Reddit</a> | bulletin board reborned</li>
+<li><a href="http://netrunner.meteor.com/">Meteor Decks</a> | clean deckbuilder</li>
+<li><a href="http://www.cardgamedb.com/index.php/index.html">CardGameDB</a> | card database, deckbuilder, blogs, forum...</li>
+</ul>
+#}
+
+{% endblock %}

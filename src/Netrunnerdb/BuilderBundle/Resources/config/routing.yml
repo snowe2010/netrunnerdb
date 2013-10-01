@@ -1,0 +1,227 @@
+deck_builder_index:
+    pattern: /{_locale}
+    defaults:
+        _controller: NetrunnerdbBuilderBundle:Social:index
+        _locale: en
+    requirements:
+        _locale: en|fr|de|es|it|pl
+
+deck_buildform:
+    pattern:  /{_locale}/deck/new/{side_text}
+    defaults:
+        _controller: NetrunnerdbBuilderBundle:Builder:buildform
+        _locale: en
+    requirements:
+        _locale: en|fr|de|es|it|pl
+
+deck_initbuild:
+    pattern: /{_locale}/deck/build/{card_code}
+    defaults:
+        _controller: NetrunnerdbBuilderBundle:Builder:initbuild
+        _locale: en
+    requirements:
+        _locale: en|fr|de|es|it|pl
+
+deck_save:
+    pattern: /{_locale}/deck/save
+    defaults:
+        _controller: NetrunnerdbBuilderBundle:Builder:save
+        _locale: en
+    requirements:
+        _locale: en|fr|de|es|it|pl
+
+deck_edit:
+    pattern: /{_locale}/deck/edit/{deck_id}
+    defaults:
+        _controller: NetrunnerdbBuilderBundle:Builder:edit
+        _locale: en
+    requirements:
+        _locale: en|fr|de|es|it|pl
+
+decks_list:
+    pattern: /{_locale}/decks
+    defaults:
+        _controller: NetrunnerdbBuilderBundle:Builder:list
+        _locale: en
+    requirements:
+        _locale: en|fr|de|es|it|pl
+
+deck_publish:
+    pattern: /deck/can_publish/{deck_id}
+    defaults:
+        _controller: NetrunnerdbBuilderBundle:Social:publish
+
+deck_delete:
+    pattern: /{_locale}/deck/delete
+    defaults:
+        _controller: NetrunnerdbBuilderBundle:Builder:delete
+        _locale: en
+    requirements:
+        _locale: en|fr|de|es|it|pl
+
+
+deck_import:
+    pattern: /{_locale}/deck/import
+    defaults:
+        _controller: NetrunnerdbBuilderBundle:Builder:import
+        _locale: en
+    requirements:
+        _locale: en|fr|de|es|it|pl
+
+deck_textimport:
+    pattern: /{_locale}/deck/textimport
+    defaults:
+        _controller: NetrunnerdbBuilderBundle:Builder:textimport
+        _locale: en
+    requirements:
+        _locale: en|fr|de|es|it|pl
+
+deck_fileimport:
+    pattern: /{_locale}/deck/fileimport
+    defaults:
+        _controller: NetrunnerdbBuilderBundle:Builder:fileimport
+        _locale: en
+    requirements:
+        _locale: en|fr|de|es|it|pl
+
+deck_export_octgn:
+    pattern: /deck/export/octgn/{deck_id}
+    defaults:
+        _controller: NetrunnerdbBuilderBundle:Builder:octgnexport
+
+deck_export_text:
+    pattern: /deck/export/text/{deck_id}
+    defaults:
+        _controller: NetrunnerdbBuilderBundle:Builder:textexport
+
+
+deck_email:
+    pattern: /deck/export/email/{deck_id}
+    defaults:
+        _controller: NetrunnerdbBuilderBundle:Builder:email
+
+deck_copy:
+    pattern: /{_locale}/deck/copy/{decklist_id}
+    defaults:
+        _controller: NetrunnerdbBuilderBundle:Builder:copy
+        _locale: en
+    requirements:
+        _locale: en|fr|de|es|it|pl
+        
+
+decklist_export_octgn:
+    pattern: /decklist/export/octgn/{decklist_id}
+    defaults:
+        _controller: NetrunnerdbBuilderBundle:Social:octgnexport
+
+decklist_export_text:
+    pattern: /decklist/export/text/{decklist_id}
+    defaults:
+        _controller: NetrunnerdbBuilderBundle:Social:textexport
+
+
+
+decklist_new:
+    pattern: /{_locale}/deck/publish
+    methods: [POST]
+    defaults:
+        _controller: NetrunnerdbBuilderBundle:Social:new
+        _locale: en
+    requirements:
+        _locale: en|fr|de|es|it|pl
+    
+    
+decklists_list:
+    pattern: /{_locale}/decklists/{type}/{page}
+    methods: [GET]
+    defaults:
+        _controller: NetrunnerdbBuilderBundle:Social:list
+        page: 1
+        _locale: en
+    requirements:
+        _locale: en|fr|de|es|it|pl
+        page: \d+
+
+    
+    
+decklists_list_code:
+    pattern: /{_locale}/decklists/{type}/{code}/{page}
+    methods: [GET]
+    defaults:
+        _controller: NetrunnerdbBuilderBundle:Social:list
+        code: null
+        page: 1
+        _locale: en
+    requirements:
+        _locale: en|fr|de|es|it|pl
+        page: \d+
+
+
+
+
+
+decklist_detail:
+    pattern: /{_locale}/decklist/{decklist_id}/{decklist_name}
+    methods: [GET]
+    defaults:
+        _controller: NetrunnerdbBuilderBundle:Social:view
+        _locale: en
+    requirements:
+        _locale: en|fr|de|es|it|pl
+
+decklist_favorite:
+    pattern: /user/favorite
+    defaults:
+        _controller: NetrunnerdbBuilderBundle:Social:favorite
+    methods: [POST]
+
+decklist_like:
+    pattern: /user/like
+    defaults:
+        _controller: NetrunnerdbBuilderBundle:Social:vote
+    methods: [POST]
+
+decklist_comment:
+    pattern: /user/comment
+    defaults:
+        _controller: NetrunnerdbBuilderBundle:Social:comment
+    methods: [POST]
+
+
+
+
+
+user_favorites:
+    pattern: /user/favorites
+    defaults:
+        _controller: NetrunnerdbBuilderBundle:Social:listfavorites
+    methods: [GET]
+    
+user_follow:
+    pattern: /user/follow
+    defaults:
+        _controller: NetrunnerdbBuilderBundle:Social:follow
+    methods: [POST]
+
+user_following:
+    pattern: /user/following
+    defaults:
+        _controller: NetrunnerdbBuilderBundle:Social:following
+    methods: [GET]
+    
+user_profile:
+    pattern: /{_locale}/user/profile
+    defaults:
+        _controller: NetrunnerdbUserBundle:Default:profile
+        _locale: en
+    requirements:
+        _locale: en|fr|de|es|it|pl
+
+user_profile_save:
+    pattern: /{_locale}/user/profile_save
+    defaults:
+        _controller: NetrunnerdbUserBundle:Default:saveProfile
+        _locale: en
+    requirements:
+        _locale: en|fr|de|es|it|pl
+    

@@ -1,0 +1,178 @@
+{% extends '::base.html.twig' %}
+
+{% block body -%}
+    <h1>Card</h1>
+
+    <table class="record_properties">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ entity.id }}</td>
+            </tr>
+            <tr>
+                <th>Ts</th>
+                <td>{{ entity.ts|date('Y-m-d H:i:s') }}</td>
+            </tr>
+            <tr>
+                <th>Code</th>
+                <td>{{ entity.code }}</td>
+            </tr>
+            <tr>
+                <th>Title</th>
+                <td>{{ entity.title }}</td>
+            </tr>
+            <tr>
+                <th>Titlefr</th>
+                <td>{{ entity.titleFr }}</td>
+            </tr>
+            <tr>
+                <th>Titlede</th>
+                <td>{{ entity.titleDe }}</td>
+            </tr>
+            <tr>
+                <th>Titlees</th>
+                <td>{{ entity.titleEs }}</td>
+            </tr>
+            <tr>
+                <th>Titlepl</th>
+                <td>{{ entity.titlePl }}</td>
+            </tr>
+            <tr>
+                <th>Keywords</th>
+                <td>{{ entity.keywords }}</td>
+            </tr>
+            <tr>
+                <th>Keywordsfr</th>
+                <td>{{ entity.keywordsFr }}</td>
+            </tr>
+            <tr>
+                <th>Keywordsde</th>
+                <td>{{ entity.keywordsDe }}</td>
+            </tr>
+            <tr>
+                <th>Keywordses</th>
+                <td>{{ entity.keywordsEs }}</td>
+            </tr>
+            <tr>
+                <th>Keywordspl</th>
+                <td>{{ entity.keywordsPl }}</td>
+            </tr>
+            <tr>
+                <th>Text</th>
+                <td>{{ entity.text }}</td>
+            </tr>
+            <tr>
+                <th>Textfr</th>
+                <td>{{ entity.textFr }}</td>
+            </tr>
+            <tr>
+                <th>Textde</th>
+                <td>{{ entity.textDe }}</td>
+            </tr>
+            <tr>
+                <th>Textes</th>
+                <td>{{ entity.textEs }}</td>
+            </tr>
+            <tr>
+                <th>Textpl</th>
+                <td>{{ entity.textPl }}</td>
+            </tr>
+            <tr>
+                <th>Advancementcost</th>
+                <td>{{ entity.advancementCost }}</td>
+            </tr>
+            <tr>
+                <th>Agendapoints</th>
+                <td>{{ entity.agendaPoints }}</td>
+            </tr>
+            <tr>
+                <th>Baselink</th>
+                <td>{{ entity.baseLink }}</td>
+            </tr>
+            <tr>
+                <th>Cost</th>
+                <td>{{ entity.cost }}</td>
+            </tr>
+            <tr>
+                <th>Factioncost</th>
+                <td>{{ entity.factionCost }}</td>
+            </tr>
+            <tr>
+                <th>Flavor</th>
+                <td>{{ entity.flavor }}</td>
+            </tr>
+            <tr>
+                <th>Flavorfr</th>
+                <td>{{ entity.flavorFr }}</td>
+            </tr>
+            <tr>
+                <th>Flavorde</th>
+                <td>{{ entity.flavorDe }}</td>
+            </tr>
+            <tr>
+                <th>Flavores</th>
+                <td>{{ entity.flavorEs }}</td>
+            </tr>
+            <tr>
+                <th>Flavorpl</th>
+                <td>{{ entity.flavorPl }}</td>
+            </tr>
+            <tr>
+                <th>Illustrator</th>
+                <td>{{ entity.illustrator }}</td>
+            </tr>
+            <tr>
+                <th>Influencelimit</th>
+                <td>{{ entity.influenceLimit }}</td>
+            </tr>
+            <tr>
+                <th>Memoryunits</th>
+                <td>{{ entity.memoryUnits }}</td>
+            </tr>
+            <tr>
+                <th>Minimumdecksize</th>
+                <td>{{ entity.minimumDeckSize }}</td>
+            </tr>
+            <tr>
+                <th>Number</th>
+                <td>{{ entity.number }}</td>
+            </tr>
+            <tr>
+                <th>Quantity</th>
+                <td>{{ entity.quantity }}</td>
+            </tr>
+            <tr>
+                <th>Strength</th>
+                <td>{{ entity.strength }}</td>
+            </tr>
+            <tr>
+                <th>Trashcost</th>
+                <td>{{ entity.trashCost }}</td>
+            </tr>
+            <tr>
+                <th>Uniqueness</th>
+                <td>{{ entity.uniqueness }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+        <ul class="record_actions">
+    <li>
+        <a href="{{ path('admin_card') }}">
+            Back to the list
+        </a>
+    </li>
+    <li>
+        <a href="{{ path('admin_card_edit', { 'id': entity.id }) }}">
+            Edit
+        </a>
+    </li>
+    <li>
+        <form action="{{ path('admin_card_delete', { 'id': entity.id }) }}" method="post">
+            <input type="hidden" name="_method" value="DELETE" />
+            {{ form_widget(delete_form) }}
+            <button type="submit">Delete</button>
+        </form>
+    </li>
+</ul>
+{% endblock %}

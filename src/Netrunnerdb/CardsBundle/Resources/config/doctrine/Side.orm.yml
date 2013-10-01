@@ -1,0 +1,42 @@
+Netrunnerdb\CardsBundle\Entity\Side:
+    type: entity
+    table: side
+    oneToMany:
+        cards:
+            targetEntity: Card
+            mappedBy: side
+        factions:
+            targetEntity: Faction
+            mappedBy: side
+        decks:
+            targetEntity: Netrunnerdb\BuilderBundle\Entity\Deck
+            mappedBy: side
+        decklists:
+            targetEntity: Netrunnerdb\BuilderBundle\Entity\Decklist
+            mappedBy: side
+    fields:
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+        name:
+            type: string
+            length: 255
+        nameFr:
+            type: string
+            length: 255
+            column: name_fr
+        nameDe:
+            type: string
+            length: 255
+            column: name_de
+        nameEs:
+            type: string
+            length: 255
+            column: name_es
+        namePl:
+            type: string
+            length: 255
+            column: name_pl
+    lifecycleCallbacks: {  }

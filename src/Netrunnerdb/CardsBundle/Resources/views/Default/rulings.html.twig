@@ -1,0 +1,35 @@
+{% extends 'NetrunnerdbCardsBundle::main.html.twig' %}
+
+{% block title %}Rulings{% endblock %}
+
+{% block content %}
+
+<h1>{{ block('title') }}</h1>
+
+<div class="rulings_left">
+
+<h2>From the latest FAQ</h2>
+
+<ul>
+{% for ruling in faq %}
+	<li>
+		<div class="ruling-question">{{ ruling.question|raw }}</div>
+		<div class="ruling-answer">{{ ruling.answer|raw }} <span class="ruling-source">({{ ruling.created }})</span></div>
+	</li>
+{% endfor %}
+</ul>
+</div>
+<div class="rulings_right">
+
+<h2>By direct answer</h2>
+
+<ul>
+{% for ruling in mail %}
+	<li>
+		<div class="ruling-question">{{ ruling.question|raw }}</div>
+		<div class="ruling-answer">{{ ruling.answer|raw }} <span class="ruling-source">({{ ruling.created }})</span></div>
+	</li>
+{% endfor %}
+</ul>
+</div>
+{% endblock %}

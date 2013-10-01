@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Deckbuilder &middot; NetrunnerDB</title>
+	<link rel="icon" sizes="16x16" href="/favicon.png" />
+	<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Bootstrap -->
+    <link href="{{ asset('/web/bundles/netrunnerdbbuilder/css/bootstrap.min.css') }}" rel="stylesheet" media="screen">
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="../../assets/js/html5shiv.js"></script>
+      <script src="../../assets/js/respond.min.js"></script>
+    <![endif]-->
+
+    <link rel="stylesheet" href="{{ asset('/web/bundles/netrunnerdbbuilder/css/jquery.qtip.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('/web/bundles/netrunnerdbbuilder/css/typeahead.js-bootstrap.css') }}">
+    <link rel="stylesheet" href="{{ asset('/web/bundles/netrunnerdbbuilder/css/style.css') }}">
+    <link rel="stylesheet" href="{{ asset('/web/bundles/netrunnerdbcards/css/flags.css') }}">
+    <script src="{{ asset('/web/bundles/netrunnerdbbuilder/js/modernizr.custom.min.js') }}"></script>
+    <script src="{{ asset('/web/bundles/netrunnerdbbuilder/js/jquery-2.0.3.min.js') }}"></script>
+    <script src="{{ asset('/web/bundles/netrunnerdbbuilder/js/taffy-min.js') }}"></script>
+    <script src="{{ asset('/web/bundles/netrunnerdbbuilder/js/jquery.qtip.min.js') }}"></script>
+    <script src="{{ asset('/web/bundles/netrunnerdbbuilder/js/bootstrap.min.js') }}"></script>
+    <script src="{{ asset('/web/bundles/netrunnerdbbuilder/js/typeahead.min.js') }}"></script>
+    <script src="{{ asset('/web/bundles/netrunnerdbbuilder/js/spinners.min.js') }}"></script>
+    <script type="text/javascript">
+var Locale = "{{ app.request.locale }}", SetsData, CardsData, IsModified = null;
+function parseSets(sets_data) {
+	var json = JSON.stringify(SetsData = sets_data);
+	console.log('parseSets: received data '+json.length+' chars');
+	IsModified = IsModified || json != localStorage.getItem("sets_data_"+Locale);
+	console.log('parseSets: IsModified '+IsModified);
+	localStorage.setItem("sets_data_"+Locale, json);
+}
+function parseCards(cards_data) {
+	var json = JSON.stringify(CardsData = cards_data);
+	console.log('parseCards: received data '+json.length+' chars');
+	IsModified = IsModified || json != localStorage.getItem("cards_data_"+Locale);
+	console.log('parseCards: IsModified '+IsModified);
+	localStorage.setItem("cards_data_"+Locale, json);
+}
+var promise1 = $.ajax("/api/sets/?jsonp=parseSets&_locale="+Locale);
+var promise2 = $.ajax("/api/search/d:r|c?jsonp=parseCards&_locale="+Locale);
+
+{% if app.environment == 'prod' %}
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-44413511-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+{% endif %}
+    </script>
+{% block head %}{% endblock %}
+  </head>
+  <body>
+  <svg width="90%" height="90%" viewBox="-10 -30 120 140" xmlns="http://www.w3.org/2000/svg" id="svg" style="position:absolute;z-index:-10">
+   <polygon id="hexagon" stroke-width="10" class="{% block hexagon %}{% if app.user %}{{ app.user.faction }}{% endif %}{% endblock %}" stroke="dodgerblue" stroke-opacity="0" fill="none" points="100 0 50 -86.6 -50 -86.6 -100 0 -50 86.6 50 86.6">
+   <animate attributeName="stroke-opacity" attributeType="XML" from="0" to="0.12" begin="0s" dur="10s" fill="freeze"/>
+   <animateTransform attributeType="XML" attributeName="transform" type="rotate" from="0" to="60" begin="10s" dur="200s" fill="freeze" repeatCount="indefinite"/>
+   </polygon>
+  </svg>
+  <div id="wrapper">
+      <nav class="navbar navbar-inverse navbar-static-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="{{ path('deck_builder_index') }}">NetrunnerDB</a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            <li><a href="{{ path('decks_list') }}">My Decks</a></li>
+            <li><a href="{{ path('decklists_list', {type:'popular'}) }}">Decklists</a></li>
+            <li><a href="{{ path('netrunnerdb_netrunner_cards_search') }}">Cards</a></li>
+			<li><a href="{{ path('netrunnerdb_netrunner_cards_rulings') }}">Rules</a></li>
+          </ul>
+          <ul class="nav navbar-nav navbar-right">
+          {% if app.user %}
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle {{ app.user.faction }} loginname" data-toggle="dropdown">{{ app.user.username }} <b class="caret"></b></a>
+              <ul class="dropdown-menu">
+                <li><a href="{{ path('user_profile') }}">Profile page</a></li>
+                <li><a href="/logout">Jack out</a></li>
+              </ul>
+            </li>
+          {% else %}
+            <li><a href="/login">Login</a></li>
+          {% endif %}
+          </ul>
+          <form class="navbar-form navbar-right" action="/find/">
+            <div class="form-group">
+              <input type="text" placeholder="Card Search" class="form-control" name="q">
+            </div>
+          </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </nav>
+  
+{% block body %}{% endblock %}
+    <div id="push"></div>
+  </div>
+    <div id="footer">
+    <div class="container">
+    
+    <p>
+    Designed and built by <a href="//twitter.com/alsciende">@alsciende</a>
+    </p>
+    <ul class="list-inline">
+    <li><a href="{{ path('netrunnerdb_netrunner_cards_about') }}">About</a></li>
+    <li><a href="{{ path('netrunnerdb_netrunner_cards_api') }}">API</a></li>
+    <li><a href="{{ path('netrunnerdb_netrunner_cards_changelog') }}">Changelog</a></li>
+    <li><a href="javascript:localStorage.clear()">Clear data</a></li>
+    </ul>
+    <ul class="list-inline">
+    {% if locales is defined %}
+	{{ locales|raw }}
+	{% endif %}
+    </ul>
+    </div>
+    </div>
+  </body>
+</html>

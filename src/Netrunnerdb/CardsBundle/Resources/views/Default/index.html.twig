@@ -1,0 +1,55 @@
+{% extends 'NetrunnerdbCardsBundle::layout.html.twig' %}
+{% block wrapper %}
+{% render(controller('NetrunnerdbCardsBundle:Default:header', {'_locale':app.request.locale})) %}
+<div id="home">
+
+<script type="text/javascript" src="{{ asset('/web/bundles/netrunnerdbcards/js/jquery-2.0.2.min.js') }}"></script>
+<script type="text/javascript" src="{{ asset('/web/bundles/netrunnerdbcards/js/save-settings.js') }}"></script>
+
+<h1 style="text-align:center;margin:10% auto 5%">{% trans %}Android:Netrunner Card Database{% endtrans %}</h1>
+
+<div style="overflow:hidden" class="index">
+<form method="GET" action="{{ path('netrunnerdb_netrunner_cards_find') }}" style="text-align:center">
+	<h2>{% trans %}Search by Name{% endtrans %}</h2> 
+	<input size="30" name="q" tabindex="1" value="{{ q|default('') }}" style="font-size:150%" title="Search tips:
+   e: extension (word)
+   t: type (word)
+   s: subtype (word)
+   f: faction (letter)
+   x: text (word)
+   p: strength (number)
+   o: cost (number)
+   n: influence (number)
+   d: side (letter)
+   c: cycle (number)
+   a: flavor (word)
+   i: illustrator (word)
+   r: release date (date)
+   
+Example: [ t:asset f:j ] displays all Jinteki assets"><br>
+	{% include 'NetrunnerdbCardsBundle:Default:searchoptions.html.twig' %}
+	<input type="submit" value="{% trans %}Search{% endtrans %}">
+</form>
+<p style="text-align:center">
+	{% trans %}Or use the{% endtrans %} <a href="{{ path('netrunnerdb_netrunner_cards_search') }}">{% trans %}Advanced Search{% endtrans %}</a>
+</p>
+<div style="text-align:center;margin:2em">
+<a class="flag flag-us" href="{{ path('netrunnerdb_netrunner_cards_homepage', {'_locale': 'en'}) }}"></a>
+<a class="flag flag-fr" href="{{ path('netrunnerdb_netrunner_cards_homepage', {'_locale': 'fr'}) }}"></a>
+<a class="flag flag-de" href="{{ path('netrunnerdb_netrunner_cards_homepage', {'_locale': 'de'}) }}"></a>
+<a class="flag flag-es" href="{{ path('netrunnerdb_netrunner_cards_homepage', {'_locale': 'es'}) }}"></a>
+<a class="flag flag-pl" href="{{ path('netrunnerdb_netrunner_cards_homepage', {'_locale': 'pl'}) }}"></a>
+{#
+<a class="flag flag-it" href="{{ path('netrunnerdb_netrunner_cards_homepage', {'_locale': 'it'}) }}"></a>
+#}
+</div>
+</div>
+
+
+<div class="sitemap">
+<h2 style="text-align:center">{% trans %}Browse by Set{% endtrans %}</h2>
+{{ sitemap|raw }}
+</div>
+</div>
+
+{% endblock %}

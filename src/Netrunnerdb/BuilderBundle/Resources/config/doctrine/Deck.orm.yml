@@ -1,0 +1,69 @@
+Netrunnerdb\BuilderBundle\Entity\Deck:
+    type: entity
+    table: deck
+    repositoryClass: Netrunnerdb\BuilderBundle\Entity\DeckRepository
+    manyToOne:
+        user:
+            targetEntity: Netrunnerdb\UserBundle\Entity\User
+            nullable: false
+            inversedBy: decks
+            joinColumn:
+                name: user_id
+                referencedColumnName: id
+        side:
+            targetEntity: Netrunnerdb\CardsBundle\Entity\Side
+            nullable: false
+            inversedBy: decks
+            joinColumn:
+                name: side_id
+                referencedColumnName: id
+        identity:
+            targetEntity: Netrunnerdb\CardsBundle\Entity\Card
+            nullable: false
+            joinColumn:
+                name: identity_id
+                referencedColumnName: id
+        lastPack:
+            targetEntity: Netrunnerdb\CardsBundle\Entity\Pack
+            nullable: false
+            joinColumn:
+                name: last_pack_id
+                referencedColumnName: id
+    oneToMany:
+        slots:
+            targetEntity: Deckslot
+            mappedBy: deck
+            cascade: ["persist","remove"]
+    fields:
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+        name:
+            type: string
+            length: 255
+        creation:
+            type: datetime
+        lastupdate:
+            type: datetime
+        description:
+            type: text
+            nullable: true
+        problem:
+            type: string
+            length: 20
+            nullable: true
+        deckSize:
+            type: smallint
+            column: deck_size
+            nullable: true
+        influenceSpent:
+            type: smallint
+            column: influence_spent
+            nullable: true
+        agendaPoints:
+            type: smallint
+            column: agenda_points
+            nullable: true
+    lifecycleCallbacks: {  }

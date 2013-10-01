@@ -1,0 +1,30 @@
+admin_pack:
+    pattern:  /
+    defaults: { _controller: "NetrunnerdbCardsBundle:Pack:index" }
+
+admin_pack_show:
+    pattern:  /{id}/show
+    defaults: { _controller: "NetrunnerdbCardsBundle:Pack:show" }
+
+admin_pack_new:
+    pattern:  /new
+    defaults: { _controller: "NetrunnerdbCardsBundle:Pack:new" }
+
+admin_pack_create:
+    pattern:  /create
+    defaults: { _controller: "NetrunnerdbCardsBundle:Pack:create" }
+    requirements: { _method: post }
+
+admin_pack_edit:
+    pattern:  /{id}/edit
+    defaults: { _controller: "NetrunnerdbCardsBundle:Pack:edit" }
+
+admin_pack_update:
+    pattern:  /{id}/update
+    defaults: { _controller: "NetrunnerdbCardsBundle:Pack:update" }
+    requirements: { _method: post|put }
+
+admin_pack_delete:
+    pattern:  /{id}/delete
+    defaults: { _controller: "NetrunnerdbCardsBundle:Pack:delete" }
+    requirements: { _method: post|delete }

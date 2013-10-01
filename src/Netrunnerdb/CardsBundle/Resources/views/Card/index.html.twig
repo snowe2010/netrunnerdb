@@ -1,0 +1,111 @@
+{% extends '::base.html.twig' %}
+
+{% block body -%}
+    <h1>Card list</h1>
+
+    <table class="records_list">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Ts</th>
+                <th>Code</th>
+                <th>Title</th>
+                <th>Titlefr</th>
+                <th>Titlede</th>
+                <th>Titlees</th>
+                <th>Titlepl</th>
+                <th>Keywords</th>
+                <th>Keywordsfr</th>
+                <th>Keywordsde</th>
+                <th>Keywordses</th>
+                <th>Keywordspl</th>
+                <th>Text</th>
+                <th>Textfr</th>
+                <th>Textde</th>
+                <th>Textes</th>
+                <th>Textpl</th>
+                <th>Advancementcost</th>
+                <th>Agendapoints</th>
+                <th>Baselink</th>
+                <th>Cost</th>
+                <th>Factioncost</th>
+                <th>Flavor</th>
+                <th>Flavorfr</th>
+                <th>Flavorde</th>
+                <th>Flavores</th>
+                <th>Flavorpl</th>
+                <th>Illustrator</th>
+                <th>Influencelimit</th>
+                <th>Memoryunits</th>
+                <th>Minimumdecksize</th>
+                <th>Number</th>
+                <th>Quantity</th>
+                <th>Strength</th>
+                <th>Trashcost</th>
+                <th>Uniqueness</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for entity in entities %}
+            <tr>
+                <td><a href="{{ path('admin_card_show', { 'id': entity.id }) }}">{{ entity.id }}</a></td>
+                <td>{% if entity.ts %}{{ entity.ts|date('Y-m-d H:i:s') }}{% endif %}</td>
+                <td>{{ entity.code }}</td>
+                <td>{{ entity.title }}</td>
+                <td>{{ entity.titleFr }}</td>
+                <td>{{ entity.titleDe }}</td>
+                <td>{{ entity.titleEs }}</td>
+                <td>{{ entity.titlePl }}</td>
+                <td>{{ entity.keywords }}</td>
+                <td>{{ entity.keywordsFr }}</td>
+                <td>{{ entity.keywordsDe }}</td>
+                <td>{{ entity.keywordsEs }}</td>
+                <td>{{ entity.keywordsPl }}</td>
+                <td>{{ entity.text }}</td>
+                <td>{{ entity.textFr }}</td>
+                <td>{{ entity.textDe }}</td>
+                <td>{{ entity.textEs }}</td>
+                <td>{{ entity.textPl }}</td>
+                <td>{{ entity.advancementCost }}</td>
+                <td>{{ entity.agendaPoints }}</td>
+                <td>{{ entity.baseLink }}</td>
+                <td>{{ entity.cost }}</td>
+                <td>{{ entity.factionCost }}</td>
+                <td>{{ entity.flavor }}</td>
+                <td>{{ entity.flavorFr }}</td>
+                <td>{{ entity.flavorDe }}</td>
+                <td>{{ entity.flavorEs }}</td>
+                <td>{{ entity.flavorPl }}</td>
+                <td>{{ entity.illustrator }}</td>
+                <td>{{ entity.influenceLimit }}</td>
+                <td>{{ entity.memoryUnits }}</td>
+                <td>{{ entity.minimumDeckSize }}</td>
+                <td>{{ entity.number }}</td>
+                <td>{{ entity.quantity }}</td>
+                <td>{{ entity.strength }}</td>
+                <td>{{ entity.trashCost }}</td>
+                <td>{{ entity.uniqueness }}</td>
+                <td>
+                <ul>
+                    <li>
+                        <a href="{{ path('admin_card_show', { 'id': entity.id }) }}">show</a>
+                    </li>
+                    <li>
+                        <a href="{{ path('admin_card_edit', { 'id': entity.id }) }}">edit</a>
+                    </li>
+                </ul>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+        <ul>
+        <li>
+            <a href="{{ path('admin_card_new') }}">
+                Create a new entry
+            </a>
+        </li>
+    </ul>
+    {% endblock %}

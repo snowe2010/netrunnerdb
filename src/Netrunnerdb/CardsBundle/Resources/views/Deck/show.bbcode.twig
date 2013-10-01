@@ -1,0 +1,17 @@
+{% if identity is not null %}
+[url={{identity.url}}]{{identity.title}}[/url]  
+{% endif %}
+{{count}} cards. {% if agendapoints > 0 %}{{agendapoints}} Agenda points.{% endif %} {{influencespent}} spent Influence.
+
+{% for type, cards in list %}
+[b]{{type}} ({{cards.nb}})[/b]
+
+[list]
+{% for card in cards.cards %}
+[*] {{card.nb}} [url={{card.url}}]{{card.title}}[/url] {% if card.influence > 0 %}{% for i in 1..card.influence %}●{% if i%5==0 %} {% endif %}{% endfor %}{% endif %}
+
+{% endfor %}
+[/list]
+
+{% endfor %}
+View and edit this deck in [url={{selfref}}]NetrunnerCards.info deckbuilder[/url].

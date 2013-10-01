@@ -1,0 +1,30 @@
+admin_rulings:
+    pattern:  /
+    defaults: { _controller: "NetrunnerdbCardsBundle:Rulings:index" }
+
+admin_rulings_show:
+    pattern:  /{id}/show
+    defaults: { _controller: "NetrunnerdbCardsBundle:Rulings:show" }
+
+admin_rulings_new:
+    pattern:  /new
+    defaults: { _controller: "NetrunnerdbCardsBundle:Rulings:new" }
+
+admin_rulings_create:
+    pattern:  /create
+    defaults: { _controller: "NetrunnerdbCardsBundle:Rulings:create" }
+    requirements: { _method: post }
+
+admin_rulings_edit:
+    pattern:  /{id}/edit
+    defaults: { _controller: "NetrunnerdbCardsBundle:Rulings:edit" }
+
+admin_rulings_update:
+    pattern:  /{id}/update
+    defaults: { _controller: "NetrunnerdbCardsBundle:Rulings:update" }
+    requirements: { _method: post }
+
+admin_rulings_delete:
+    pattern:  /{id}/delete
+    defaults: { _controller: "NetrunnerdbCardsBundle:Rulings:delete" }
+    requirements: { _method: post }

@@ -1,0 +1,108 @@
+NetrunnerdbCardsBundle_admin_cycle:
+    resource: "@NetrunnerdbCardsBundle/Resources/config/routing/cycle.yml"
+    prefix:   /admin/cycle
+
+NetrunnerdbCardsBundle_admin_pack:
+    resource: "@NetrunnerdbCardsBundle/Resources/config/routing/pack.yml"
+    prefix:   /admin/pack
+
+NetrunnerdbCardsBundle_admin_card:
+    resource: "@NetrunnerdbCardsBundle/Resources/config/routing/card.yml"
+    prefix:   /admin/card
+
+netrunnerdb_netrunner_cards_list:
+    pattern:  /{_locale}/set/{pack_code}
+    defaults:
+        _controller: NetrunnerdbCardsBundle:Search:list
+        _locale: en
+    requirements:
+        _locale: en|fr|de|es|it|pl
+
+netrunnerdb_netrunner_cards_zoom:
+    pattern:  /{_locale}/card/{card_code}
+    defaults:
+        _controller: NetrunnerdbCardsBundle:Search:zoom
+        _locale: en
+    requirements:
+        _locale: en|fr|de|es|it|pl
+
+netrunnerdb_netrunner_cards_cycle:
+    pattern:  /{_locale}/cycle/{cycle_code}
+    defaults:
+        _controller: NetrunnerdbCardsBundle:Search:cycle
+        _locale: en
+    requirements:
+        _locale: en|fr|de|es|it|pl
+
+netrunnerdb_netrunner_cards_search:
+    pattern:  /{_locale}/search
+    defaults:
+        _controller: NetrunnerdbCardsBundle:Default:search
+        _locale: en
+    requirements:
+        _locale: en|fr|de|es|it|pl
+
+netrunnerdb_netrunner_cards_find:
+    pattern:  /find/
+    defaults:
+        _controller: NetrunnerdbCardsBundle:Search:find
+
+netrunnerdb_netrunner_cards_processSearchForm:
+    pattern:  /process/
+    defaults:
+        _controller: NetrunnerdbCardsBundle:Search:process
+
+netrunnerdb_netrunner_cards_about:
+    pattern:  /{_locale}/about
+    defaults:
+        _controller: NetrunnerdbCardsBundle:Default:about
+        _locale: en
+    requirements:
+        _locale: en|fr|de|es|it|pl
+
+netrunnerdb_netrunner_cards_changelog:
+    pattern:  /{_locale}/changelog
+    defaults:
+        _controller: NetrunnerdbCardsBundle:Default:changelog
+        _locale: en
+    requirements:
+        _locale: en|fr|de|es|it|pl
+
+netrunnerdb_netrunner_cards_api:
+    pattern:  /{_locale}/apidoc
+    defaults:
+        _controller: NetrunnerdbCardsBundle:Default:apidoc
+        _locale: en
+    requirements:
+        _locale: en|fr|de|es|it|pl
+
+netrunnerdb_netrunner_cards_rulings:
+    pattern:  /{_locale}/rules
+    defaults:
+        _controller: NetrunnerdbCardsBundle:Default:rules
+        _locale: en
+    requirements:
+        _locale: en|fr|de|es|it|pl
+
+api_search:
+    pattern: /api/search/{query}
+    defaults:
+        _controller: NetrunnerdbCardsBundle:Search:apisearch
+
+api_sets:
+    pattern: /api/sets/
+    defaults:
+        _controller: NetrunnerdbCardsBundle:Default:apisets
+
+NetrunnerdbCardsBundle_admin_cards:
+    resource: "@NetrunnerdbCardsBundle/Resources/config/routing/cards.yml"
+    prefix:   /admin/cards
+
+NetrunnerdbCardsBundle_admin_rulings:
+    resource: "@NetrunnerdbCardsBundle/Resources/config/routing/rulings.yml"
+    prefix:   /admin/rulings
+
+NetrunnerdbCardsBundle_admin_rxc:
+    resource: "@NetrunnerdbCardsBundle/Resources/config/routing/rxc.yml"
+    prefix:   /admin/rxc
+

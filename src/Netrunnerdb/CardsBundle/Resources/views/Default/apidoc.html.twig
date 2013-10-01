@@ -1,0 +1,116 @@
+{% extends 'NetrunnerdbCardsBundle::main.html.twig' %}
+
+{% block title %}API Documentation{% endblock %}
+
+{% block content %}
+
+<h1>{{ block('title') }}</h1>
+
+<tt>http://netrunnercards.info</tt> can be queried via an http API.
+
+<h2>Sets</h2>
+
+<tt>/api/sets</tt> returns data about all the sets in the database.
+
+<h2>Cards</h2>
+
+<tt>/api/search/{query}</tt> returns data about a subset of cards described by <tt>{query}</tt>. <tt>{query}</tt> follows the same syntax as the search field throughout the website (see below). Just encode it as a url component.
+
+<h2>Returned value</h2>
+
+Data returned is in json format.<br>
+Set and card data include a "url" key giving the absolute url of the page that holds the data.<br>
+Card data include a "imagesrc" key giving the relative url of the image of the card.<br>
+Set data include a "search" key to query the cards of the set.<br>
+
+<h2>jsonp</h2>
+
+Optional GET parameter "jsonp" for script tags.
+
+<h2>Examples</h2>
+
+<a href="/api/search/01001">/api/search/01001</a> returns data for Noise<br>
+<a href="/api/sets/?jsonp=parseSets">/api/sets/?jsonp=parseSets</a> returns data for all sets wrapped in a call to parseSets()<br>
+<a href="/api/search/t:asset%20s:ambush">/api/search/t:asset%20s:ambush</a> returns all cards with the type Asset and the subtype Ambush (the query is <tt>t:asset%20s:ambush</tt> percent-encoded)<br>
+
+<h2>Encoding</h2>
+
+The response is in ascii encoding. Non-ascii characters are encoded with \uXXXX with XXXX their hexadecimal unicode value.<br>
+To test your application, 3 cards are useful:
+<ul>
+<li><a href="/api/search/02020">02020</a> to test Unicode characters, [Credits] and [Subroutine] tokens, <tt>&lt;strong></tt> and <tt>&lt;sup></tt> markup for traces and keywords.</li>
+<li><a href="/api/search/02046">02046</a> to test Unicode characters, :, ", [Memory Unit] token-with-space</li>
+<li><a href="/api/search/01036">01036</a> to test ", ', &</li>
+</ul>
+
+<h2>Caching</h2>
+
+<ul>
+<li>Card data include a "last-modified" key giving the timestamp of the data (CET)</li>
+<li><tt>/api/search/</tt> responses use both HTTP cache expiration (max-age) and cache validation (last-modified). <b>Please use both when building your queries</b>.</li>
+</ul>
+
+<h2>Embedded Display Mode</h2>
+
+If the parameter "mode=embed" is added to an url, the page is served without the header and footer and navigation and search stuff, that is, with only the main content. See for example <a href="/card/01020?mode=embed">/card/01020?mode=embed</a> or <a href="/set/hs?mode=embed">/set/hs?mode=embed</a> or <a href="/find/?q=e%3Aasis&sort=set&view=scan&mode=embed">/find/?q=e%3Aasis&sort=set&view=scan&mode=embed</a>.
+
+
+<h2>Search syntax</h2>
+
+<ul>
+<li>a search string is a conjonction of one or more <b>conditions</b> separated by one or more spaces</li>
+<li>a <b>condition</b> is either:
+<ul>
+<li>a <b>word</b> or <b>expression</b> or <b>disjonction</b></li>
+<li>a <b>criteria</b> followed by an <b>operator</b> followed by a <b>word</b> or <b>expression</b> or <b>disjonction</b>
+</ul>
+</li>
+<li>a <b>word</b> must match <tt>/[\w\-]/</tt>: letters, digits, dash</li>
+<li>an <b>expression</b> is any text between <tt>"</tt></li>
+<li>a <b>disjonction</b> is several <b>words</b> or <b>expressions</b> separated by <tt>|</tt></li>
+<li>a <b>criteria</b> is a single letter:
+<ul>
+<li><tt>x</tt> &ndash; text</li>
+<li><tt>a</tt> &ndash; flavor text</li>
+<li><tt>e</tt> &ndash; set</li>
+<li><tt>c</tt> &ndash; cycle</li>
+<li><tt>t</tt> &ndash; type</li>
+<li><tt>f</tt> &ndash; faction</li>
+<li><tt>s</tt> &ndash; subtype</li>
+<li><tt>d</tt> &ndash; side</li>
+<li><tt>i</tt> &ndash; illustrator</li>
+<li><tt>o</tt> &ndash; cost / advancement cost</li>
+<li><tt>n</tt> &ndash; influence (faction cost)</li>
+<li><tt>p</tt> &ndash; strength / agenda points / trash cost</li>
+<li><tt>r</tt> &ndash; release date</li>
+</ul>
+</li>
+<li>an <b>operator</b> is either:
+<ul>
+<li><tt>:</tt> &ndash; equals</li>
+<li><tt>!</tt> &ndash; different from</li>
+<li><tt>&lt;</tt> &ndash; less than</li>
+<li><tt>&gt;</tt> &ndash; more than</li>
+</ul>
+</li>
+<li><b>Special case</b> <tt>r</tt> (release date) uses only the operators <tt>&lt;</tt> (inclusive) and <tt>&gt;</tt> (exclusive) and only understands the arguments <tt>now</tt> or a date YYYY-MM-DD</li>
+</ul>
+
+<h2>Localization</h2>
+
+Add a parameter _locale=xx to get the results in xx locale.
+
+<h2>Search examples</h2>
+
+<ul>
+<li><span style="border:1px solid #888;font-family:monospace;padding:0 2px">t:asset</span> searches for all Assets</li>
+<li><span style="border:1px solid #888;font-family:monospace;padding:0 2px">t:asset s:ambush</span> searches for every Asset that has the subtype Ambush</li>
+<li><span style="border:1px solid #888;font-family:monospace;padding:0 2px">x:"make a run"</span> searches for all cards with the text "make a run"</li>
+<li><span style="border:1px solid #888;font-family:monospace;padding:0 2px">t:asset|upgrade f:n</span> searches for all Assets and Upgrades from NBN</li>
+<li><span style="border:1px solid #888;font-family:monospace;padding:0 2px">f:a|s n&lt;3</span> searches for all Anarch and Shaper cards with a faction cost less than 3</li>
+<li><span style="border:1px solid #888;font-family:monospace;padding:0 2px">t:ice s!barrier|sentry|"code gate"</span> searches for all ICE that are neither barrier, code gate nor sentry</li>
+<li><span style="border:1px solid #888;font-family:monospace;padding:0 2px">r&lt;2013-01-01</span> searches for all cards released up to Jan 1, 2013</li>
+<li><span style="border:1px solid #888;font-family:monospace;padding:0 2px">d:r|c</span> searches for all Runner and Corp cards</li>
+</ul>
+
+{% endblock %}

@@ -1,0 +1,28 @@
+<div id="deck" class="header">
+	<div class="deckinfo">
+		<img src="{{ asset('/web/bundles/netrunnerdbcards/images') }}/iconic/16/blue/tag_fill_16x16.png" class="glyph">
+		{% if identity|default(null) is not null %}
+
+		<a href="{{ identity.url }}" data-index="{{ identity.index }}">{{ identity.title }}</a>
+		<img src="{{ asset('/web/bundles/netrunnerdbcards/images') }}/iconic/16/gray_light/minus_alt_16x16.png" class="glyph control control-remove">
+
+		{% endif %}
+		<br>
+		<img src="{{ asset('/web/bundles/netrunnerdbcards/images') }}/iconic/16/blue/layers_alt_16x16.png" class="glyph">
+		<br>
+		<img src="{{ asset('/web/bundles/netrunnerdbcards/images') }}/iconic/16/blue/share_16x16.png" class="glyph">
+	</div>
+	<div class="deckblocks">
+	{% for type, cards in list %}
+	<div class="decklist">
+		<div class="decktype"><span class="decktype">{{ type }}</span></div>
+		<div class="deckcards">{% for card in cards %}
+			{{ card.nb }} <a href="{{ card.url }}" data-index="{{ card.index }}">{{ card.title }}</a>
+			<img src="{{ asset('/web/bundles/netrunnerdbcards/images') }}/iconic/16/gray_light/minus_alt_16x16.png" class="glyph control control-remove">
+			<br>
+		{% endfor %}</div>
+	</div>
+	{% endfor %}
+	</div>
+</div>
+<hr>

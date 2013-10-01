@@ -1,0 +1,231 @@
+{% extends 'NetrunnerdbBuilderBundle::layout.html.twig' %}
+
+{% block hexagon %}{{ decklist.faction_code }}{% endblock %}
+{% block head %}
+<script src="{{ asset('/web/bundles/netrunnerdbbuilder/js/nrdb.js') }}"></script>
+<script src="{{ asset('/web/bundles/netrunnerdbbuilder/js/decklist.js') }}"></script>
+<script type="text/javascript">
+
+var CardDB = null,
+	SetDB = null,
+	Identity = null
+	Decklist = {{ decklist|json_encode|raw }},
+	DeckDB = TAFFY([Decklist]),
+	SelectedDeck = DeckDB().first()
+	Url_Like = "{{ path('decklist_like') }}",
+	Url_Favorite = "{{ path('decklist_favorite') }}";
+
+</script>
+{% endblock %}
+{% block body %}
+
+<div class="container decklist">
+
+<div class="row">
+<div class="col-xs-12">
+<h1><img src="/web/bundles/netrunnerdbbuilder/images/factions/38px/{{ decklist.faction_code }}.png">{{ decklist.name }}</h1>
+<div class="decklist-social">
+<div class="pull-right" id="decklist-social-icons">
+<span>published {{ decklist.creation|date('M d') }}</span>
+{% if app.user and app.user.id != decklist.user_id %}
+| <a id="decklist-social-icon-like" href="#" class="social-icon-like" data-toggle="tooltip" data-placement="bottom" title="Like">
+	<span class="glyphicon glyphicon-heart"></span> <span class="num">{{ decklist.nbvotes }}</span>
+</a>
+{% else %}
+| <span class="social-icon-like">
+	<span class="glyphicon glyphicon-heart"></span> <span class="num">{{ decklist.nbvotes }}</span>
+</span>
+{% endif %}
+{% if app.user %}
+| <a id="decklist-social-icon-favorite" href="#" class="social-icon-favorite" data-toggle="tooltip" data-placement="bottom" title="Add to favorites">
+	<span class="glyphicon glyphicon-star"></span> <span class="num">{{ decklist.nbfavorites }}</span>
+</a>
+| <a id="decklist-social-icon-comment" href="#comment-form" class="social-icon-comment" data-toggle="tooltip" data-placement="bottom" title="Comment">
+	<span class="glyphicon glyphicon-comment"></span> <span class="num">{{ decklist.nbcomments }}</span>
+</a>
+{% else %}
+| <span class="social-icon-favorite">
+	<span class="glyphicon glyphicon-star"></span> <span class="num">{{ decklist.nbfavorites }}</span>
+</span>
+| <span class="social-icon-comment">
+	<span class="glyphicon glyphicon-comment"></span> <span class="num">{{ decklist.nbcomments }}</span>
+</span>
+{% endif %}
+</div>
+</div>
+</div>
+</div>
+
+<div class="row">
+
+<!-- Left-side Column -->
+<div class="col-md-6">
+
+<div id="deck">
+	
+<!-- Identity and Stats -->
+<div class="row">
+	<div class="col-sm-3">
+		<img id="img_identity" src="" class="img-responsive  hidden-xs">
+	</div><!-- /.col-md-3 -->
+	<div class="col-sm-9">
+		<h3 id="identity"></h3>
+		<div id="btn-group-decklist">
+			<button type="button" id="btn-copy" class="btn btn-default  btn-xs"><span class="glyphicon glyphicon-save"></span> Copy</button>
+			<div class="btn-group">
+				<button type="button" class="btn btn-default dropdown-toggle  btn-xs" data-toggle="dropdown">
+					<span class="glyphicon glyphicon-download"></span> Download <span class="caret"></span>
+				</button>
+				<ul class="dropdown-menu" role="menu">
+					<li><a href="#" id="btn-download-text">Text file</a></li>
+					<li><a href="#" id="btn-download-octgn">Octgn file</a></li>
+				</ul>
+			</div>
+			<div class="btn-group">
+				<button type="button" class="btn btn-default dropdown-toggle  btn-xs" data-toggle="dropdown">
+					<span class="glyphicon glyphicon-export"></span> Export <span class="caret"></span>
+				</button>
+				<ul class="dropdown-menu" role="menu">
+					<li><a href="#" id="btn-export-bbcode">bbCode</a></li>
+					<li><a href="#" id="btn-export-markdown">Markdown (Reddit)</a></li>
+					<li><a href="#" id="btn-export-plaintext">plain text</a></li>
+				</ul>
+			</div>
+		</div>
+		<div id="influence"></div>
+		<div id="agendapoints"></div>
+		<div id="cardcount"></div>
+		<div id="latestpack"></div>
+	</div><!-- /.col-md-9 -->
+</div><!-- /.row -->
+<!-- Identity and Stats -->
+
+<!-- Deck Content -->
+<div class="row" id="deck-content" style="margin-bottom:10px">
+	<div class="col-sm-6">
+		<h5><img class="type-icon" src="/web/bundles/netrunnerdbbuilder/images/types-gray-light/Event.png"> Event (<span></span>)</h5><div class="deck-event"></div>
+		<h5><img class="type-icon" src="/web/bundles/netrunnerdbbuilder/images/types-gray-light/Hardware.png"> Hardware (<span></span>)</h5><div class="deck-hardware"></div>
+		<h5><img class="type-icon" src="/web/bundles/netrunnerdbbuilder/images/types-gray-light/Resource.png"> Resource (<span></span>)</h5><div class="deck-resource"></div>
+		<h5><img class="type-icon" src="/web/bundles/netrunnerdbbuilder/images/types-gray-light/Agenda.png"> Agenda (<span></span>)</h5><div class="deck-agenda"></div>
+		<h5><img class="type-icon" src="/web/bundles/netrunnerdbbuilder/images/types-gray-light/Asset.png"> Asset (<span></span>)</h5><div class="deck-asset"></div>
+		<h5><img class="type-icon" src="/web/bundles/netrunnerdbbuilder/images/types-gray-light/Upgrade.png"> Upgrade (<span></span>)</h5><div class="deck-upgrade"></div>
+		<h5><img class="type-icon" src="/web/bundles/netrunnerdbbuilder/images/types-gray-light/Operation.png"> Operation (<span></span>)</h5><div class="deck-operation"></div>
+	</div><!-- /.col-sm-6 -->
+	<div class="col-sm-6">
+		<h5><img class="type-icon" src="/web/bundles/netrunnerdbbuilder/images/types-gray-light/Program.png"> Icebreaker (<span></span>)</h5><div class="deck-icebreaker"></div>
+		<h5><img class="type-icon" src="/web/bundles/netrunnerdbbuilder/images/types-gray-light/Program.png"> Program (<span></span>)</h5><div class="deck-program"></div>
+		<h5><img class="type-icon" src="/web/bundles/netrunnerdbbuilder/images/types-gray-light/ICE.png"> Barrier (<span></span>)</h5><div class="deck-barrier"></div>
+		<h5><img class="type-icon" src="/web/bundles/netrunnerdbbuilder/images/types-gray-light/ICE.png"> Code Gate (<span></span>)</h5><div class="deck-code-gate"></div>
+		<h5><img class="type-icon" src="/web/bundles/netrunnerdbbuilder/images/types-gray-light/ICE.png"> Sentry (<span></span>)</h5><div class="deck-sentry"></div>
+		<h5><img class="type-icon" src="/web/bundles/netrunnerdbbuilder/images/types-gray-light/ICE.png"> ICE (<span></span>)</h5><div class="deck-ice"></div>
+	</div><!-- /.col-sm-6 -->
+
+{#	<div class="col-sm-4">
+		<h5><img class="type-icon" src="/web/bundles/netrunnerdbbuilder/images/types-gray-light/Event.png"> Event (<span></span>)</h5><div class="deck-event"></div>
+		<h5><img class="type-icon" src="/web/bundles/netrunnerdbbuilder/images/types-gray-light/Agenda.png"> Agenda (<span></span>)</h5><div class="deck-agenda"></div>
+		<h5><img class="type-icon" src="/web/bundles/netrunnerdbbuilder/images/types-gray-light/Asset.png"> Asset (<span></span>)</h5><div class="deck-asset"></div>
+		<h5><img class="type-icon" src="/web/bundles/netrunnerdbbuilder/images/types-gray-light/Upgrade.png"> Upgrade (<span></span>)</h5><div class="deck-upgrade"></div>
+	</div><!-- /.col-sm-4 -->
+	<div class="col-sm-4">
+		<h5><img class="type-icon" src="/web/bundles/netrunnerdbbuilder/images/types-gray-light/Hardware.png"> Hardware (<span></span>)</h5><div class="deck-hardware"></div>
+		<h5><img class="type-icon" src="/web/bundles/netrunnerdbbuilder/images/types-gray-light/Resource.png"> Resource (<span></span>)</h5><div class="deck-resource"></div>
+		<h5><img class="type-icon" src="/web/bundles/netrunnerdbbuilder/images/types-gray-light/Operation.png"> Operation (<span></span>)</h5><div class="deck-operation"></div>
+	</div><!-- /.col-sm-4 -->
+	<div class="col-sm-4">
+		<h5><img class="type-icon" src="/web/bundles/netrunnerdbbuilder/images/types-gray-light/Program.png"> Icebreaker (<span></span>)</h5><div class="deck-icebreaker"></div>
+		<h5><img class="type-icon" src="/web/bundles/netrunnerdbbuilder/images/types-gray-light/Program.png"> Program (<span></span>)</h5><div class="deck-program"></div>
+		<h5><img class="type-icon" src="/web/bundles/netrunnerdbbuilder/images/types-gray-light/ICE.png"> Barrier (<span></span>)</h5><div class="deck-barrier"></div>
+		<h5><img class="type-icon" src="/web/bundles/netrunnerdbbuilder/images/types-gray-light/ICE.png"> Code Gate (<span></span>)</h5><div class="deck-code-gate"></div>
+		<h5><img class="type-icon" src="/web/bundles/netrunnerdbbuilder/images/types-gray-light/ICE.png"> Sentry (<span></span>)</h5><div class="deck-sentry"></div>
+		<h5><img class="type-icon" src="/web/bundles/netrunnerdbbuilder/images/types-gray-light/ICE.png"> ICE (<span></span>)</h5><div class="deck-ice"></div>
+	</div><!-- /.col-sm-4 -->
+#}
+</div><!-- /#deck-content -->
+<!-- Deck Content -->
+
+<table class="table table-condensed" id="table-similar">
+<thead>
+<tr><th colspan="4"><span class="glyphicon glyphicon-link"></span> Similar</th></tr>
+</thead>
+<tbody>
+{% for decklist in similar %}
+<tr>
+	<td><a href="{{ path('decklist_detail', { 'decklist_id': decklist.id, 'decklist_name': decklist.prettyname|e('url') }) }}">{{ decklist.name }}</a></td>
+	<td><span class="glyphicon glyphicon-heart social-icon-like"></span> {{ decklist.nbvotes }}</td>
+	<td><span class="glyphicon glyphicon-star social-icon-favorite"></span> {{ decklist.nbfavorites }}</td>
+	<td><span class="glyphicon glyphicon-comment social-icon-comment"></span> {{ decklist.nbcomments }}</td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+
+</div><!-- /#deck -->
+
+</div>
+<!-- Left-side Column -->
+
+
+<!-- Right-side Column -->
+<div class="col-md-6">
+
+<h3 class="decklist-author {{ decklist.usercolor }}">{{ decklist.username }} <small title="User Reputation">{{ decklist.reputation }}</small></h3>  
+<p id="deck-description">{{ decklist.description|nl2br }}</p>
+
+<table class="table">
+<thead>
+<tr><th><span class="glyphicon glyphicon-comment"></span> {{ decklist.nbcomments }} comments</th></tr>
+</thead>
+<tbody>
+{% for comment in decklist.comments %}
+<tr><td>
+<span class="comment-date">{{ comment.creation|date('M d') }}</span>
+<span class="comment-author username {{ comment.authorcolor }}">{{ comment.author }}</span>
+<div class="comment-text">{{ comment.text|raw }}</div>
+</td></tr>
+{% endfor %}
+</tbody>
+</table>
+{% if app.user %} 
+<a name="comment-form"></a>
+<form method="POST" action="{{ path('decklist_comment') }}">
+	<input type="hidden" name="id" value="{{ decklist.id }}">
+	<div class="form-group">
+		<textarea id="comment-form-text" class="form-control" rows="4" name="comment" placeholder="Enter your comment in Markdown format"></textarea>
+		<span class="help-block"><a href="#" id="markdown-help">Format help</a></span>
+	</div>
+	<button type="submit" class="btn btn-success">Submit comment</button> 
+	</form>
+{% else %}
+<p>You must be logged in to post comments.</p>
+{% endif %}
+ 
+</div>
+
+</div>
+<!-- Right-side Column -->
+
+
+
+</div>
+
+
+<!-- Modal -->
+<div class="modal fade" id="exportModal" tabindex="-1" role="dialog" aria-labelledby="exportModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-body">
+				<div class="row">
+					<div class="col-md-12">
+						<div class="form-group">
+							<textarea class="form-control" id="export-deck" rows="20"></textarea>
+						</div>
+						</form>
+					</div><!-- /#modal-info -->
+				</div><!-- /.row -->
+			</div><!-- /.modal-body -->
+		</div><!-- /.modal-content -->
+	</div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+<!-- Modal -->
+
+{% endblock %}

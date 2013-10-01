@@ -1,0 +1,14 @@
+{% extends 'NetrunnerdbBuilderBundle::layout.html.twig' %}
+
+{% block body %}
+
+{#}
+{% render(controller('NetrunnerdbCardsBundle:Default:header', {'_locale':app.request.locale})) %}
+#}
+<div class="container">
+{% block content %}{% endblock %}
+</div>
+{#
+{% include 'NetrunnerdbCardsBundle::footer.html.twig' %}
+#}
+{% endblock %}

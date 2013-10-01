@@ -1,0 +1,43 @@
+Netrunnerdb\CardsBundle\Entity\Cycle:
+    type: entity
+    table: cycle
+    oneToMany:
+        packs:
+            orderBy: { 'number': 'ASC' }
+            targetEntity: Pack
+            mappedBy: cycle
+    fields:
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+        code:
+            type: string
+            length: 255
+        name:
+            type: string
+            length: 255
+        nameFr:
+            type: string
+            length: 255
+            column: name_fr
+            nullable: true
+        nameDe:
+            type: string
+            length: 255
+            column: name_de
+            nullable: true
+        nameEs:
+            type: string
+            length: 255
+            column: name_es
+            nullable: true
+        namePl:
+            type: string
+            length: 255
+            column: name_pl
+            nullable: true
+        number:
+            type: smallint
+    lifecycleCallbacks: {  }

@@ -1,0 +1,126 @@
+{% macro with_scan(card) %}
+<div class="row card panel panel-default">
+<div class="panel-body">
+	<div class="card-image col-sm-3"><img src="{{ card.imagesrc }}" class="img-responsive"></div>
+	<div class="card-info col-sm-9">
+		<h3 class="card-title">
+			{% if card.uniqueness == true %}&diams;{% endif %}
+			<a href="{{ card.url }}" class="card-title{% if card.available == false %} card-preview{% endif %}">{{ card.title }}</a>
+		</h3>
+		<div class="card-type">
+			<span class="card-type">{{ card.type }}</span>{% if card.subtype %}<span class="card-subtype">: {{ card.subtype }}</span>{% endif %}
+			&bull;
+			{% if card.type_en == "Agenda" %} Adv: {{ card.advancementcost }} &bull; Score: {{ card.agendapoints }} {% endif %}
+			{% if card.type_en == "Identity" and card.side == "Corp" %}Deck: {{ card.minimumdecksize }} &bull; Influence: {{ card.influencelimit }} {% endif %}
+			{% if card.type_en == "Identity" and card.side == "Runner" %}Link: {{ card.baselink }} &bull; Deck: {{ card.minimumdecksize }} &bull; Influence: {{ card.influencelimit }} {% endif %}
+			{% if card.type_en == "Operation" or card.type_en == "Event" %}Cost: {{ card.cost }} &bull; Influence: {{ card.factioncost }}{% endif %}
+			{% if card.type_en == "Resource" or card.type_en == "Hardware" %}Install: {{ card.cost }} &bull; Influence: {{ card.factioncost }}{% endif %}
+			{% if card.type_en == "Program" %}Install: {{ card.cost }} &bull; Memory: {{ card.memoryunits }} {% if card.strength is not null %}&bull; Strength: {{ card.strength }}{% endif %} &bull; Influence: {{ card.factioncost }}{% endif %}
+			{% if card.type_en == "Asset" or card.type_en == "Upgrade" %}Rez: {{ card.cost }} &bull; Trash: {{ card.trash }} &bull; Influence: {{ card.factioncost }}{% endif %}
+			{% if card.type_en == "ICE" %}Rez: {{ card.cost }} &bull; Strength: {{ card.strength }} &bull; Influence: {{ card.factioncost }}{% endif %}
+		</div>
+		<div class="card-text">
+			{{ card.text|raw }}
+		</div>
+		<div class="card-flavor">
+			<small>{{ card.flavor|raw|nl2br }}</small>
+		</div>
+		<div class="card-illustrator">
+			<small>
+			{% if card.illustrator %}{{ card.illustrator }} &bull; {% endif %}{{ card.setname }} #{{ card.number }}
+			{% for alternative in card.alternatives %}
+				| <a href="{{ alternative.url }}" title="Alternative">{{ alternative.setname }} #{{ alternative.number }}</a>
+			{% endfor %}
+			</small>
+		</div>
+		<div class="card-rulings">
+			{% if card.rulings %}
+			{% for i in 0..card.rulings|length-1 %}
+			<div class="card-ruling">
+				<div class="ruling-question">{{ card.rulings[i].question|raw }}</div>
+				<div class="ruling-answer">{{ card.rulings[i].answer|raw }} <span class="ruling-source">({{ card.rulings[i].source }}, {{ card.rulings[i].created }})</span></div>
+			</div>
+			{% endfor %}
+			{% endif %}
+		</div>
+	</div>
+</div>
+</div>
+{% endmacro %}
+
+
+
+{% macro as_grid(card) %}
+<div class="col-sm-3" style="background-repeat:no-repeat;background-position:50% 50%;background-image:url('{% if card.faction_en != 'Neutral' %}{{ asset('/web/bundles/netrunnerdbcards/images/factions/64px-alpha/' ~ card.faction_en ~ '.png') }}{% endif %}')">
+		<h5>{% if card.uniqueness == true %} 
+			&diams;
+		{% endif %}
+		<a href="{{ card.url }}" class="card-title{% if card.available == false %} card-preview{% endif %}">{{ card.title }}</a>
+		</h5>
+	<p style="font-family:sans-serif">
+		<span style="">{{ card.type }}</span>{% if card.subtype %}: {{ card.subtype }}{% endif %}
+	</p>
+	<p>
+		{% if card.type_en == "Agenda" %} Adv: {{ card.advancementcost }} &bull; Score: {{ card.agendapoints }} {% endif %}
+		{% if card.type_en == "Identity" and card.side == "Corp" %}Deck: {{ card.minimumdecksize }} &bull; Influence: {{ card.influencelimit }} {% endif %}
+		{% if card.type_en == "Identity" and card.side == "Runner" %}Link: {{ card.baselink }} &bull; Deck: {{ card.minimumdecksize }} &bull; Influence: {{ card.influencelimit }} {% endif %}
+		{% if card.type_en == "Operation" or card.type == "Event" %}Cost: {{ card.cost }} &bull; Influence: {{ card.factioncost }}{% endif %}
+		{% if card.type_en == "Resource" or card.type == "Hardware" %}Install: {{ card.cost }} &bull; Influence: {{ card.factioncost }}{% endif %}
+		{% if card.type_en == "Program" %}Install: {{ card.cost }} &bull; Memory: {{ card.memoryunits }} {% if card.strength %}&bull; Strength: {{ card.strength }}{% endif %} &bull; Influence: {{ card.factioncost }}{% endif %}
+		{% if card.type_en == "Asset" or card.type == "Upgrade" %}Rez: {{ card.cost }} &bull; Trash: {{ card.trash }} &bull; Influence: {{ card.factioncost }}{% endif %}
+		{% if card.type_en == "ICE" %}Rez: {{ card.cost }} &bull; Strength: {{ card.strength }} &bull; Influence: {{ card.factioncost }}{% endif %}
+	</p>
+	<div class="card-text">
+		{{ card.text|raw }}
+	</div>
+	<p style="font-style:italic;font-size:10px">
+		{{ card.flavor|raw|nl2br }}
+	</p>
+	<p style="font-family:sans-serif;font-size:10px">
+		{{ card.illustrator }}
+	</p>
+	<p>
+		{{ card.setname }} #{{ card.number }} &bull; {{ card.faction }}
+	</p>
+</div> 
+{% endmacro %}
+
+
+
+
+
+{% macro as_list(card) %}
+	<td>
+		<a href="{{ card.url }}" class="card-title{% if card.available == false %} card-preview{% endif %}">{{ card.title }}</a>
+	</td>
+	<td style="text-align:center">{% if card.faction_en != 'Neutral' %}<img src="{{ asset('/web/bundles/netrunnerdbcards/images/factions/16px/' ~ card.faction_en ~ '.png') }}">{% endif %}</td>
+	<td style="text-align:center">{{ card.cost }}{{ card.advancementcost }}</td>
+	<td>{{ card.type }}</td>
+	<td style="text-align:center">{{ card.strength }}{{ card.agendapoints }}{{ card.trash }}</td>
+	<td>{{ card.subtype }}</td>
+	<td style="text-align:center">
+		{% if card.factioncost > 0 %}
+		<span class="influence-{{ card.cssfaction }}">
+			{% for i in 1..card.factioncost %}&#9679;{% if i%5==0 %}&nbsp;{% endif %}{% endfor %}
+		</span>
+		{% endif %}
+	</td>
+	<td style="text-align:right">{{ card.setname }} {{ card.number }}</td>
+{% endmacro %}
+
+
+
+
+{% macro scan_only(card) %}
+<div class="col-sm-3">
+	<a href="{{ card.url }}"><img src="{{ card.imagesrc }}" style="width:100%" class="img-responsive"></a>
+</div>
+{% endmacro %}
+
+
+
+{% macro as_simple(card) %}
+<a href="{{ card.url }}" class="card-title{% if card.available == false %} card-preview{% endif %}">{{ card.title }}</a><br>
+{% endmacro %}
+
+

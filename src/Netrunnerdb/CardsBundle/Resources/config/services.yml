@@ -1,0 +1,7 @@
+parameters:
+#    netrunnerdb_netrunner_cards.example.class: Netrunnerdb\CardsBundle\Example
+
+services:
+#    netrunnerdb_netrunner_cards.example:
+#        class: %netrunnerdb_netrunner_cards.example.class%
+#        arguments: [@service_id, "plain_value", %parameter%]

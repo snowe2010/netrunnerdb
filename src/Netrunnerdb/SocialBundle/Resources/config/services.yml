@@ -1,0 +1,8 @@
+parameters:
+    judge.class: Netrunnerdb\SocialBundle\Services\Judge
+
+services:
+    judge:
+        class: %judge.class%
+        arguments: [@doctrine]
+

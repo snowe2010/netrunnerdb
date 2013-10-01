@@ -1,0 +1,60 @@
+Netrunnerdb\CardsBundle\Entity\Pack:
+    type: entity
+    table: pack
+    manyToOne:
+        cycle:
+            targetEntity: Cycle
+            inversedBy: packs
+            joinColumn:
+                name: cycle_id
+                referencedColumnName: id
+    oneToMany:
+        cards:
+            orderBy: { 'number': 'ASC' }
+            targetEntity: Card
+            mappedBy: pack
+        decklists:
+            targetEntity: Netrunnerdb\BuilderBundle\Entity\Decklist
+            mappedBy: lastPack
+    fields:
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+        ts:
+            type: datetime
+        code:
+            type: string
+            length: '10'
+        name:
+            type: string
+            length: 255
+        nameFr:
+            type: string
+            length: 255
+            column: name_fr
+            nullable: true
+        nameDe:
+            type: string
+            length: 255
+            column: name_de
+            nullable: true
+        nameEs:
+            type: string
+            length: 255
+            column: name_es
+            nullable: true
+        namePl:
+            type: string
+            length: 255
+            column: name_pl
+            nullable: true
+        released:
+            type: date
+            nullable: true
+        size:
+            type: smallint
+        number:
+            type: smallint
+    lifecycleCallbacks: {  }

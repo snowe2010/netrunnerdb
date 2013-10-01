@@ -1,0 +1,57 @@
+{% extends 'NetrunnerdbBuilderBundle::layout.html.twig' %}
+
+{% block head %}
+<script>
+$(function() {
+}
+</script>
+{% endblock %}
+
+{% block body %}
+
+<div class="container">
+<div class="row">
+<div class="col-md-4 col-md-offset-4">
+<div class="panel panel-default">
+<div class="panel-heading">
+<h3 class="panel-title" id="title">Profile</h3>
+</div>
+<div class="panel-body" id="main">
+
+<form role="form" action="{{ path('user_profile_save') }}" method="POST">
+  <div class="form-group">
+    <label>Username</label>
+    <p>{{ user.username }}</p>
+  </div>
+  
+  <div class="form-group">
+    <label>Reputation</label>
+    <p>{{ user.reputation }}</p>
+  </div>
+  
+  <div class="form-group">
+    <label for="resume">Something about you</label>
+    <textarea id="resume" name="resume" class="form-control">{{ user.resume }}</textarea>
+  </div>
+  
+  <div class="form-group">
+    <label for="color">Select a faction color for your username</label>
+    {% for faction in factions %}
+    <div class="radio">
+      <label class="{{ faction.code }}">
+        <input type="radio" name="user_faction_code" id="optionsRadios1" value="{{ faction.code }}" {% if user.faction == faction.code %}checked{% endif %}>
+          {{ faction.localizedName }}
+	  </label>
+	</div>
+	{% endfor %}
+  </div>
+  <button type="submit" class="btn btn-default">Save</button>
+</form>
+
+</div>
+</div>
+</div>
+</div>
+</div> <!-- .container -->
+
+{% endblock %}

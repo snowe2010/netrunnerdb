@@ -1,0 +1,191 @@
+Netrunnerdb\CardsBundle\Entity\Card:
+    type: entity
+    table: card
+    manyToOne:
+        pack:
+            targetEntity: Pack
+            inversedBy: cards
+            joinColumn:
+                name: pack_id
+                referencedColumnName: id
+        type:
+            targetEntity: Type
+            inversedBy: cards
+            joinColumn:
+                name: type_id
+                referencedColumnName: id
+        faction:
+            targetEntity: Faction
+            inversedBy: cards
+            joinColumn:
+                name: faction_id
+                referencedColumnName: id
+        side:
+            targetEntity: Side
+            inversedBy: cards
+            joinColumn:
+                name: side_id
+                referencedColumnName: id
+    oneToMany:
+        decklists:
+            targetEntity: Netrunnerdb\BuilderBundle\Entity\Decklist
+            mappedBy: identity
+    manyToMany:
+        rulings:
+            targetEntity: Ruling
+            mappedBy: cards
+            cascade: ["remove"]
+    fields:
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+        ts:
+            type: datetime
+        code:
+            type: string
+            length: '5'
+        title:
+            type: string
+            length: 255
+        titleFr:
+            type: string
+            length: 255
+            column: title_fr
+            nullable: true
+        titleDe:
+            type: string
+            length: 255
+            column: title_de
+            nullable: true
+        titleEs:
+            type: string
+            length: 255
+            column: title_es
+            nullable: true
+        titlePl:
+            type: string
+            length: 255
+            column: title_pl
+            nullable: true
+        keywords:
+            type: string
+            length: 255
+            nullable: true
+        keywordsFr:
+            type: string
+            length: 255
+            column: keywords_fr
+            nullable: true
+        keywordsDe:
+            type: string
+            length: 255
+            column: keywords_de
+            nullable: true
+        keywordsEs:
+            type: string
+            length: 255
+            column: keywords_es
+            nullable: true
+        keywordsPl:
+            type: string
+            length: 255
+            column: keywords_pl
+            nullable: true
+        text:
+            type: string
+            length: '1024'
+        textFr:
+            type: string
+            length: '1024'
+            column: text_fr
+            nullable: true
+        textDe:
+            type: string
+            length: '1024'
+            column: text_de
+            nullable: true
+        textEs:
+            type: string
+            length: '1024'
+            column: text_es
+            nullable: true
+        textPl:
+            type: string
+            length: '1024'
+            column: text_pl
+            nullable: true
+        advancementCost:
+            type: smallint
+            column: advancement_cost
+            nullable: true
+        agendaPoints:
+            type: smallint
+            column: agenda_points
+            nullable: true
+        baseLink:
+            type: smallint
+            column: base_link
+            nullable: true
+        cost:
+            type: smallint
+            nullable: true
+        factionCost:
+            type: smallint
+            column: faction_cost
+            nullable: true
+        flavor:
+            type: string
+            length: '1024'
+            nullable: true
+        flavorFr:
+            type: string
+            length: '1024'
+            column: flavor_fr
+            nullable: true
+        flavorDe:
+            type: string
+            length: '1024'
+            column: flavor_de
+            nullable: true
+        flavorEs:
+            type: string
+            length: '1024'
+            column: flavor_es
+            nullable: true
+        flavorPl:
+            type: string
+            length: '1024'
+            column: flavor_pl
+            nullable: true
+        illustrator:
+            type: string
+            length: 255
+            nullable: true
+        influenceLimit:
+            type: smallint
+            column: influence_limit
+            nullable: true
+        memoryUnits:
+            type: smallint
+            column: memory_units
+            nullable: true
+        minimumDeckSize:
+            type: smallint
+            column: minimum_deck_size
+            nullable: true
+        number:
+            type: smallint
+        quantity:
+            type: smallint
+        strength:
+            type: smallint
+            nullable: true
+        trashCost:
+            type: smallint
+            column: trash_cost
+            nullable: true
+        uniqueness:
+            type: boolean
+    lifecycleCallbacks: {  }

@@ -1,0 +1,16 @@
+{% extends 'NetrunnerdbCardsBundle:Search:display.html.twig' %}
+
+{% import "NetrunnerdbCardsBundle:Search:cardlayouts.html.twig" as cardlayouts %}
+
+{% block main %}
+
+{% for key, value in cards %}
+<h2>{{ key }}</h2>
+<div class="shortlist" style="-webkit-column-count: 3;-moz-column-count: 3;column-count: 3;">
+{% for i in 0..value|length-1 %}
+{{ cardlayouts.as_simple(value[i]) }}
+{% endfor %}
+</div>
+{% endfor %}
+
+{% endblock %}

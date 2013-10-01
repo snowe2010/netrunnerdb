@@ -1,0 +1,30 @@
+admin_rxc:
+    pattern:  /
+    defaults: { _controller: "NetrunnerdbCardsBundle:Rxc:index" }
+
+admin_rxc_show:
+    pattern:  /{id}/show
+    defaults: { _controller: "NetrunnerdbCardsBundle:Rxc:show" }
+
+admin_rxc_new:
+    pattern:  /new
+    defaults: { _controller: "NetrunnerdbCardsBundle:Rxc:new" }
+
+admin_rxc_create:
+    pattern:  /create
+    defaults: { _controller: "NetrunnerdbCardsBundle:Rxc:create" }
+    requirements: { _method: post }
+
+admin_rxc_edit:
+    pattern:  /{id}/edit
+    defaults: { _controller: "NetrunnerdbCardsBundle:Rxc:edit" }
+
+admin_rxc_update:
+    pattern:  /{id}/update
+    defaults: { _controller: "NetrunnerdbCardsBundle:Rxc:update" }
+    requirements: { _method: post }
+
+admin_rxc_delete:
+    pattern:  /{id}/delete
+    defaults: { _controller: "NetrunnerdbCardsBundle:Rxc:delete" }
+    requirements: { _method: post }

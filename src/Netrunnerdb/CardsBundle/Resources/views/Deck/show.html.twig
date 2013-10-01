@@ -1,0 +1,24 @@
+{% extends 'NetrunnerdbCardsBundle::main.html.twig' %}
+
+{% block title %}Deck content{% endblock %}
+
+{% block content %}
+
+{% if identity is not null %}
+<a href="{{ identity.url }}" data-index="{{ identity.index }}">{{ identity.title }}</a>
+{% endif %}
+
+{% for type, cards in list %}
+	<h2>{{ type }} ({{ cards.nb }})</h2>
+	{% for card in cards.cards %}
+		{{ card.nb }} <a href="{{ card.url }}" data-index="{{ card.index }}" data-nb="{{ card.nb }}">{{ card.title }}</a>
+		{% if card.influence > 0 %}
+		<span class="influence-{{ card.faction }}">
+			{% for i in 1..card.influence %}&#9679;{% if i%5==0 %}&nbsp;{% endif %}{% endfor %}
+		</span>
+		{% endif %}
+		<br>
+	{% endfor %}
+{% endfor %}
+
+{% endblock %}
