@@ -125,3 +125,4 @@ tbody .btn-group{white-space:nowrap}
 .decklists .author{font-family:'exoregular',sans-serif}
 .decklists .decklist-name{font-family:'exoregular',sans-serif}
 .decklists .decklist-identity-image img{height:64px}
+.table-striped>tbody>tr:nth-child(odd)>td,.table-striped>tbody>tr:nth-child(odd)>th{background-color:rgba(0,0,0,0.05)}

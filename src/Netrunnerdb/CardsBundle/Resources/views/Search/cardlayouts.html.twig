@@ -91,7 +91,7 @@
 
 {% macro as_list(card) %}
 	<td>
-		<a href="{{ card.url }}" class="card-title{% if card.available == false %} card-preview{% endif %}">{{ card.title }}</a>
+		<a href="{{ card.url }}" class="card card-title{% if card.available == false %} card-preview{% endif %}" data-index="{{ card.indexkey }}">{{ card.title }}</a>
 	</td>
 	<td style="text-align:center">{% if card.faction_en != 'Neutral' %}<img src="{{ asset('/web/bundles/netrunnerdbcards/images/factions/16px/' ~ card.faction_en ~ '.png') }}">{% endif %}</td>
 	<td style="text-align:center">{{ card.cost }}{{ card.advancementcost }}</td>
