@@ -23,11 +23,23 @@ $(function() {
 	$('#btn-group-deck').on({
 		click: do_action_deck
 	}, 'button[id],a[id]');
-	
+	$('#decks-filter').on({
+		change: filter_decks
+	}, 'input[type=checkbox]');
 	when_all_parsed();
 	$.when(promise1, promise2).done(when_all_parsed);
 	
 });
+
+function filter_decks(event) {
+	var display = {};
+	$('#decks-filter input[type=checkbox').each(function (n, elt) {
+		display[$(elt).val()] = $(elt).prop("checked");
+	})
+	$('#decks tr').each(function (n, row) {
+		$(row)[display[$(row).data('side')] ? "show" : "hide"]();
+	});
+}
 
 function do_action_deck(event) {
 	var action_id = $(this).attr('id');

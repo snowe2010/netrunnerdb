@@ -412,10 +412,12 @@ class BuilderController extends Controller
 				d.description,
 				d.problem,
 				c.title identity_title,
-				f.code faction_code
+				f.code faction_code,
+				s.name side 
 				from deck d
 				left join card c on d.identity_id=c.id
 				left join faction f on c.faction_id=f.id
+				left join side s on d.side_id=s.id
 				where d.user_id=?
 				order by lastupdate desc", array($user->getId()))->fetchAll();
 		
