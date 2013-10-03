@@ -150,6 +150,7 @@ $(function () {
 });
 
 function display_modal(event) {
+	$(this).qtip('hide');
 	var indexkey = $(this).data('index') || $(this).closest('tr').data('index');
 	fill_modal(indexkey);
 }
