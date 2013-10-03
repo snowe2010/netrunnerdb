@@ -212,8 +212,9 @@ function display_qtip(event) {
 	if(card.type_en == "Resource" || card.type_en == "Hardware") type += ' &middot; <span class="card-prop">'+card.cost+'<span class="sprite credits"></span></span>';
 	if(card.type_en == "Program") type += ' &middot; <span class="card-prop">'+card.cost+'<span class="sprite credits"></span> '+card.memoryunits+'<span class="sprite memory_unit"></span></span>';
 	if(card.type_en == "Asset" || card.type_en == "Upgrade") type += ' &middot; <span class="card-prop">'+card.cost+'<span class="sprite credits"></span> '+card.trash+'<span class="sprite trash"></span></span>';
-	if(card.type_en == "ICE") type += ' &middot; <span class="card-prop">'+card.cost+'<span class="sprite credits"></span> Str:'+card.strength+'</span>';
+	if(card.type_en == "ICE") type += ' &middot; <span class="card-prop">'+card.cost+'<span class="sprite credits"></span></span>';
 	type += '</p>';
+	if(card.strength != null) type += '<p>Strength <b>'+card.strength+'</b></p>';
 	$(this).qtip({
 		content: {
 			text: '<h4>'+card.title+'</h4>'+type+text_format(card.text)

@@ -60,9 +60,7 @@ var promise2 = $.ajax("/api/search/d:r|c?jsonp=parseCards&_locale="+Locale);
   </head>
   <body>
   <svg width="90%" height="90%" viewBox="-10 -30 120 140" xmlns="http://www.w3.org/2000/svg" id="svg" style="position:absolute;z-index:-10">
-   <polygon id="hexagon" stroke-width="10" class="{% block hexagon %}{% if app.user %}{{ app.user.faction }}{% endif %}{% endblock %}" stroke="dodgerblue" stroke-opacity="0" fill="none" points="100 0 50 -86.6 -50 -86.6 -100 0 -50 86.6 50 86.6">
-   <animate attributeName="stroke-opacity" attributeType="XML" from="0" to="0.12" begin="0s" dur="10s" fill="freeze"/>
-   <animateTransform attributeType="XML" attributeName="transform" type="rotate" from="0" to="60" begin="10s" dur="200s" fill="freeze" repeatCount="indefinite"/>
+   <polygon id="hexagon" transform="rotate({{ "now"|date("s") }})" stroke-width="10" class="{% block hexagon %}{% if app.user %}{{ app.user.faction }}{% endif %}{% endblock %}" stroke="dodgerblue" stroke-opacity="0.1" fill="none" points="100 0 50 -86.6 -50 -86.6 -100 0 -50 86.6 50 86.6">
    </polygon>
   </svg>
   <div id="wrapper">
