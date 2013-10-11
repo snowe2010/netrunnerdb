@@ -44,10 +44,6 @@ h1,h2,h3,h4,h5,h6{font-family:exoregular,sans-serif}
 .subroutine{background-position:0 -90px;width:12px}
 .trash{background-position:0 -108px;width:17px}
 .unique{background-position:0 -126px;width:7px}
-@media only screen and (-webkit-min-device-pixel-ratio:2),only screen and (min-device-pixel-ratio:2){.sprite{background-image:url('{{ asset('/web/bundles/netrunnerdbcards/images/sprites@2x.png') }
-}
-');background-size:22px 144px}
-}
 div.card-text{font-size:14px;font-family:"Palatino Linotype",Palatino,"URW Palladio L",serif;border-left:1px solid #888}
 div.card-text sup{line-height:0;font-size:x-small}
 div.card-text p{margin:6px}
