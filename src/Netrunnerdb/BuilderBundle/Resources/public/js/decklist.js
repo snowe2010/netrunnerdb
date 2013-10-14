@@ -27,6 +27,7 @@ $(function() {
 	when_all_parsed();
 	$.when(promise1, promise2).done(when_all_parsed);
 	$('#decklist-social-icons>a').tooltip();
+	$('#decklist-edit').on('click', edit_form);
 	$('#decklist-social-icon-like').on('click', send_like);
 	$('#decklist-social-icon-favorite').on('click', send_favorite);
 	$('#decklist-social-icon-comment').on('click', function () { $('#comment-form-text').trigger('focus'); });
@@ -40,6 +41,10 @@ $(function() {
 		click: do_action_decklist
 	}, 'button[id],a[id]');
 });
+
+function edit_form() {
+	$('#editModal').modal('show');
+}
 
 function do_action_decklist(event) {
 	var action_id = $(this).attr('id');

@@ -187,9 +187,11 @@ decklist_comment:
         _controller: NetrunnerdbBuilderBundle:Social:comment
     methods: [POST]
 
-
-
-
+decklist_edit:
+    pattern: /decklist/edit/{decklist_id}
+    defaults:
+        _controller: NetrunnerdbBuilderBundle:Social:edit
+    methods: [POST]
 
 user_favorites:
     pattern: /user/favorites

@@ -890,4 +890,33 @@ class SocialController extends Controller {
 								'url' => $this->getRequest()->getRequestUri()));
 	}
 
+	public function editAction($decklist_id)
+	{
+		$user = $this->getUser();
+		if(!$user) throw new UnauthorizedHttpException(
+				"You must be logged in for this operation.");
+		
+		$em = $this->get('doctrine')->getManager();
+		$decklist = $em->getRepository('NetrunnerdbBuilderBundle:Decklist')->find($decklist_id);
+		if(!$decklist || $decklist->getUser()->getId() != $user->getId()) throw new UnauthorizedHttpException(
+				"You don't have access to this decklist.");
+		
+		$request = $this->get('request');
+		$name = trim(filter_var($request->request->get('name'),
+				FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES));
+		$description = trim(filter_var($request->request->get('description'),
+				FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES));
+		
+		$decklist->setName($name);
+		$decklist->setDescription($description);
+		$em->flush();
+		
+		return $this
+		->redirect(
+				$this
+				->generateUrl('decklist_detail',
+						array('decklist_id' => $decklist_id,
+								'decklist_name' => $decklist
+								->getPrettyName())));
+	}
 }
