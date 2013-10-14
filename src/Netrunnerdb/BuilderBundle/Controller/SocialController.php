@@ -601,18 +601,20 @@ class SocialController extends Controller {
 				->getRepository('NetrunnerdbBuilderBundle:Decklist')
 				->find($decklist_id);
 
-		$comment_text = filter_var($request->get('comment'),
-				FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
-		$comment_html = Markdown::defaultTransform($comment_text);
-
-		$comment = new Comment();
-		$comment->setText($comment_html);
-		$comment->setCreation(new DateTime());
-		$comment->setAuthor($user);
-		$comment->setDecklist($decklist);
-
-		$this->get('doctrine')->getManager()->persist($comment);
-		$this->get('doctrine')->getManager()->flush();
+		$comment_text = trim(filter_var($request->get('comment'),
+				FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES));
+		if(!empty($comment_text)) {
+			$comment_html = Markdown::defaultTransform($comment_text);
+			
+			$comment = new Comment();
+			$comment->setText($comment_html);
+			$comment->setCreation(new DateTime());
+			$comment->setAuthor($user);
+			$comment->setDecklist($decklist);
+			
+			$this->get('doctrine')->getManager()->persist($comment);
+			$this->get('doctrine')->getManager()->flush();
+		}
 
 		return $this
 				->redirect(
