@@ -105,20 +105,22 @@ var promise2 = $.ajax("/api/search/d:r|c?jsonp=parseCards&_locale="+Locale);
     <div id="footer">
     <div class="container">
     
-    <p>
-    Designed and built by <a href="//twitter.com/alsciende">@alsciende</a>
-    </p>
-    <ul class="list-inline">
-    <li><a href="{{ path('netrunnerdb_netrunner_cards_about') }}">About</a></li>
-    <li><a href="{{ path('netrunnerdb_netrunner_cards_api') }}">API</a></li>
-    <li><a href="{{ path('netrunnerdb_netrunner_cards_changelog') }}">Changelog</a></li>
-    <li><a href="javascript:localStorage.clear()">Clear data</a></li>
-    </ul>
-    <ul class="list-inline">
+    <ul class="list-inline pull-right">
     {% if locales is defined %}
 	{{ locales|raw }}
 	{% endif %}
     </ul>
+    <ul class="list-inline">
+    <li><a href="{{ path('netrunnerdb_netrunner_cards_about') }}">About</a></li>
+    <li><a href="{{ path('netrunnerdb_netrunner_cards_api') }}">API</a></li>
+    <li><a href="javascript:localStorage.clear()">Clear data</a></li>
+    </ul>
+    <p>
+    Designed and built by <a href="//twitter.com/alsciende">@alsciende</a>
+    </p>
+    <p>
+    Source code, Bug reports, Feature Requests and Changelog on <a href="https://github.com/Alsciende/netrunnerdb">GitHub</a>
+    </p>
     </div>
     </div>
   </body>
