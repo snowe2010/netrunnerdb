@@ -125,12 +125,12 @@ class SocialController extends Controller {
 		/* @var $dbh \Doctrine\DBAL\Driver\PDOConnection */
 		$dbh = $this->get('doctrine')->getConnection();
 		/* @var $stmt \Doctrine\DBAL\Driver\PDOStatement */ 
-		$stmt = $dbh->prepare("SELECT
+		$count = $dbh->executeQuery("SELECT
 				count(*)
-				from decklist d");
-		$stmt->execute();
-		$count = $stmt->fetch(\PDO::FETCH_NUM);
-		
+				from decklist d
+				join favorite f on f.decklist_id=d.id
+				where f.user_id=?", array($this->getUser()->getId()))->fetch(\PDO::FETCH_NUM);
+
 		$rows = $dbh
 				->executeQuery(
 						"SELECT
@@ -166,11 +166,10 @@ class SocialController extends Controller {
 		/* @var $dbh \Doctrine\DBAL\Driver\PDOConnection */
 		$dbh = $this->get('doctrine')->getConnection();
 		/* @var $stmt \Doctrine\DBAL\Driver\PDOStatement */ 
-		$stmt = $dbh->prepare("SELECT
+		$count = $dbh->executeQuery("SELECT
 				count(*)
-				from decklist d");
-		$stmt->execute();
-		$count = $stmt->fetch(\PDO::FETCH_NUM);
+				from decklist d
+				where d.user_id=?", array($this->getUser()->getId()))->fetch(\PDO::FETCH_NUM);
 		
 		$rows = $dbh
 				->executeQuery(
