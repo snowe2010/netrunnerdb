@@ -65,5 +65,10 @@ function send_favorite() {
 	var obj = $(this);
 	$.post(Url_Favorite, { id: Decklist.id }, function (data, textStatus, jqXHR) {
 		obj.find('.num').text(data);
+		var title = obj.data('original-tooltip');
+		obj.tooltip('destroy');
+		obj.data('original-tooltip', title == "Add to favorites" ? "Remove from favorites" : "Add to favorites");
+		obj.attr('title', obj.data('original-tooltip'));
+		obj.tooltip('show');
 	});
 }

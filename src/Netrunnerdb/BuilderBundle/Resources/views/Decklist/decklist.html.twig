@@ -27,7 +27,7 @@ var CardDB = null,
 <div class="decklist-social">
 <div class="pull-right" id="decklist-social-icons">
 <span>published {{ decklist.creation|date('M d') }}</span>
-{% if app.user and app.user.id != decklist.user_id %}
+{% if app.user and not is_author %}
 | <a id="decklist-social-icon-like" href="#" class="social-icon-like" data-toggle="tooltip" data-placement="bottom" title="Like">
 	<span class="glyphicon glyphicon-heart"></span> <span class="num">{{ decklist.nbvotes }}</span>
 </a>
