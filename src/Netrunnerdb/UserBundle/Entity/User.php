@@ -352,6 +352,21 @@ class User extends BaseUser
     
     	return $this;
     }
+
+    /**
+     * Remove from favorites
+     *
+     * @param Decklist $favorites
+     * @return User
+     */
+    public function removeFavorite($decklist)
+    {
+    	$decklist->removeFavorite($this);
+    	$this->favorites->removeElement($decklist);
+    	
+    	return $this;
+    }
+    
     
     /**
      * Get favorites

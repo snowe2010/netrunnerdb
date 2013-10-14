@@ -129,7 +129,7 @@ class SocialController extends Controller {
 				count(*)
 				from decklist d
 				join favorite f on f.decklist_id=d.id
-				where f.user_id=?", array($this->getUser()->getId()))->fetch(\PDO::FETCH_NUM);
+				where f.user_id=?", array($this->getUser()->getId()))->fetch(\PDO::FETCH_NUM)[0];
 
 		$rows = $dbh
 				->executeQuery(
@@ -152,7 +152,7 @@ class SocialController extends Controller {
 					order by creation desc
 					limit $start, $limit", array($this->getUser()->getId()))->fetchAll(\PDO::FETCH_ASSOC);
 		
-		return array("count" => $count[0], "decklists" => $rows);
+		return array("count" => $count, "decklists" => $rows);
 	}
 
 	/**
@@ -169,7 +169,7 @@ class SocialController extends Controller {
 		$count = $dbh->executeQuery("SELECT
 				count(*)
 				from decklist d
-				where d.user_id=?", array($this->getUser()->getId()))->fetch(\PDO::FETCH_NUM);
+				where d.user_id=?", array($this->getUser()->getId()))->fetch(\PDO::FETCH_NUM)[0];
 		
 		$rows = $dbh
 				->executeQuery(
@@ -191,7 +191,7 @@ class SocialController extends Controller {
 					order by creation desc
 					limit $start, $limit", array($this->getUser()->getId()))->fetchAll(\PDO::FETCH_ASSOC);
 		
-		return array("count" => $count[0], "decklists" => $rows);
+		return array("count" => $count, "decklists" => $rows);
 	}
 
 	/**
@@ -545,6 +545,15 @@ class SocialController extends Controller {
 		$decklist['comments'] = $comments;
 		$decklist['cards'] = $cards;
 
+		$is_favorite = $dbh
+				->executeQuery(
+						"SELECT
+				count(*)
+				from decklist d
+				join favorite f on f.decklist_id=d.id
+				where f.user_id=?
+				and d.id=?", array($this->getUser()->getId(), $decklist_id))->fetch(\PDO::FETCH_NUM)[0];
+		
 		$similar_decklists = $this->findSimilarDecklists($decklist_id, 5);
 
 		return $this
@@ -555,13 +564,14 @@ class SocialController extends Controller {
 										->renderView(
 												'NetrunnerdbCardsBundle:Default:langs.html.twig'),
 								'decklist' => $decklist,
-								'similar' => $similar_decklists,));
+								'similar' => $similar_decklists,
+								'is_favorite' => !!$is_favorite));
 
 	}
 
 	public function favoriteAction() {
 		$user = $this->getUser();
-
+		
 		$request = $this->getRequest();
 		$decklist_id = filter_var($request->get('id'),
 				FILTER_SANITIZE_NUMBER_INT);
@@ -573,22 +583,29 @@ class SocialController extends Controller {
 		if (!$decklist)
 			throw new AccessDeniedException('Wrong id');
 
-		$query = $repo->createQueryBuilder('d')->innerJoin('d.favorites', 'u')
-				->where('d.id = :decklist_id')->andWhere('u.id = :user_id')
-				->setParameter('decklist_id', $decklist_id)
-				->setParameter('user_id', $user->getId())->getQuery();
-
-		$result = $query->getResult();
-		if (count($result))
-			goto FAVORITE_DONE;
-
-		$user->addFavorite($decklist);
 		$author = $decklist->getUser();
-		if ($author->getId() != $user->getId())
-			$author->setReputation($author->getReputation() + 5);
+		
+		$dbh = $this->get('doctrine')->getConnection();
+		$is_favorite = $dbh->executeQuery(
+				"SELECT
+				count(*)
+				from decklist d
+				join favorite f on f.decklist_id=d.id
+				where f.user_id=?
+				and d.id=?", array($user->getId(), $decklist_id))->fetch(\PDO::FETCH_NUM)[0];
+		
+		if ($is_favorite) {
+			$user->removeFavorite($decklist);
+			if ($author->getId() != $user->getId())
+				$author->setReputation($author->getReputation() - 5);
+		} else {
+			$user->addFavorite($decklist);
+			if ($author->getId() != $user->getId())
+				$author->setReputation($author->getReputation() + 5);
+		}
 		$this->get('doctrine')->getManager()->flush();
 
-		FAVORITE_DONE: return new Response(count($decklist->getFavorites()));
+		return new Response(count($decklist->getFavorites()));
 	}
 
 	public function commentAction() {
