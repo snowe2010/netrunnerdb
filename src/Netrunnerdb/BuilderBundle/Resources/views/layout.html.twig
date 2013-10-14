@@ -59,10 +59,6 @@ var promise2 = $.ajax("/api/search/d:r|c?jsonp=parseCards&_locale="+Locale);
 {% block head %}{% endblock %}
   </head>
   <body>
-  <svg width="90%" height="90%" viewBox="-10 -30 120 140" xmlns="http://www.w3.org/2000/svg" id="svg" style="position:absolute;z-index:-10">
-   <polygon id="hexagon" transform="rotate({{ "now"|date("s") }})" stroke-width="10" class="{% block hexagon %}{% if app.user %}{{ app.user.faction }}{% endif %}{% endblock %}" stroke="dodgerblue" stroke-opacity="0.1" fill="none" points="100 0 50 -86.6 -50 -86.6 -100 0 -50 86.6 50 86.6">
-   </polygon>
-  </svg>
   <div id="wrapper">
       <nav class="navbar navbar-inverse navbar-static-top" role="navigation">
       <div class="container">
