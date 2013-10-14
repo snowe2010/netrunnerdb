@@ -271,14 +271,13 @@ function export_bbcode() {
 			} else {
 				var count = deck[type].reduce(function (prev, curr) { return prev + curr.qty; }, 0);
 				lines.push("[b]"+type+"[/b] ("+count+")");
-				lines.push("[list]");
 				$.each(deck[type], function (n, slot) {
 					var inf = "";
 					for(var i=0; i<slot.influence; i++) {
 						if(i%5==0) inf += " ";
 						inf+="•";
 					}
-					lines.push('[*]'+ slot.qty + 'x [url=http://netrunnerdb.com/'+Locale+'/card/'
+					lines.push(slot.qty + 'x [url=http://netrunnerdb.com/'+Locale+'/card/'
 					 + slot.card.indexkey
 					 + ']'
 					 + slot.card.title
@@ -288,11 +287,10 @@ function export_bbcode() {
 					 + ( slot.influence ? '[color=' + colors[slot.faction] + ']' + inf + '[/color]' : '' )
 					);
 				});
-				lines.push("[/list]");
+				lines.push("");
 			}
 		}
 	});
-	lines.push("");
 	if(typeof Decklist != "undefined" && Decklist != null) {
 		lines.push("Decklist [url="+location.href+"]published on NetrunnerDB[/url].");
 	} else {
