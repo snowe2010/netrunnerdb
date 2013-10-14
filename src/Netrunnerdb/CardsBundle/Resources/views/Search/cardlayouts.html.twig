@@ -1,8 +1,8 @@
 {% macro with_scan(card) %}
-<div class="row card panel panel-default">
+<div class="row panel panel-default">
 <div class="panel-body">
-	<div class="card-image col-sm-3"><img src="{{ card.imagesrc }}" class="img-responsive"></div>
-	<div class="card-info col-sm-9">
+	<div class="card-image col-sm-4"><img src="{{ card.imagesrc }}" class="img-responsive"></div>
+	<div class="card-info col-sm-8">
 		<h3 class="card-title">
 			{% if card.uniqueness == true %}&diams;{% endif %}
 			<a href="{{ card.url }}" class="card-title{% if card.available == false %} card-preview{% endif %}">{{ card.title }}</a>
