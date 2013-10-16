@@ -465,6 +465,8 @@ class User extends BaseUser
        	$this->followers = new ArrayCollection();
        	$this->reputation = 1;
        	$this->faction = 'neutral';
+       	$this->creation = new \DateTime();
+       	
        	parent::__construct();
     }
 }
