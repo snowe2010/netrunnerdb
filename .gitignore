@@ -9,3 +9,4 @@
 /composer.phar
 /src/Netrunnerdb/CardsBundle/Resources/public/images/cards/
 .DS_Store
+.settings/
