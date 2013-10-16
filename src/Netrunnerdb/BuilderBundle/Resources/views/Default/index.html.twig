@@ -34,7 +34,7 @@
 	</h4>
 	<h5 class="username author">
 		<span class="pull-right decklist-creation">{{ decklist.creation|date('M d') }}</span>
-		<span class="{{ decklist.usercolor }}">{{ decklist.username }}</span>
+		<a href="{{ path('user_profile_view', {user_id:decklist.user_id,user_name:decklist.username}) }}" class="{{ decklist.usercolor }}">{{ decklist.username }}</a>
 		<small class="reputation">{{ decklist.reputation }}</small>
 		
 	</h5>
@@ -64,7 +64,7 @@
 	</h4>
 	<h5 class="username author">
 		<span class="pull-right decklist-creation">{{ decklist.creation|date('M d') }}</span>
-		<span class="{{ decklist.usercolor }}">{{ decklist.username }}</span>
+		<a href="{{ path('user_profile_view', {user_id:decklist.user_id,user_name:decklist.username}) }}" class="{{ decklist.usercolor }}">{{ decklist.username }}</a>
 		<small class="reputation">{{ decklist.reputation }}</small>
 		
 	</h5>

@@ -41,8 +41,8 @@ function parseCards(cards_data) {
 	console.log('parseCards: IsModified '+IsModified);
 	localStorage.setItem("cards_data_"+Locale, json);
 }
-var promise1 = $.ajax("/api/sets/?jsonp=parseSets&_locale="+Locale);
-var promise2 = $.ajax("/api/search/d:r|c?jsonp=parseCards&_locale="+Locale);
+var promise1 = $.ajax("{{ path('api_sets') }}?jsonp=parseSets&_locale="+Locale);
+var promise2 = $.ajax("{{ path('api_search', {query:'d:r|c'}) }}?jsonp=parseCards&_locale="+Locale);
 
 {% if app.environment == 'prod' %}
   var _gaq = _gaq || [];
@@ -83,11 +83,11 @@ var promise2 = $.ajax("/api/search/d:r|c?jsonp=parseCards&_locale="+Locale);
               <a href="#" class="dropdown-toggle {{ app.user.faction }} loginname" data-toggle="dropdown">{{ app.user.username }} <b class="caret"></b></a>
               <ul class="dropdown-menu">
                 <li><a href="{{ path('user_profile') }}">Profile page</a></li>
-                <li><a href="/logout">Jack out</a></li>
+                <li><a href="{{ path('fos_user_security_logout') }}">Jack out</a></li>
               </ul>
             </li>
           {% else %}
-            <li><a href="/login">Login</a></li>
+            <li><a href="{{ path('fos_user_security_login') }}">Login</a></li>
           {% endif %}
           </ul>
           <form class="navbar-form navbar-right" action="/find/">

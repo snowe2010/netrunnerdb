@@ -8,6 +8,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Netrunnerdb\BuilderBundle\Entity\Deck;
 use Netrunnerdb\BuilderBundle\Entity\Deckslot;
 use Netrunnerdb\BuilderBundle\Entity\Decklist;
@@ -137,6 +138,7 @@ class SocialController extends Controller {
 					d.id,
 					d.name,
 					d.creation,
+					d.user_id,
 					u.username,
 					u.faction usercolor,
 					u.reputation,
@@ -159,9 +161,7 @@ class SocialController extends Controller {
 	 * @param integer $limit
 	 * @return \Doctrine\DBAL\Driver\PDOStatement
 	 */
-	public function mine($start = 0, $limit = 30) {
-		if (!$this->getUser())
-			return array();
+	public function by_author($user_id, $start = 0, $limit = 30) {
 		
 		/* @var $dbh \Doctrine\DBAL\Driver\PDOConnection */
 		$dbh = $this->get('doctrine')->getConnection();
@@ -169,7 +169,7 @@ class SocialController extends Controller {
 		$count = $dbh->executeQuery("SELECT
 				count(*)
 				from decklist d
-				where d.user_id=?", array($this->getUser()->getId()))->fetch(\PDO::FETCH_NUM)[0];
+				where d.user_id=?", array($user_id))->fetch(\PDO::FETCH_NUM)[0];
 		
 		$rows = $dbh
 				->executeQuery(
@@ -177,6 +177,7 @@ class SocialController extends Controller {
 					d.id,
 					d.name,
 					d.creation,
+					d.user_id,
 					u.username,
 					u.faction usercolor,
 					u.reputation,
@@ -189,7 +190,7 @@ class SocialController extends Controller {
 					join card c on d.identity_id=c.id
 					where d.user_id=? 
 					order by creation desc
-					limit $start, $limit", array($this->getUser()->getId()))->fetchAll(\PDO::FETCH_ASSOC);
+					limit $start, $limit", array($user_id))->fetchAll(\PDO::FETCH_ASSOC);
 		
 		return array("count" => $count, "decklists" => $rows);
 	}
@@ -214,6 +215,7 @@ class SocialController extends Controller {
 					d.id,
 					d.name,
 					d.creation,
+					d.user_id,
 					u.username,
 					u.faction usercolor,
 					u.reputation,
@@ -251,6 +253,7 @@ class SocialController extends Controller {
 				d.id,
 				d.name,
 				d.creation,
+				d.user_id,
 				u.username,
 				u.faction usercolor,
 				u.reputation,
@@ -290,6 +293,7 @@ class SocialController extends Controller {
 				d.id,
 				d.name,
 				d.creation,
+				d.user_id,
 				u.username,
 				u.faction usercolor,
 				u.reputation,
@@ -330,6 +334,7 @@ class SocialController extends Controller {
 				d.id,
 				d.name,
 				d.creation,
+				d.user_id,
 				u.username,
 				u.faction usercolor,
 				u.reputation,
@@ -366,6 +371,7 @@ class SocialController extends Controller {
 				d.id,
 				d.name,
 				d.creation,
+				d.user_id,
 				u.username,
 				u.faction usercolor,
 				u.reputation,
@@ -383,8 +389,8 @@ class SocialController extends Controller {
 	}
 	
 	public function listAction($type, $code = null, $page = 1) {
-		$start = ($page-1)*30;
 		$limit = 30;
+		$start = ($page-1)*$limit;
 		
 		switch ($type) {
 		case 'popular':
@@ -406,7 +412,10 @@ class SocialController extends Controller {
 			$result = $this->favorites($start, $limit);
 			break;
 		case 'mine':
-			$result = $this->mine($start, $limit);
+			if (!$this->getUser())
+				$result = array();
+			else
+				$result = $this->by_author($this->getUser()->getId(), $start, $limit);
 			break;
 		default:
 		}
@@ -524,6 +533,7 @@ class SocialController extends Controller {
 				->executeQuery(
 						"SELECT
 				c.creation,
+				c.user_id,
 				u.username author,
 				u.faction authorcolor,
 				c.text
@@ -864,7 +874,7 @@ class SocialController extends Controller {
 
 	public function indexAction() {
 
-		$decklists_popular = $this->popular(0, 3)['decklists'];
+		$decklists_popular = $this->popular(0, 5)['decklists'];
 
 		foreach ($decklists_popular as $i => $decklist) {
 			$decklists_popular[$i]['prettyname'] = preg_replace(
@@ -872,7 +882,7 @@ class SocialController extends Controller {
 					strtolower($decklists_popular[$i]['name']));
 		}
 
-		$decklists_recent = $this->recent(0, 3)['decklists'];
+		$decklists_recent = $this->recent(0, 5)['decklists'];
 
 		foreach ($decklists_recent as $i => $decklist) {
 			$decklists_recent[$i]['prettyname'] = preg_replace('/[^a-z0-9]+/',
@@ -918,5 +928,58 @@ class SocialController extends Controller {
 						array('decklist_id' => $decklist_id,
 								'decklist_name' => $decklist
 								->getPrettyName())));
+	}
+	
+	public function profileAction($user_id, $user_name, $page)
+	{
+		$em = $this->get('doctrine')->getManager();
+		/* @var $user \Netrunnerdb\UserBundle\Entity\User */
+		$user = $em->getRepository('NetrunnerdbUserBundle:User')->find($user_id);
+		if(!$user) throw new NotFoundHttpException("No such user.");
+		
+		
+		$limit = 10;
+		$start = ($page-1)*$limit;
+		
+		$result = $this->by_author($user_id, $start, $limit);
+		
+		$decklists = $result['decklists'];
+		$maxcount = $result['count'];
+		$count = count($decklists);
+		
+		foreach ($decklists as $i => $decklist) {
+			$decklists[$i]['prettyname'] = preg_replace('/[^a-z0-9]+/', '-',
+					strtolower($decklists[$i]['name']));
+		}
+		
+		// pagination : calcul de nbpages // currpage // prevpage // nextpage
+		// à partir de $start, $limit, $count, $maxcount, $page
+		
+		$currpage = $page;
+		$prevpage = max(1, $currpage-1);
+		$nbpages = min(10, ceil($maxcount / $limit));
+		$nextpage = min($nbpages, $currpage+1);
+		
+		$route = $this->getRequest()->get('_route');
+		
+		$pages = array();
+		for($page=1; $page<=$nbpages; $page++) {
+			$pages[] = array(
+					"numero" => $page,
+					"url" => $this->generateUrl($route, array("user_id" => $user_id, "user_name" => $user_name, "page" => $page)),
+					"current" => $page == $currpage,
+			);
+		}
+		
+		return $this->render('NetrunnerdbBuilderBundle:Default:profile.html.twig', array(
+			'user' => $user,
+			'locales' => $this->renderView('NetrunnerdbCardsBundle:Default:langs.html.twig'),
+			'decklists' => $decklists,
+			'url' => $this->getRequest()->getRequestUri(),
+			'route' => $route,
+			'pages' => $pages,
+			'prevurl' => $currpage == 1 ? null : $this->generateUrl($route, array("user_id" => $user_id, "user_name" => $user_name, "page" => $prevpage)),
+			'nexturl' => $currpage == $nbpages ? null : $this->generateUrl($route, array("user_id" => $user_id, "user_name" => $user_name, "page" => $nextpage))
+		));
 	}
 }

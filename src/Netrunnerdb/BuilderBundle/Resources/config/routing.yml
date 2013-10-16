@@ -227,3 +227,12 @@ user_profile_save:
     requirements:
         _locale: en|fr|de|es|it|pl
     
+user_profile_view:
+    pattern: /{_locale}/profile/{user_id}/{user_name}/{page}
+    defaults:
+        _controller: NetrunnerdbBuilderBundle:Social:profile
+        page: 1
+    requirements:
+        _locale: en|fr|de|es|it|pl
+    
+        
