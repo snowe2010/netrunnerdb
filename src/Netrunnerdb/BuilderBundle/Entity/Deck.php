@@ -87,6 +87,8 @@ class Deck
     public function __construct()
     {
         $this->slots = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->descendants = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->children = new \Doctrine\Common\Collections\ArrayCollection();
     }
     
     /**
@@ -437,9 +439,77 @@ class Deck
     {
     	return $this->message;
     }
+    
     public function setMessage($message)
     {
     	$this->message = $message;
     	return $this;
+    }
+    
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $children;
+
+    /**
+     * @var \Netrunnerdb\BuilderBundle\Entity\Decklist
+     */
+    private $parent;
+
+
+    /**
+     * Add children
+     *
+     * @param \Netrunnerdb\BuilderBundle\Entity\Decklist $children
+     * @return Deck
+     */
+    public function addChildren(\Netrunnerdb\BuilderBundle\Entity\Decklist $children)
+    {
+        $this->children[] = $children;
+    
+        return $this;
+    }
+
+    /**
+     * Remove children
+     *
+     * @param \Netrunnerdb\BuilderBundle\Entity\Decklist $children
+     */
+    public function removeChildren(\Netrunnerdb\BuilderBundle\Entity\Decklist $children)
+    {
+        $this->children->removeElement($children);
+    }
+
+    /**
+     * Get children
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getChildren()
+    {
+        return $this->children;
+    }
+
+    /**
+     * Set parent
+     *
+     * @param \Netrunnerdb\BuilderBundle\Entity\Decklist $parent
+     * @return Deck
+     */
+    public function setParent(\Netrunnerdb\BuilderBundle\Entity\Decklist $parent = null)
+    {
+        $this->parent = $parent;
+    
+        return $this;
+    }
+
+    /**
+     * Get parent
+     *
+     * @return \Netrunnerdb\BuilderBundle\Entity\Decklist 
+     */
+    public function getParent()
+    {
+        return $this->parent;
     }
 }

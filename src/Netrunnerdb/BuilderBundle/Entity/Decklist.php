@@ -524,4 +524,136 @@ class Decklist
     {
         $this->votes->removeElement($votes);
     }
+    /**
+     * @var \Netrunnerdb\BuilderBundle\Entity\Deck
+     */
+    private $parent;
+
+
+    /**
+     * Set parent
+     *
+     * @param \Netrunnerdb\BuilderBundle\Entity\Deck $parent
+     * @return Decklist
+     */
+    public function setParent(\Netrunnerdb\BuilderBundle\Entity\Deck $parent = null)
+    {
+        $this->parent = $parent;
+    
+        return $this;
+    }
+
+    /**
+     * Get parent
+     *
+     * @return \Netrunnerdb\BuilderBundle\Entity\Deck 
+     */
+    public function getParent()
+    {
+        return $this->parent;
+    }
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $successors;
+
+    /**
+     * @var \Netrunnerdb\BuilderBundle\Entity\Decklist
+     */
+    private $precedent;
+
+
+    /**
+     * Add successors
+     *
+     * @param \Netrunnerdb\BuilderBundle\Entity\Decklist $successors
+     * @return Decklist
+     */
+    public function addSuccessor(\Netrunnerdb\BuilderBundle\Entity\Decklist $successors)
+    {
+        $this->successors[] = $successors;
+    
+        return $this;
+    }
+
+    /**
+     * Remove successors
+     *
+     * @param \Netrunnerdb\BuilderBundle\Entity\Decklist $successors
+     */
+    public function removeSuccessor(\Netrunnerdb\BuilderBundle\Entity\Decklist $successors)
+    {
+        $this->successors->removeElement($successors);
+    }
+
+    /**
+     * Get successors
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getSuccessors()
+    {
+        return $this->successors;
+    }
+
+    /**
+     * Set precedent
+     *
+     * @param \Netrunnerdb\BuilderBundle\Entity\Decklist $precedent
+     * @return Decklist
+     */
+    public function setPrecedent(\Netrunnerdb\BuilderBundle\Entity\Decklist $precedent = null)
+    {
+        $this->precedent = $precedent;
+    
+        return $this;
+    }
+
+    /**
+     * Get precedent
+     *
+     * @return \Netrunnerdb\BuilderBundle\Entity\Decklist 
+     */
+    public function getPrecedent()
+    {
+        return $this->precedent;
+    }
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $children;
+
+
+    /**
+     * Add children
+     *
+     * @param \Netrunnerdb\BuilderBundle\Entity\Deck $children
+     * @return Decklist
+     */
+    public function addChildren(\Netrunnerdb\BuilderBundle\Entity\Deck $children)
+    {
+        $this->children[] = $children;
+    
+        return $this;
+    }
+
+    /**
+     * Remove children
+     *
+     * @param \Netrunnerdb\BuilderBundle\Entity\Deck $children
+     */
+    public function removeChildren(\Netrunnerdb\BuilderBundle\Entity\Deck $children)
+    {
+        $this->children->removeElement($children);
+    }
+
+    /**
+     * Get children
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getChildren()
+    {
+        return $this->children;
+    }
 }

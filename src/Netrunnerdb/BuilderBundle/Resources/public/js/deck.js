@@ -108,7 +108,7 @@ $(function() {
 	
 	
 	$('#btn-save-as-copy').on('click', function (event) {
-	  $('#deck-save-id').val('');
+	  $('#deck-save-as-copy').val(1);
 	});
 	$('#collection').on({
 		change: function (event) {

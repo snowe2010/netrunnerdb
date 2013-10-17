@@ -77,6 +77,7 @@ var CardDB = null,
 			<div class="panel-body">
 				<form method="POST" action="{{ path('deck_save') }}" id="save_form" role="form">
 					<input type="hidden" id="deck-save-id" name="id" value="{{ deck.id }}">
+					<input type="hidden" id="deck-save-as-copy" name="copy" value="0">
 					<input type="hidden" name="content">
 					<div class="form-group">
 						<label for="name">Name</label>

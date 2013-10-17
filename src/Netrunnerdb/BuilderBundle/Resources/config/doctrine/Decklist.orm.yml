@@ -38,6 +38,20 @@ Netrunnerdb\BuilderBundle\Entity\Decklist:
             joinColumn:
                 name: last_pack_id
                 referencedColumnName: id
+        parent:
+            targetEntity: Deck
+            nullable: true
+            inversedBy: children
+            joinColumn:
+                name: parent_deck_id
+                referencedColumnName: id
+        precedent:
+            targetEntity: Decklist
+            nullable: true
+            inversedBy: successors
+            joinColumn:
+                name: precedent_decklist_id
+                referencedColumnName: id
     oneToMany:
         slots:
             targetEntity: Decklistslot
@@ -47,6 +61,12 @@ Netrunnerdb\BuilderBundle\Entity\Decklist:
             targetEntity: Comment
             mappedBy: decklist
             cascade: ["persist"]
+        successors:
+            targetEntity: Decklist
+            mappedBy: precedent
+        children:
+            targetEntity: Deck
+            mappedBy: parent
     manyToMany:
         favorites:
             targetEntity: Netrunnerdb\UserBundle\Entity\User

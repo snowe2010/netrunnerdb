@@ -250,8 +250,10 @@ class BuilderController extends Controller
 		
 		$judge = $this->get('judge');
 		$request = $this->getRequest();
+		$is_copy = (boolean) filter_var($request->get('copy'), FILTER_SANITIZE_NUMBER_INT);
 		$name = filter_var($request->get('name'), FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
 		$id = filter_var($request->get('id'), FILTER_SANITIZE_NUMBER_INT);
+		$decklist_id = filter_var($request->get('decklist_id'), FILTER_SANITIZE_NUMBER_INT);
 		$description = filter_var($request->get('description'), FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
 		$content = (array) json_decode($request->get('content'));
 		if (!count($content))
@@ -261,6 +263,10 @@ class BuilderController extends Controller
 
 		$em = $this->getDoctrine()->getManager();
 
+		if($is_copy && $id) {
+			$id = null;
+		}
+		
 		if ($id) {
 			$deck = $this->getDoctrine()->getRepository('NetrunnerdbBuilderBundle:Deck')->find($id);
 			if ($user->getId() != $deck->getUser()->getId())
@@ -271,6 +277,10 @@ class BuilderController extends Controller
 			}
 		} else {
 			$deck = new Deck;
+		}
+		if($decklist_id) {
+			$decklist = $this->getDoctrine()->getRepository('NetrunnerdbBuilderBundle:Decklist')->find($decklist_id);
+			if($decklist) $deck->setParent($decklist);
 		}
 		$deck->setName($name);
 		$deck->setDescription($description);
@@ -333,7 +343,9 @@ class BuilderController extends Controller
 
 		if (!$id)
 			$em->persist($deck);
+		
 		$em->flush();
+		
 		return $this->redirect($this->generateUrl('decks_list'));
 
 	}
@@ -349,6 +361,9 @@ class BuilderController extends Controller
 		if ($this->getUser()->getId() != $deck->getUser()->getId())
 			throw new UnauthorizedHttpException("You don't have access to this deck.");
 
+		foreach($deck->getChildren() as $decklist) {
+			$decklist->setParent(null);
+		}
 		$em->remove($deck);
 		$em->flush();
 
@@ -460,6 +475,6 @@ class BuilderController extends Controller
 		foreach($decklist->getSlots() as $slot) {
 			$content[$slot->getCard()->getCode()] = $slot->getQuantity();
 		}
-		return $this->forward('NetrunnerdbBuilderBundle:Builder:save', array('name' => $decklist->getName(), 'content' => json_encode($content)));
+		return $this->forward('NetrunnerdbBuilderBundle:Builder:save', array('name' => $decklist->getName(), 'content' => json_encode($content), 'decklist_id' => $decklist_id));
 	}
 }

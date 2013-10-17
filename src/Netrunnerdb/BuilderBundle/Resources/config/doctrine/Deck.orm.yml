@@ -29,11 +29,22 @@ Netrunnerdb\BuilderBundle\Entity\Deck:
             joinColumn:
                 name: last_pack_id
                 referencedColumnName: id
+        parent:
+            targetEntity: Decklist
+            nullable: true
+            inversedBy: children
+            joinColumn:
+                name: parent_decklist_id
+                referencedColumnName: id
     oneToMany:
         slots:
             targetEntity: Deckslot
             mappedBy: deck
             cascade: ["persist","remove"]
+        children:
+            orderBy: { 'creation': 'DESC' }
+            targetEntity: Decklist
+            mappedBy: parent
     fields:
         id:
             type: integer

@@ -18,6 +18,9 @@ use Netrunnerdb\UserBundle\Entity\User;
 use \Michelf\Markdown;
 
 class SocialController extends Controller {
+	/*
+	 * checks to see if a deck can be published in its current saved state
+	 */
 	public function publishAction($deck_id) {
 		$request = $this->getRequest();
 		$deck = $this->getDoctrine()
@@ -49,6 +52,9 @@ class SocialController extends Controller {
 		return new Response('OK');
 	}
 
+	/*
+	 * creates a new decklist from a deck (publish action)
+	 */
 	public function newAction() {
 		$request = $this->getRequest();
 		$deck_id = filter_var($request->request->get('deck_id'),
@@ -102,6 +108,12 @@ class SocialController extends Controller {
 			$decklistslot->setDecklist($decklist);
 			$decklist->getSlots()->add($decklistslot);
 		}
+		if(count($deck->getChildren())) {
+			$decklist->setPrecedent($deck->getChildren()[0]);
+		} else if($deck->getParent()) {
+			$decklist->setPrecedent($deck->getParent());
+		}
+		$decklist->setParent($deck);
 
 		$em = $this->getDoctrine()->getManager();
 		$em->persist($decklist);
@@ -119,6 +131,10 @@ class SocialController extends Controller {
 
 	}
 
+	/**
+	 * @param integer $limit
+	 * @return \Doctrine\DBAL\Driver\PDOStatement
+	 */
 	public function favorites($start = 0, $limit = 30) {
 		if (!$this->getUser())
 			return array();
@@ -388,6 +404,9 @@ class SocialController extends Controller {
 		return array("count" => $count[0], "decklists" => $rows);
 	}
 	
+	/*
+	 * displays the lists of decklists
+	 */
 	public function listAction($type, $code = null, $page = 1) {
 		$limit = 30;
 		$start = ($page-1)*$limit;
@@ -500,6 +519,9 @@ class SocialController extends Controller {
 
 	}
 
+	/*
+	 * displays the content of a decklist along with comments, siblings, similar, etc.
+	 */
 	public function viewAction($decklist_id, $decklist_name) {
 		$dbh = $this->get('doctrine')->getConnection();
 		$rows = $dbh
@@ -582,6 +604,9 @@ class SocialController extends Controller {
 
 	}
 
+	/*
+	 * adds a decklist to a user's list of favorites
+	 */
 	public function favoriteAction() {
 		$user = $this->getUser();
 		
@@ -621,6 +646,9 @@ class SocialController extends Controller {
 		return new Response(count($decklist->getFavorites()));
 	}
 
+	/*
+	 * records a user's comment
+	 */
 	public function commentAction() {
 		$user = $this->getUser();
 		$request = $this->getRequest();
@@ -655,6 +683,9 @@ class SocialController extends Controller {
 														->getPrettyName())));
 	}
 
+	/*
+	 * records a user's vote
+	 */
 	public function voteAction() {
 		$user = $this->getUser();
 		$request = $this->getRequest();
@@ -682,6 +713,9 @@ class SocialController extends Controller {
 		VOTE_DONE: return new Response(count($decklist->getVotes()));
 	}
 
+	/*
+	 * returns an ordered list of decklists similar to the one given
+	 */
 	public function findSimilarDecklists($decklist_id, $number) {
 		$dbh = $this->get('doctrine')->getConnection();
 
@@ -741,6 +775,9 @@ class SocialController extends Controller {
 		return $arr;
 	}
 
+	/*
+	 * (unused) adds a user to a user's list of follows
+	 */
 	public function followAction() {
 		$em = $this->get('doctrine')->getManager();
 		$request = $this->getRequest();
@@ -753,6 +790,9 @@ class SocialController extends Controller {
 		return $this->forward('NetrunnerdbBuilderBundle:Social:following');
 	}
 
+	/*
+	 * (unused) displays the list of a user's follows
+	 */
 	public function followingAction() {
 		$user = $this->getUser();
 		$following = $user->getFollowing()->toArray();
@@ -773,6 +813,9 @@ class SocialController extends Controller {
 
 	}
 
+	/*
+	 * returns a text file with the content of a decklist
+	 */
 	public function textexportAction($decklist_id) {
 		$em = $this->getDoctrine()->getManager();
 
@@ -827,6 +870,9 @@ class SocialController extends Controller {
 		return $response;
 	}
 
+	/*
+	 * returns a octgn file with the content of a decklist
+	 */
 	public function octgnexportAction($decklist_id) {
 		$em = $this->getDoctrine()->getManager();
 
@@ -857,6 +903,9 @@ class SocialController extends Controller {
 		return $this->octgnexport("$name.o8d", $identity, $rd);
 	}
 
+	/*
+	 * does the "downloadable file" part of the export
+	 */
 	public function octgnexport($filename, $identity, $rd) {
 		$content = $this
 				->renderView('NetrunnerdbBuilderBundle::octgn.xml.twig',
@@ -872,6 +921,9 @@ class SocialController extends Controller {
 		return $response;
 	}
 
+	/*
+	 * displays the main page
+	 */
 	public function indexAction() {
 
 		$decklists_popular = $this->popular(0, 5)['decklists'];
@@ -900,6 +952,9 @@ class SocialController extends Controller {
 								'url' => $this->getRequest()->getRequestUri()));
 	}
 
+	/*
+	 * edits name and description of a decklist by its publisher
+	 */
 	public function editAction($decklist_id)
 	{
 		$user = $this->getUser();
@@ -930,6 +985,9 @@ class SocialController extends Controller {
 								->getPrettyName())));
 	}
 	
+	/*
+	 * displays details about a user and the list of decklists he published
+	 */
 	public function profileAction($user_id, $user_name, $page)
 	{
 		$em = $this->get('doctrine')->getManager();
