@@ -9,7 +9,9 @@ var CardDB = null,
 	Identity = null,
 	SelectedDeck = null,
 	Decks = {{ decks|json_encode|raw }}, 
-	DeckDB = TAFFY(Decks);
+	DeckDB = TAFFY(Decks),
+	Url_Edit = "{{ path('deck_edit', {deck_id:'xxx'}) }}",
+	Url_CanPublish = "{{ path('deck_publish', {deck_id:'xxx'}) }}";
 	
 </script>
 {% endblock %}
@@ -117,9 +119,9 @@ var CardDB = null,
 
 <div class="row">
 <div class="col-md-8">
-	<a href="/{{ app.request.locale }}/deck/new/corp" class="btn btn-default"><span class="glyphicon glyphicon-plus color-corp"></span> Corp</a>
-	<a href="/{{ app.request.locale }}/deck/new/runner" class="btn btn-default"><span class="glyphicon glyphicon-plus color-runner"></span> Runner</a>
-	<a href="/{{ app.request.locale }}/deck/import" class="btn btn-default"><span class="glyphicon glyphicon-import"></span> Import</a>
+	<a href="{{ path('deck_buildform', {side_text:'corp'}) }}" class="btn btn-default"><span class="glyphicon glyphicon-plus color-corp"></span> Corp</a>
+	<a href="{{ path('deck_buildform', {side_text:'runner'}) }}" class="btn btn-default"><span class="glyphicon glyphicon-plus color-runner"></span> Runner</a>
+	<a href="{{ path('deck_import') }}" class="btn btn-default"><span class="glyphicon glyphicon-import"></span> Import</a>
 	<button type="button" class="btn btn-default" onclick="$('#fileModal').modal('show')"><span class="glyphicon glyphicon-upload"></span> File</button>
 </div>
 <div class="col-md-4">
@@ -140,8 +142,6 @@ var CardDB = null,
 	<th>Name</th>
 	<th class="text-center">Faction</th>
 	<th class="hidden-xs">Identity</th>
-{#	<th class="hidden-xs">Size</th>
-	<th class="hidden-xs">Inf.</th>#}
 </tr>
 </thead>
 <tbody id="decks">
@@ -177,9 +177,9 @@ var CardDB = null,
   </div>
 </div>
 <div style="text-align:center">
-		<a href="/{{ app.request.locale }}/deck/new/corp" class="btn btn-default btn-lg"><span class="glyphicon glyphicon-plus color-corp"></span> Build Corp</a>
-		<a href="/{{ app.request.locale }}/deck/new/runner" class="btn btn-default btn-lg"><span class="glyphicon glyphicon-plus color-runner"></span> Build Runner</a>
-		<a href="/{{ app.request.locale }}/deck/import" class="btn btn-default btn-lg"><span class="glyphicon glyphicon-import"></span> Paste</a>
+		<a href="{{ path('deck_buildform', {side_text:'corp'}) }}" class="btn btn-default btn-lg"><span class="glyphicon glyphicon-plus color-corp"></span> Build Corp</a>
+		<a href="{{ path('deck_buildform', {side_text:'runner'}) }}" class="btn btn-default btn-lg"><span class="glyphicon glyphicon-plus color-runner"></span> Build Runner</a>
+		<a href="{{ path('deck_import') }}" class="btn btn-default btn-lg"><span class="glyphicon glyphicon-import"></span> Paste</a>
 		<button type="button" class="btn btn-default btn-lg" onclick="$('#fileModal').modal('show')"><span class="glyphicon glyphicon-upload"></span> Upload</button>
 </div>
 
@@ -196,7 +196,7 @@ var CardDB = null,
 			<div class="modal-body">
 				<div class="row">
 					<div class="col-md-12">
-						<form action="/{{ app.request.locale }}/deck/fileimport" method="POST" enctype="multipart/form-data">
+						<form action="{{ path('deck_fileimport') }}" method="POST" enctype="multipart/form-data">
 							<div class="form-group">
 								<label for="upfile">File</label>
 								<input class="form-control" type="file" name="upfile">
@@ -229,7 +229,7 @@ var CardDB = null,
 			<div class="modal-body">
 				<div class="row">
 					<div class="col-md-12">
-						<form action="/{{ app.request.locale }}/deck/delete" method="POST" enctype="multipart/form-data" id="delete-deck-form">
+						<form action="{{ path('deck_delete') }}" method="POST" enctype="multipart/form-data" id="delete-deck-form">
 							<input type="hidden" name="deck_id" id="delete-deck-id" value="">
 							<p>
 							Are you sure that you want to delete the deck <b id="delete-deck-name"></b>?

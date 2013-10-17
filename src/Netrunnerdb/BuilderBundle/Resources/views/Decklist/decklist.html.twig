@@ -13,7 +13,8 @@ var CardDB = null,
 	DeckDB = TAFFY([Decklist]),
 	SelectedDeck = DeckDB().first()
 	Url_Like = "{{ path('decklist_like') }}",
-	Url_Favorite = "{{ path('decklist_favorite') }}";
+	Url_Favorite = "{{ path('decklist_favorite') }}",
+	Url_Copy = "{{ path('deck_copy', {decklist_id:decklist.id}) }}";
 
 </script>
 {% endblock %}

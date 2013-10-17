@@ -45,7 +45,7 @@ function do_action_deck(event) {
 	var action_id = $(this).attr('id');
 	if(!action_id || !SelectedDeck) return;
 	switch(action_id) {
-		case 'btn-edit': location.href='/'+Locale+'/deck/edit/'+SelectedDeck.id; break;
+		case 'btn-edit': location.href=Url_Edit.replace('xxx', SelectedDeck.id); break;
 		case 'btn-publish': confirm_publish(); break;
 		case 'btn-delete': confirm_delete(); break;
 		//case 'btn-mail': confirm_mail(); break;
@@ -60,7 +60,7 @@ function do_action_deck(event) {
 function confirm_publish() {
 	$('#publish-form-alert').remove();
 	$('#btn-publish-submit').prop('disabled', true);
-	$.ajax("/deck/can_publish/"+SelectedDeck.id, {
+	$.ajax(Url_CanPublish.replace('xxx', SelectedDeck.id), {
 	  success: function() {
 	    $('#btn-publish-submit').prop('disabled', false);
 	  },

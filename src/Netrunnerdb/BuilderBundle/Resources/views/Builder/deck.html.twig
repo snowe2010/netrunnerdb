@@ -75,7 +75,7 @@ var CardDB = null,
 	<div class="col-sm-12">
 		<div class="panel panel-default">
 			<div class="panel-body">
-				<form method="POST" action="/{{ app.request.locale }}/deck/save" id="save_form" role="form">
+				<form method="POST" action="{{ path('deck_save') }}" id="save_form" role="form">
 					<input type="hidden" id="deck-save-id" name="id" value="{{ deck.id }}">
 					<input type="hidden" name="content">
 					<div class="form-group">

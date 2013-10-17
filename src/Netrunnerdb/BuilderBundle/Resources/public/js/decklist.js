@@ -50,7 +50,7 @@ function do_action_decklist(event) {
 	var action_id = $(this).attr('id');
 	if(!action_id || !SelectedDeck) return;
 	switch(action_id) {
-		case 'btn-copy': location.href='/'+Locale+'/deck/copy/'+SelectedDeck.id; break;
+		case 'btn-copy': location.href=Url_Copy; break;
 		case 'btn-download-text': location.href='/decklist/export/text/'+SelectedDeck.id; break;
 		case 'btn-download-octgn': location.href='/decklist/export/octgn/'+SelectedDeck.id; break;
 		case 'btn-export-bbcode': export_bbcode(); break;
