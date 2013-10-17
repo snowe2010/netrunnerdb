@@ -90,7 +90,7 @@ var promise2 = $.ajax("{{ path('api_search', {query:'d:r|c'}) }}?jsonp=parseCard
             <li><a href="{{ path('fos_user_security_login') }}">Login</a></li>
           {% endif %}
           </ul>
-          <form class="navbar-form navbar-right" action="/find/">
+          <form class="navbar-form navbar-right" action="{{ path('netrunnerdb_netrunner_cards_find') }}">
             <div class="form-group">
               <input type="text" placeholder="Card Search" class="form-control" name="q">
             </div>
@@ -104,23 +104,38 @@ var promise2 = $.ajax("{{ path('api_search', {query:'d:r|c'}) }}?jsonp=parseCard
   </div>
     <div id="footer">
     <div class="container">
-    
+    <div class="row">
     <ul class="list-inline pull-right">
     {% if locales is defined %}
 	{{ locales|raw }}
 	{% endif %}
     </ul>
+    
     <ul class="list-inline">
     <li><a href="{{ path('netrunnerdb_netrunner_cards_about') }}">About</a></li>
     <li><a href="{{ path('netrunnerdb_netrunner_cards_api') }}">API</a></li>
     <li><a href="javascript:localStorage.clear()">Clear data</a></li>
     </ul>
+    </div>
+    
+    <div class="row">
     <p>
     Designed and built by <a href="//twitter.com/alsciende">@alsciende</a>
     </p>
+    
+    </div>
+    <div class="row">
     <p>
     Source code, Bug reports, Feature Requests and Changelog on <a href="https://github.com/Alsciende/netrunnerdb">GitHub</a>
     </p>
+    
+    </div>
+    
+    <div class="row">
+    <p>
+    Contribute by giving money (as low as 25¢/wk) on <a href="https://www.gittip.com/alsciende/">Gittip</a>
+    </p>
+    </div>
     </div>
     </div>
   </body>
