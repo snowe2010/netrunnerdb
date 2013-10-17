@@ -531,6 +531,7 @@ class SocialController extends Controller {
 				d.name,
 				d.creation,
 				d.description,
+				d.precedent_decklist_id precedent,
 				u.id user_id,
 				u.username,
 				u.faction usercolor,
@@ -590,6 +591,37 @@ class SocialController extends Controller {
 		
 		$similar_decklists = $this->findSimilarDecklists($decklist_id, 5);
 
+		$precedent_decklists = $dbh->executeQuery(
+							"SELECT
+					d.id,
+					d.name,
+					(select count(*) from vote where decklist_id=d.id) nbvotes,
+					(select count(*) from favorite where decklist_id=d.id) nbfavorites,
+					(select count(*) from comment where decklist_id=d.id) nbcomments
+					from decklist d
+					where d.id=?
+					", array($decklist['precedent']))->fetchAll();
+
+		foreach($precedent_decklists as $i => $precedent) {
+			$precedent_decklists[$i]['prettyname'] = preg_replace('/[^a-z0-9]+/', '-',
+					strtolower($precedent['name']));
+		}
+
+		$successor_decklists = $dbh->executeQuery(
+				"SELECT
+					d.id,
+					d.name,
+					(select count(*) from vote where decklist_id=d.id) nbvotes,
+					(select count(*) from favorite where decklist_id=d.id) nbfavorites,
+					(select count(*) from comment where decklist_id=d.id) nbcomments
+					from decklist d
+					where d.precedent_decklist_id=?
+					", array($decklist_id))->fetchAll();
+		foreach($successor_decklists as $i => $successor) {
+			$successor_decklists[$i]['prettyname'] = preg_replace('/[^a-z0-9]+/', '-',
+					strtolower($successor['name']));
+		}
+		
 		return $this
 				->render(
 						'NetrunnerdbBuilderBundle:Decklist:decklist.html.twig',
@@ -600,7 +632,10 @@ class SocialController extends Controller {
 								'decklist' => $decklist,
 								'similar' => $similar_decklists,
 								'is_favorite' => $is_favorite,
-								'is_author' => $is_author));
+								'is_author' => $is_author,
+								'precedent_decklists' => $precedent_decklists,
+								'successor_decklists' => $successor_decklists,
+						));
 
 	}
 

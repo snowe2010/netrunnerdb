@@ -144,9 +144,52 @@ var CardDB = null,
 </div><!-- /#deck-content -->
 <!-- Deck Content -->
 
+
+<table class="table table-condensed" id="table-predecessor">
+<thead>
+<tr><th colspan="4"><span class="glyphicon glyphicon-backward"></span> Derived from</th></tr>
+</thead>
+<tbody>
+{% if precedent_decklists|length %}
+{% for decklist in precedent_decklists %}
+<tr>
+	<td><a href="{{ path('decklist_detail', { 'decklist_id': decklist.id, 'decklist_name': decklist.prettyname|e('url') }) }}">{{ decklist.name }}</a></td>
+	<td><span class="glyphicon glyphicon-heart social-icon-like"></span> {{ decklist.nbvotes }}</td>
+	<td><span class="glyphicon glyphicon-star social-icon-favorite"></span> {{ decklist.nbfavorites }}</td>
+	<td><span class="glyphicon glyphicon-comment social-icon-comment"></span> {{ decklist.nbcomments }}</td>
+</tr>
+{% endfor %}
+{% else %}
+<tr><td>None. Self-made deck here.</td></tr>
+{% endif %}
+</tbody>
+</table>
+
+
+<table class="table table-condensed" id="table-successor">
+<thead>
+<tr><th colspan="4"><span class="glyphicon glyphicon-forward"></span> Inspiration for</th></tr>
+</thead>
+<tbody>
+{% if successor_decklists|length %}
+{% for decklist in successor_decklists %}
+<tr>
+	<td><a href="{{ path('decklist_detail', { 'decklist_id': decklist.id, 'decklist_name': decklist.prettyname|e('url') }) }}">{{ decklist.name }}</a></td>
+	<td><span class="glyphicon glyphicon-heart social-icon-like"></span> {{ decklist.nbvotes }}</td>
+	<td><span class="glyphicon glyphicon-star social-icon-favorite"></span> {{ decklist.nbfavorites }}</td>
+	<td><span class="glyphicon glyphicon-comment social-icon-comment"></span> {{ decklist.nbcomments }}</td>
+</tr>
+{% endfor %}
+{% else %}
+<tr><td>None yet</td></tr>
+{% endif %}
+</tbody>
+</table>
+
+
 <table class="table table-condensed" id="table-similar">
 <thead>
-<tr><th colspan="4"><span class="glyphicon glyphicon-link"></span> Similar</th></tr>
+<tr><th colspan="4"><span class="glyphicon glyphicon-link"></span> Explore similar decklists</th></tr>
 </thead>
 <tbody>
 {% for decklist in similar %}
