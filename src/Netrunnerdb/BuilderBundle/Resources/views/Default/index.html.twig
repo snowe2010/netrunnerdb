@@ -4,14 +4,38 @@
 
 
     <!-- Main jumbotron for a primary marketing message or call to action -->
-    <div class="jumbotron">
+    <div class="jumbotron visible-sm">
       <div class="container">
         <h1>Welcome on NetrunnerDB!</h1>
         <p>You can explore the public <a href="{{ path('decklists_list', {type:'popular'}) }}">decklists</a> or start building your own <a href="{{ path('decks_list') }}">decks</a>.</p>
       </div>
     </div>
 
+
 <div class="container">
+<div class="row">
+<div class="col-md-6">
+<div class="page-header">
+<h1>Welcome on NetrunnerDB</h1>
+<p class="">You can explore the public <a href="{{ path('decklists_list', {type:'popular'}) }}">decklists</a> or start building your own <a href="{{ path('decks_list') }}">decks</a>.</p>
+</div>
+</div>
+<div class="col-md-6">
+<div class="panel panel-info">
+<div class="panel-heading">
+    <h3 class="panel-title"><small class="pull-right">2013-10-17</small>new in 1.1</h3>
+  </div>
+  <div class="panel-body">
+    <ul>
+    <li>Public profile pages</li>
+    <li>Option to edit a decklist name and description after publication</li>
+    <li>Option to remove a decklist from the list of favorites</li>
+    <li>Displays other publications of a decklist (from the original deck or from a copy of the decklist)</li>
+    </ul>
+  </div>
+</div>
+</div>
+</div>
 
 <div class="row">
 <div class="col-md-6">
