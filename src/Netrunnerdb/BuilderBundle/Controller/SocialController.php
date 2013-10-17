@@ -600,7 +600,7 @@ class SocialController extends Controller {
 					(select count(*) from comment where decklist_id=d.id) nbcomments
 					from decklist d
 					where d.id=?
-					", array($decklist['precedent']))->fetchAll();
+					order by d.creation asc", array($decklist['precedent']))->fetchAll();
 
 		foreach($precedent_decklists as $i => $precedent) {
 			$precedent_decklists[$i]['prettyname'] = preg_replace('/[^a-z0-9]+/', '-',
@@ -616,7 +616,7 @@ class SocialController extends Controller {
 					(select count(*) from comment where decklist_id=d.id) nbcomments
 					from decklist d
 					where d.precedent_decklist_id=?
-					", array($decklist_id))->fetchAll();
+					order by d.creation asc", array($decklist_id))->fetchAll();
 		foreach($successor_decklists as $i => $successor) {
 			$successor_decklists[$i]['prettyname'] = preg_replace('/[^a-z0-9]+/', '-',
 					strtolower($successor['name']));

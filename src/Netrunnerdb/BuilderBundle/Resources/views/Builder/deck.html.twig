@@ -96,6 +96,32 @@ var CardDB = null,
 </div><!-- /.row -->
 <!-- Name and Notes Form -->
 
+<!-- Published decklists Table -->
+<div class="row">
+	<div class="col-sm-12">
+		<table class="table table-condensed" id="table-predecessor">
+			<thead>
+				<tr><th colspan="4"><span class="glyphicon glyphicon-share"></span> Published versions</th></tr>
+			</thead>
+			<tbody>
+			{% if published_decklists|length %}
+			{% for decklist in published_decklists %}
+				<tr>
+					<td><a href="{{ path('decklist_detail', { 'decklist_id': decklist.id, 'decklist_name': decklist.prettyname|e('url') }) }}">{{ decklist.name }}</a></td>
+					<td><span class="glyphicon glyphicon-heart social-icon-like"></span> {{ decklist.nbvotes }}</td>
+					<td><span class="glyphicon glyphicon-star social-icon-favorite"></span> {{ decklist.nbfavorites }}</td>
+					<td><span class="glyphicon glyphicon-comment social-icon-comment"></span> {{ decklist.nbcomments }}</td>
+				</tr>
+			{% endfor %}
+			{% else %}
+				<tr><td>None.</td></tr>
+			{% endif %}
+			</tbody>
+		</table>
+	</div><!-- /.col-sm-12 -->
+</div>
+<!-- Published decklists Table -->
+
 </div><!-- /#deck -->
 <!-- Left-side Column -->
 
