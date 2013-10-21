@@ -45,8 +45,9 @@ class BuilderController extends Controller
 		return $this
 			->render('NetrunnerdbBuilderBundle:Builder:deck.html.twig',
 				array(
-				'locales' => $this->renderView('NetrunnerdbCardsBundle:Default:langs.html.twig'),
-						'deck' => array('side_name' => $card->getSide()->getName(),"slots" => $arr, "name" => "New " . $card->getSide()->getName() . " Deck", "description" => "", "id" => "",)));
+					'locales' => $this->renderView('NetrunnerdbCardsBundle:Default:langs.html.twig'),
+					'deck' => array('side_name' => $card->getSide()->getName(),"slots" => $arr, "name" => "New " . $card->getSide()->getName() . " Deck", "description" => "", "id" => ""),
+					"published_decklists"=>array()));
 	}
 
 	public function importAction()
