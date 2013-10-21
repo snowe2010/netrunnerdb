@@ -5,6 +5,7 @@
 $(function() {
 	var form = $('#main>form');
 	if(form.hasClass('fos_user_registration_register')) prepare_registration_form(form);
+	else if(form.hasClass('fos_user_resetting_request')) prepare_resetting_form(form);
 	else prepare_login_form(form);
 	
 	$('#main>div').addClass('alert alert-danger');
@@ -15,6 +16,12 @@ function prepare_registration_form(form) {
 	var div = $('#fos_user_registration_form');
 	div.children().addClass('form-group');
 	div.find('input').addClass('form-control');
+	form.find('input[type=submit]').addClass('btn btn-success');
+}
+function prepare_resetting_form(form) {
+	$('#title').text('Reset password');
+	form.children().addClass('form-group');
+	form.find('input[type=text]').addClass('form-control');
 	form.find('input[type=submit]').addClass('btn btn-success');
 }
 function prepare_login_form(form) {
@@ -34,10 +41,14 @@ function prepare_login_form(form) {
 
 	$('#main>form>input:first-child').addClass("btn btn-success").appendTo(form);
 	$('<button type="button" class="btn btn-link">Register</button>').on('click', do_register).appendTo(form);
+	$('<button type="button" class="btn btn-link">Forgot your password?</button>').on('click', do_reset).appendTo(form);
 	
 }
 function do_register() {
-	location.href='/register';
+	location.href='{{ path('fos_user_registration_register') }}';
+}
+function do_reset() {
+	location.href='{{ path('fos_user_resetting_request') }}';
 }
 </script>
 {% endblock %}
