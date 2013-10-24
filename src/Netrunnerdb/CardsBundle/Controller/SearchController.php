@@ -376,8 +376,8 @@ class SearchController extends Controller
 					$or = array();
 					foreach($condition as $arg) {
 						switch($operator) {
-							case ':': $or[] = "(y.id = ?$i)"; break;
-							case '!': $or[] = "(y.id != ?$i)"; break;
+							case ':': $or[] = "(y.number = ?$i)"; break;
+							case '!': $or[] = "(y.number != ?$i)"; break;
 						}
 						$qb->setParameter($i++, $arg);
 					}
