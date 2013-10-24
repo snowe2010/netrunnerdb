@@ -7,11 +7,11 @@ function when_all_parsed() {
 		return;
 	}
 	SetDB = TAFFY(sets_data);
-	SetDB({name:"Promos"}).remove();
+	SetDB({code:"alt"}).remove();
 
 	var cards_data = CardsData || JSON.parse(localStorage.getItem('cards_data_'+Locale));
 	CardDB = TAFFY(cards_data);
-	CardDB({setname:"Promos"}).remove();
+	CardDB({setcode:"alt"}).remove();
 	console.log('when_all_parsed: '+CardDB().count()+' cards in database');
 	
 	$(this).closest('tr').siblings().removeClass('active');

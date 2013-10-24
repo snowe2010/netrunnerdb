@@ -30,7 +30,7 @@ class BuilderController extends Controller
 						"identities" => array_filter($identities,
 						function ($iden)
 						{
-							return substr($iden->getCode(), 0, 2) != "00";
+							return $iden->getPack()->getCode() != "alt";
 						})));
 	}
 

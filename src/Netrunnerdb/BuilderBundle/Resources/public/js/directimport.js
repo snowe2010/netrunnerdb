@@ -10,7 +10,7 @@ $(function() {
 function when_all_parsed() {
 	var cards_data = CardsData || JSON.parse(localStorage.getItem('cards_data_'+Locale));
 	CardDB = TAFFY(cards_data);
-	CardDB({setname:"Promos"}).remove();
+	CardDB({setcode:"alt"}).remove();
 	CardDB().each(function (record, recordnumber) {
 		CardNames.push({indexkey: record.indexkey, title: record.title, type: record.type, token: record.title.replace(/\W+/, ' ').trim().toLowerCase()});
 	});

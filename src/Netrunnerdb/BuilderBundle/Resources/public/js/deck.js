@@ -5,11 +5,11 @@ function when_all_parsed() {
 	var sets_data = SetsData || JSON.parse(localStorage.getItem('sets_data_'+Locale));
 	if(!sets_data) return;
 	SetDB = TAFFY(sets_data);
-	SetDB({code:"promos"}).remove();
+	SetDB({code:"alt"}).remove();
 
 	var cards_data = CardsData || JSON.parse(localStorage.getItem('cards_data_'+Locale));
 	CardDB = TAFFY(cards_data);
-	CardDB({setcode:"promos"}).remove();
+	CardDB({setcode:"alt"}).remove();
 	CardDB({side_en:{"!is":Side}}).remove();
 	var sets_in_deck = {};
 	CardDB().each(function (record) {
