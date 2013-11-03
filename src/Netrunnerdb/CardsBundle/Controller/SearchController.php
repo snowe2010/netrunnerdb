@@ -110,6 +110,7 @@ class SearchController extends Controller
 		$request  = $this->getRequest();
 		$mode = $request->query->get('mode');
 		$pack = $this->getDoctrine()->getRepository('NetrunnerdbCardsBundle:Pack')->findOneBy(array("code" => $pack_code));
+		if(!$pack) throw $this->createNotFoundException('This pack does not exist');
 		$meta = $pack->getName($this->getRequest()->getLocale()).", a set of cards for Android:Netrunner"
 				.($pack->getReleased() ? " published on ".$pack->getReleased()->format('Y/m/d') : "")
 				." by Fantasy Flight Games.";
@@ -133,6 +134,7 @@ class SearchController extends Controller
 		$request  = $this->getRequest();
 		$mode = $request->query->get('mode');
 		$cycle = $this->getDoctrine()->getRepository('NetrunnerdbCardsBundle:Cycle')->findOneBy(array("code" => $cycle_code));
+		if(!$cycle) throw $this->createNotFoundException('This cycle does not exist');
 		$meta = $cycle->getName($this->getRequest()->getLocale()).", a cycle of datapack for Android:Netrunner published by Fantasy Flight Games.";
 		return $this->forward(
 			'NetrunnerdbCardsBundle:Search:display',
