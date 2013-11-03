@@ -387,6 +387,7 @@ class BuilderController extends Controller
 				", array($deck_id))->fetchAll();
 		
 		$deck = $rows[0];
+		$deck['side_name'] = mb_strtolower($deck['side_name']);
 		
 		$rows = $dbh
 		->executeQuery(
