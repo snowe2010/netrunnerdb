@@ -10,7 +10,7 @@ function when_all_parsed() {
 
 	var cards_data = CardsData || JSON.parse(localStorage.getItem('cards_data_'+Locale));
 	CardDB = TAFFY(cards_data);
-	CardDB({setcode:"alt"}).remove();
+	CardDB({set_code:"alt"}).remove();
 }
 
 $(function() {

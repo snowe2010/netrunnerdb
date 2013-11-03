@@ -10,9 +10,9 @@ $(function() {
 function when_all_parsed() {
 	var cards_data = CardsData || JSON.parse(localStorage.getItem('cards_data_'+Locale));
 	CardDB = TAFFY(cards_data);
-	CardDB({setcode:"alt"}).remove();
+	CardDB({set_code:"alt"}).remove();
 	CardDB().each(function (record, recordnumber) {
-		CardNames.push({indexkey: record.indexkey, title: record.title, type: record.type, token: record.title.replace(/\W+/, ' ').trim().toLowerCase()});
+		CardNames.push({code: record.code, title: record.title, type: record.type, token: record.title.replace(/\W+/, ' ').trim().toLowerCase()});
 	});
 	$('#btn-import').prop('disabled', false);
 }
@@ -46,21 +46,21 @@ function import_one_line(line, lineNumber) {
 	var query = CardDB({token: {likenocase:name}});
 	if(query.count() == 1) {
 		var record = query.first();
-		options.push({code: record.indexkey, name: record.title, type: record.type});
+		options.push({code: record.code, name: record.title, type: record.type});
 	} else if(query.count() > 1) {
 		query.each(function (record,recordnumber) {
-			options.push({code: record.indexkey, name: record.title, type: record.type});
+			options.push({code: record.code, name: record.title, type: record.type});
 		});
 	} else if(query.count() == 0) {
 		var matches = [];
 		$.each(CardNames, function(index, row) {
 			var score = row.token.score(name, 0.9);
-			matches.push({indexkey: row.indexkey, title: row.title, type: row.type, score: score});
+			matches.push({code: row.code, title: row.title, type: row.type, score: score});
 		});
 		matches.sort(function (a,b) { return a.score > b.score ? -1 : a.score < b.score ? 1 : 0 });
 		var bestScore = matches[0].score;
 		for(var i=0; i<5 && matches[i].score > 0.4 && matches[i].score > bestScore * 0.9; i++) {
-			options.push({code: matches[i].indexkey, name: matches[i].title, type: matches[i].type});
+			options.push({code: matches[i].code, name: matches[i].title, type: matches[i].type});
 		}
 	}
 	var qty_text = "", qty_int = qty;
@@ -104,7 +104,7 @@ function update_stats() {
 		var card = $(element).val().split(':');
 		var code = card[0], qty = parseInt(card[1], 10);
 		deck[code] = qty;
-		var record = CardDB({indexkey:code}).first();
+		var record = CardDB({code:code}).first();
 		types[record.type] = types[record.type] || 0;
 		types[record.type]+=qty;
 	});

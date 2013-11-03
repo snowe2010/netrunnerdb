@@ -1,32 +1,32 @@
 function process_deck() {
 	
 	var bytype = {};
-	Identity = CardDB({indeck:{'gt':0},type_en:'Identity'}).first();
+	Identity = CardDB({indeck:{'gt':0},type_code:'identity'}).first();
 	if(!Identity) {
 		return;
 	}
 
-	CardDB({indeck:{'gt':0},type_en:{'!is':'Identity'}}).order("type,title").each(function(record) {
-		var type = record.type_en, subtypes = record.subtype_en ? record.subtype_en.split(" - ") : [];
-		if(type == "ICE") {
-			 if(subtypes.indexOf("Barrier") >= 0) {
-				 type = "Barrier";
+	CardDB({indeck:{'gt':0},type_code:{'!is':'identity'}}).order("type,title").each(function(record) {
+		var type = record.type_code, subtypes = record.subtype_code ? record.subtype_code.split(" - ") : [];
+		if(type == "ice") {
+			 if(subtypes.indexOf("barrier") >= 0) {
+				 type = "barrier";
 			 }
-			 if(subtypes.indexOf("Code Gate") >= 0) {
-				 type = "Code Gate";
+			 if(subtypes.indexOf("code gate") >= 0) {
+				 type = "code gate";
 			 }
-			 if(subtypes.indexOf("Sentry") >= 0) {
-				 type = "Sentry";
+			 if(subtypes.indexOf("sentry") >= 0) {
+				 type = "sentry";
 			 }
 		}
-		if(type == "Program") {
-			 if(subtypes.indexOf("Icebreaker") >= 0) {
-				 type = "Icebreaker";
+		if(type == "program") {
+			 if(subtypes.indexOf("icebreaker") >= 0) {
+				 type = "icebreaker";
 			 }
 		}
 		var influence = 0, faction_code = '';
 		if(record.faction != Identity.faction) {
-			faction_code = record.faction.toLowerCase().replace(' ','-');
+			faction_code = record.faction_code;
 			influence = record.factioncost * record.indeck;
 		}
 		
@@ -38,7 +38,7 @@ function process_deck() {
 			faction: faction_code
 		});
 	});
-	bytype.Identity = [{
+	bytype.identity = [{
 		card: Identity,
 		qty: 1,
 		influence: 0,
@@ -52,28 +52,27 @@ function update_deck() {
 	$('#deck-content').find('h5').hide().find('span').empty().parent().next().empty();
 	InfluenceLimit = 0;
 	var bytype = {};
-	Identity = CardDB({indeck:{'gt':0},type_en:'Identity'}).first();
+	Identity = CardDB({indeck:{'gt':0},type_code:'identity'}).first();
 	if(!Identity) return;
 	var parts = Identity.title.split(/: /);
-	$('#identity').html('<a href="#cardModal" class="card" data-toggle="modal" data-index="'+Identity.indexkey+'">'+parts[0]+' <small>'+parts[1]+'</small></a>');
+	$('#identity').html('<a href="#cardModal" class="card" data-toggle="modal" data-index="'+Identity.code+'">'+parts[0]+' <small>'+parts[1]+'</small></a>');
 	$('#img_identity').prop('src', Identity.imagesrc);
 	InfluenceLimit = Identity.influencelimit;
 	MinimumDeckSize = Identity.minimumdecksize;
 
 	var latestpack = SetDB({name:Identity.setname}).first();
-	CardDB({indeck:{'gt':0},type_en:{'!is':'Identity'}}).order("type,title").each(function(record) {
+	CardDB({indeck:{'gt':0},type_code:{'!is':'identity'}}).order("type,title").each(function(record) {
 		var pack = SetDB({name:record.setname}).first();
 		if(latestpack.cyclenumber < pack.cyclenumber || (latestpack.cyclenumber == pack.cyclenumber && latestpack.number < pack.number)) latestpack = pack;
-		var type = record.type_en, subtypes = record.subtype_en ? record.subtype_en.split(" - ") : [];
-		if(type == "ICE") {
-			 if(subtypes.indexOf("Barrier") >= 0) type = "Barrier";
-			 if(subtypes.indexOf("Code Gate") >= 0) type = "Code Gate";
-			 if(subtypes.indexOf("Sentry") >= 0) type = "Sentry";
+		var type = record.type_code, subtypes = record.subtype_code ? record.subtype_code.split(" - ") : [];
+		if(type == "ice") {
+			 if(subtypes.indexOf("barrier") >= 0) type = "barrier";
+			 if(subtypes.indexOf("code gate") >= 0) type = "code gate";
+			 if(subtypes.indexOf("sentry") >= 0) type = "sentry";
 		}
-		if(type == "Program") {
-			 if(subtypes.indexOf("Icebreaker") >= 0) type = "Icebreaker";
+		if(type == "program") {
+			 if(subtypes.indexOf("icebreaker") >= 0) type = "icebreaker";
 		}
-		var type_code = type.toLowerCase().replace(" ", "-");
 		var influence = '';
 		if(record.faction != Identity.faction) {
 			var faction = record.faction.toLowerCase().replace(' ','-');
@@ -85,11 +84,11 @@ function update_deck() {
 			influence = ' <span class="influence-'+faction+'">'+influence+'</span>';
 		}
 		
-		$('<div>'+record.indeck+'x <a href="#cardModal" class="card" data-toggle="modal" data-index="'+record.indexkey+'">'+record.title+'</a>'+influence+'</div>').appendTo($('#deck-content .deck-'+type_code));
+		$('<div>'+record.indeck+'x <a href="#cardModal" class="card" data-toggle="modal" data-index="'+record.code+'">'+record.title+'</a>'+influence+'</div>').appendTo($('#deck-content .deck-'+type));
 		
-		bytype[type_code] |= 0;
-		bytype[type_code] = bytype[type_code] + record.indeck;
-		$('#deck-content .deck-'+type_code).prev().show().find('span').html(bytype[type_code]);
+		bytype[type] |= 0;
+		bytype[type] = bytype[type] + record.indeck;
+		$('#deck-content .deck-'+type).prev().show().find('span').html(bytype[type]);
 	});
 	$('#latestpack').html('Cards up to <i>'+latestpack.name+'</i>');
 	check_influence();
@@ -99,11 +98,11 @@ function update_deck() {
 
 
 function check_decksize() {
-	DeckSize = CardDB({indeck:{'gt':0},type_en:{'!is':'Identity'}}).select("indeck").reduce(function (previousValue, currentValue) { return previousValue+currentValue; }, 0);
+	DeckSize = CardDB({indeck:{'gt':0},type_code:{'!is':'identity'}}).select("indeck").reduce(function (previousValue, currentValue) { return previousValue+currentValue; }, 0);
 	MinimumDeckSize = Identity.minimumdecksize;
 	$('#cardcount').html(DeckSize+" cards (min "+MinimumDeckSize+")")[DeckSize < MinimumDeckSize ? 'addClass' : 'removeClass']("text-danger");
-	if(Identity.side_en == 'Corp') {
-		AgendaPoints = CardDB({indeck:{'gt':0},type_en:'Agenda'}).select("indeck","agendapoints").reduce(function (previousValue, currentValue) { return previousValue+currentValue[0]*currentValue[1]; }, 0);
+	if(Identity.side_code == 'corp') {
+		AgendaPoints = CardDB({indeck:{'gt':0},type_code:'agenda'}).select("indeck","agendapoints").reduce(function (previousValue, currentValue) { return previousValue+currentValue[0]*currentValue[1]; }, 0);
 		var min = Math.floor(Math.max(DeckSize, MinimumDeckSize) / 5) * 2 + 2, max = min+1;
 		$('#agendapoints').html(AgendaPoints+" agenda points (between "+min+" and "+max+")")[AgendaPoints < min || AgendaPoints > max ? 'addClass' : 'removeClass']("text-danger");
 	} else {
@@ -114,10 +113,10 @@ function check_decksize() {
 function check_influence() {
 	InfluenceSpent = 0;
 	var repartition_influence = {};
-	CardDB({indeck:{'gt':0},faction:{'!is':Identity.faction}}).each(function(record) {
+	CardDB({indeck:{'gt':0},faction_code:{'!is':Identity.faction_code}}).each(function(record) {
 		if(record.factioncost) {
-			var inf, faction = record.faction.toLowerCase().replace(' ','-');
-			if(Identity.indexkey == "03029" && record.type_en == "Program") {
+			var inf, faction = record.faction_code;
+			if(Identity.code == "03029" && record.type_code == "program") {
 				inf = record.indeck > 1 ? (record.indeck-1) * record.factioncost : 0;
 			} else {
 				inf = record.indeck * record.factioncost;
@@ -151,13 +150,13 @@ $(function () {
 
 function display_modal(event) {
 	$(this).qtip('hide');
-	var indexkey = $(this).data('index') || $(this).closest('tr').data('index');
-	fill_modal(indexkey);
+	var code = $(this).data('index') || $(this).closest('tr').data('index');
+	fill_modal(code);
 }
 
-function fill_modal(indexkey) {
-	var card = CardDB({indexkey:indexkey}).first();
-	var modal = $('div.modal').data('index', indexkey);
+function fill_modal(code) {
+	var card = CardDB({code:code}).first();
+	var modal = $('div.modal').data('index', code);
 	modal.find('h3.modal-title').text(card.title);
 	modal.find('#modal-image').html('<img class="img-responsive" src="'+card.imagesrc+'">');
 	modal.find('#modal-info').html(
@@ -178,10 +177,10 @@ function fill_modal(indexkey) {
 			if(index == card.indeck) $(element).addClass('active');
 			else $(element).removeClass('active');
 		});
-		if(card.type_en == "Agenda" && card.faction_en != "Neutral" && card.faction != Identity.faction) {
+		if(card.type_code == "agenda" && card.faction_code != "neutral" && card.faction_code != Identity.faction_code) {
 			modal.find('label').addClass("disabled").find('input[type=radio]').attr("disabled", true);
 		}
-		if(card.indexkey == Identity.indexkey) {
+		if(card.code == Identity.code) {
 			modal.find('label').addClass("disabled").find('input[type=radio]').attr("disabled", true);
 		}
 
@@ -202,18 +201,18 @@ function text_format(text) {
 }
 
 function display_qtip(event) {
-	var indexkey = $(this).data('index') || $(this).closest('tr').data('index');
-	var card = CardDB({indexkey:indexkey}).first();
+	var code = $(this).data('index') || $(this).closest('tr').data('index');
+	var card = CardDB({code:code}).first();
 	var type = '<p class="card-info"><span class="card-type">'+card.type+'</span>';
 	if(card.subtype) type += '<span class="card-keywords">: '+card.subtype+'</span>';
-	if(card.type_en == "Agenda") type += ' &middot; <span class="card-prop">'+card.advancementcost+'/'+card.agendapoints+'</span>';
-	if(card.type_en == "Identity" && card.side == "Corp") type += ' &middot; <span class="card-prop">'+card.minimumdecksize+'/'+card.influencelimit+'</span>';
-	if(card.type_en == "Identity" && card.side == "Runner") type += ' &middot; <span class="card-prop">'+card.minimumdecksize+'/'+card.influencelimit+' '+card.baselink+'<span class="sprite link"></span></span>';
-	if(card.type_en == "Operation" || card.type_en == "Event") type += ' &middot; <span class="card-prop">'+card.cost+'<span class="sprite credits"></span></span>';
-	if(card.type_en == "Resource" || card.type_en == "Hardware") type += ' &middot; <span class="card-prop">'+card.cost+'<span class="sprite credits"></span></span>';
-	if(card.type_en == "Program") type += ' &middot; <span class="card-prop">'+card.cost+'<span class="sprite credits"></span> '+card.memoryunits+'<span class="sprite memory_unit"></span></span>';
-	if(card.type_en == "Asset" || card.type_en == "Upgrade") type += ' &middot; <span class="card-prop">'+card.cost+'<span class="sprite credits"></span> '+card.trash+'<span class="sprite trash"></span></span>';
-	if(card.type_en == "ICE") type += ' &middot; <span class="card-prop">'+card.cost+'<span class="sprite credits"></span></span>';
+	if(card.type_code == "agenda") type += ' &middot; <span class="card-prop">'+card.advancementcost+'/'+card.agendapoints+'</span>';
+	if(card.type_code == "identity" && card.side_code == "corp") type += ' &middot; <span class="card-prop">'+card.minimumdecksize+'/'+card.influencelimit+'</span>';
+	if(card.type_code == "identity" && card.side_code == "runner") type += ' &middot; <span class="card-prop">'+card.minimumdecksize+'/'+card.influencelimit+' '+card.baselink+'<span class="sprite link"></span></span>';
+	if(card.type_code == "operation" || card.type_code == "event") type += ' &middot; <span class="card-prop">'+card.cost+'<span class="sprite credits"></span></span>';
+	if(card.type_code == "resource" || card.type_code == "hardware") type += ' &middot; <span class="card-prop">'+card.cost+'<span class="sprite credits"></span></span>';
+	if(card.type_code == "program") type += ' &middot; <span class="card-prop">'+card.cost+'<span class="sprite credits"></span> '+card.memoryunits+'<span class="sprite memory_unit"></span></span>';
+	if(card.type_code == "asset" || card.type_code == "upgrade") type += ' &middot; <span class="card-prop">'+card.cost+'<span class="sprite credits"></span> '+card.trash+'<span class="sprite trash"></span></span>';
+	if(card.type_code == "ice") type += ' &middot; <span class="card-prop">'+card.cost+'<span class="sprite credits"></span></span>';
 	type += '</p>';
 	if(card.strength != null) type += '<p>Strength <b>'+card.strength+'</b></p>';
 	$(this).qtip({
@@ -261,7 +260,7 @@ function export_bbcode() {
 			if(type == "Identity") {
 				var slot = deck[type][0];
 				lines.push('[url=http://netrunnerdb.com/'+Locale+'/card/'
-				 + slot.card.indexkey
+				 + slot.card.code
 				 + ']'
 				 + slot.card.title
 				 + '[/url] ('
@@ -278,7 +277,7 @@ function export_bbcode() {
 						inf+="•";
 					}
 					lines.push(slot.qty + 'x [url=http://netrunnerdb.com/'+Locale+'/card/'
-					 + slot.card.indexkey
+					 + slot.card.code
 					 + ']'
 					 + slot.card.title
 					 + '[/url] [i]('
@@ -314,7 +313,7 @@ function export_markdown() {
 				lines.push('['
 				 + slot.card.title
 				 + '](http://netrunnerdb.com/'+Locale+'/card/'
-				 + slot.card.indexkey
+				 + slot.card.code
 				 + ') _('
 				 + slot.card.setname
 				 + ")_");
@@ -333,7 +332,7 @@ function export_markdown() {
 					lines.push('* '+ slot.qty + 'x ['
 					 + slot.card.title 
 					 + '](http://netrunnerdb.com/'+Locale+'/card/'
-					 + slot.card.indexkey
+					 + slot.card.code
 					 + ') _('
 					 + slot.card.setname
 					 + ")_"

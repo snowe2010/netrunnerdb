@@ -10,14 +10,14 @@
 		<div class="card-type">
 			<span class="card-type">{{ card.type }}</span>{% if card.subtype %}<span class="card-subtype">: {{ card.subtype }}</span>{% endif %}
 			&bull;
-			{% if card.type_en == "Agenda" %} Adv: {{ card.advancementcost }} &bull; Score: {{ card.agendapoints }} {% endif %}
-			{% if card.type_en == "Identity" and card.side == "Corp" %}Deck: {{ card.minimumdecksize }} &bull; Influence: {{ card.influencelimit }} {% endif %}
-			{% if card.type_en == "Identity" and card.side == "Runner" %}Link: {{ card.baselink }} &bull; Deck: {{ card.minimumdecksize }} &bull; Influence: {{ card.influencelimit }} {% endif %}
-			{% if card.type_en == "Operation" or card.type_en == "Event" %}Cost: {{ card.cost }} &bull; Influence: {{ card.factioncost }}{% endif %}
-			{% if card.type_en == "Resource" or card.type_en == "Hardware" %}Install: {{ card.cost }} &bull; Influence: {{ card.factioncost }}{% endif %}
-			{% if card.type_en == "Program" %}Install: {{ card.cost }} &bull; Memory: {{ card.memoryunits }} {% if card.strength is not null %}&bull; Strength: {{ card.strength }}{% endif %} &bull; Influence: {{ card.factioncost }}{% endif %}
-			{% if card.type_en == "Asset" or card.type_en == "Upgrade" %}Rez: {{ card.cost }} &bull; Trash: {{ card.trash }} &bull; Influence: {{ card.factioncost }}{% endif %}
-			{% if card.type_en == "ICE" %}Rez: {{ card.cost }} &bull; Strength: {{ card.strength }} &bull; Influence: {{ card.factioncost }}{% endif %}
+			{% if card.type_code == "Agenda" %} Adv: {{ card.advancementcost }} &bull; Score: {{ card.agendapoints }} {% endif %}
+			{% if card.type_code == "Identity" and card.side == "Corp" %}Deck: {{ card.minimumdecksize }} &bull; Influence: {{ card.influencelimit }} {% endif %}
+			{% if card.type_code == "Identity" and card.side == "Runner" %}Link: {{ card.baselink }} &bull; Deck: {{ card.minimumdecksize }} &bull; Influence: {{ card.influencelimit }} {% endif %}
+			{% if card.type_code == "Operation" or card.type_code == "Event" %}Cost: {{ card.cost }} &bull; Influence: {{ card.factioncost }}{% endif %}
+			{% if card.type_code == "Resource" or card.type_code == "Hardware" %}Install: {{ card.cost }} &bull; Influence: {{ card.factioncost }}{% endif %}
+			{% if card.type_code == "Program" %}Install: {{ card.cost }} &bull; Memory: {{ card.memoryunits }} {% if card.strength is not null %}&bull; Strength: {{ card.strength }}{% endif %} &bull; Influence: {{ card.factioncost }}{% endif %}
+			{% if card.type_code == "Asset" or card.type_code == "Upgrade" %}Rez: {{ card.cost }} &bull; Trash: {{ card.trash }} &bull; Influence: {{ card.factioncost }}{% endif %}
+			{% if card.type_code == "ICE" %}Rez: {{ card.cost }} &bull; Strength: {{ card.strength }} &bull; Influence: {{ card.factioncost }}{% endif %}
 		</div>
 		<div class="card-text">
 			{{ card.text|raw }}
@@ -51,7 +51,7 @@
 
 
 {% macro as_grid(card) %}
-<div class="col-sm-3" style="background-repeat:no-repeat;background-position:50% 50%;background-image:url('{% if card.faction_en != 'Neutral' %}{{ asset('/web/bundles/netrunnerdbcards/images/factions/64px-alpha/' ~ card.faction_en ~ '.png') }}{% endif %}')">
+<div class="col-sm-3" style="background-repeat:no-repeat;background-position:50% 50%;background-image:url('{% if card.faction_code != 'neutral' %}{{ asset('/web/bundles/netrunnerdbcards/images/factions/64px-alpha/' ~ card.faction_code ~ '.png') }}{% endif %}')">
 		<h5>{% if card.uniqueness == true %} 
 			&diams;
 		{% endif %}
@@ -61,14 +61,14 @@
 		<span style="">{{ card.type }}</span>{% if card.subtype %}: {{ card.subtype }}{% endif %}
 	</p>
 	<p>
-		{% if card.type_en == "Agenda" %} Adv: {{ card.advancementcost }} &bull; Score: {{ card.agendapoints }} {% endif %}
-		{% if card.type_en == "Identity" and card.side == "Corp" %}Deck: {{ card.minimumdecksize }} &bull; Influence: {{ card.influencelimit }} {% endif %}
-		{% if card.type_en == "Identity" and card.side == "Runner" %}Link: {{ card.baselink }} &bull; Deck: {{ card.minimumdecksize }} &bull; Influence: {{ card.influencelimit }} {% endif %}
-		{% if card.type_en == "Operation" or card.type == "Event" %}Cost: {{ card.cost }} &bull; Influence: {{ card.factioncost }}{% endif %}
-		{% if card.type_en == "Resource" or card.type == "Hardware" %}Install: {{ card.cost }} &bull; Influence: {{ card.factioncost }}{% endif %}
-		{% if card.type_en == "Program" %}Install: {{ card.cost }} &bull; Memory: {{ card.memoryunits }} {% if card.strength %}&bull; Strength: {{ card.strength }}{% endif %} &bull; Influence: {{ card.factioncost }}{% endif %}
-		{% if card.type_en == "Asset" or card.type == "Upgrade" %}Rez: {{ card.cost }} &bull; Trash: {{ card.trash }} &bull; Influence: {{ card.factioncost }}{% endif %}
-		{% if card.type_en == "ICE" %}Rez: {{ card.cost }} &bull; Strength: {{ card.strength }} &bull; Influence: {{ card.factioncost }}{% endif %}
+		{% if card.type_code == "Agenda" %} Adv: {{ card.advancementcost }} &bull; Score: {{ card.agendapoints }} {% endif %}
+		{% if card.type_code == "Identity" and card.side == "Corp" %}Deck: {{ card.minimumdecksize }} &bull; Influence: {{ card.influencelimit }} {% endif %}
+		{% if card.type_code == "Identity" and card.side == "Runner" %}Link: {{ card.baselink }} &bull; Deck: {{ card.minimumdecksize }} &bull; Influence: {{ card.influencelimit }} {% endif %}
+		{% if card.type_code == "Operation" or card.type == "Event" %}Cost: {{ card.cost }} &bull; Influence: {{ card.factioncost }}{% endif %}
+		{% if card.type_code == "Resource" or card.type == "Hardware" %}Install: {{ card.cost }} &bull; Influence: {{ card.factioncost }}{% endif %}
+		{% if card.type_code == "Program" %}Install: {{ card.cost }} &bull; Memory: {{ card.memoryunits }} {% if card.strength %}&bull; Strength: {{ card.strength }}{% endif %} &bull; Influence: {{ card.factioncost }}{% endif %}
+		{% if card.type_code == "Asset" or card.type == "Upgrade" %}Rez: {{ card.cost }} &bull; Trash: {{ card.trash }} &bull; Influence: {{ card.factioncost }}{% endif %}
+		{% if card.type_code == "ICE" %}Rez: {{ card.cost }} &bull; Strength: {{ card.strength }} &bull; Influence: {{ card.factioncost }}{% endif %}
 	</p>
 	<div class="card-text">
 		{{ card.text|raw }}
@@ -91,9 +91,9 @@
 
 {% macro as_list(card) %}
 	<td>
-		<a href="{{ card.url }}" class="card card-title{% if card.available == false %} card-preview{% endif %}" data-index="{{ card.indexkey }}">{{ card.title }}</a>
+		<a href="{{ card.url }}" class="card card-title{% if card.available == false %} card-preview{% endif %}" data-index="{{ card.code }}">{{ card.title }}</a>
 	</td>
-	<td style="text-align:center">{% if card.faction_en != 'Neutral' %}<img src="{{ asset('/web/bundles/netrunnerdbcards/images/factions/16px/' ~ card.faction_en ~ '.png') }}">{% endif %}</td>
+	<td style="text-align:center">{% if card.faction_code != 'neutral' %}<img src="{{ asset('/web/bundles/netrunnerdbcards/images/factions/16px/' ~ card.faction_code ~ '.png') }}">{% endif %}</td>
 	<td style="text-align:center">{{ card.cost }}{{ card.advancementcost }}</td>
 	<td>{{ card.type }}</td>
 	<td style="text-align:center">{{ card.strength }}{{ card.agendapoints }}{{ card.trash }}</td>

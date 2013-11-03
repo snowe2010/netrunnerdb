@@ -102,7 +102,7 @@ class DefaultController extends Controller
 		$symbols = array("Subroutine", "Credits", "Trash", "Click", "Recurring Credits", "Memory Unit", "Link", "Unique");
 		foreach($symbols as $symbol)
 		{
-			$text = str_replace("[$symbol]", '<span class="sprite '.strtolower(str_replace(' ','_',$symbol)).'"></span>', $text);
+			$text = str_replace("[$symbol]", '<span class="sprite '.mb_strtolower(str_replace(' ','_',$symbol)).'"></span>', $text);
 		}
 		return $text;
 	}

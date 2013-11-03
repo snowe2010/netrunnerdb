@@ -45,7 +45,7 @@ class Judge
 			if($identity->getCode() == "03029" && $card->getType()->getName() == "Program") $qty_influence--;
 			if($card->getFaction()->getId() != $identity->getFaction()->getId()) $influence = $card->getFactionCost() * $qty_influence;
 			$elt['influence'] = $influence;
-			$elt['faction'] = str_replace(' ', '-', strtolower($card->getFaction()->getName()));
+			$elt['faction'] = str_replace(' ', '-', mb_strtolower($card->getFaction()->getName()));
 			
 			if(!isset($classeur[$type])) $classeur[$type] = array("qty" => 0, "slots" => array());
 			$classeur[$type]["slots"][] = $elt;

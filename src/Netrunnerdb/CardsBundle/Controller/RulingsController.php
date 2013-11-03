@@ -83,11 +83,11 @@ class RulingsController extends Controller
 
             $em->flush();
 			/* add rxc */
-			$indexkeys = $request->request->get('indexkeys') ?: '';
-			$indexkeys = explode(',',$indexkeys);
-			foreach($indexkeys as $indexkey)
+			$codes = $request->request->get('codes') ?: '';
+			$codes = explode(',',$codes);
+			foreach($codes as $code)
 			{
-				$card = $em->getRepository('NetrunnerdbCardsBundle:Cards')->findOneBy(array("indexkey" => $indexkey));
+				$card = $em->getRepository('NetrunnerdbCardsBundle:Cards')->findOneBy(array("code" => $code));
 				if($card)
 				{
 					$rxc = new Rxc();

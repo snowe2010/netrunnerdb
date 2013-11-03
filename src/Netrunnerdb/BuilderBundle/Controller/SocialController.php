@@ -448,7 +448,7 @@ class SocialController extends Controller {
 
 		foreach ($decklists as $i => $decklist) {
 			$decklists[$i]['prettyname'] = preg_replace('/[^a-z0-9]+/', '-',
-					strtolower($decklists[$i]['name']));
+					mb_strtolower($decklists[$i]['name']));
 		}
 
 		$dbh = $this->get('doctrine')->getConnection();
@@ -550,7 +550,7 @@ class SocialController extends Controller {
 
 		$decklist = $rows[0];
 		$decklist['prettyname'] = preg_replace('/[^a-z0-9]+/', '-',
-				strtolower($decklist['name']));
+				mb_strtolower($decklist['name']));
 
 		$comments = $dbh
 				->executeQuery(
@@ -604,7 +604,7 @@ class SocialController extends Controller {
 
 		foreach($precedent_decklists as $i => $precedent) {
 			$precedent_decklists[$i]['prettyname'] = preg_replace('/[^a-z0-9]+/', '-',
-					strtolower($precedent['name']));
+					mb_strtolower($precedent['name']));
 		}
 
 		$successor_decklists = $dbh->executeQuery(
@@ -619,7 +619,7 @@ class SocialController extends Controller {
 					order by d.creation asc", array($decklist_id))->fetchAll();
 		foreach($successor_decklists as $i => $successor) {
 			$successor_decklists[$i]['prettyname'] = preg_replace('/[^a-z0-9]+/', '-',
-					strtolower($successor['name']));
+					mb_strtolower($successor['name']));
 		}
 		
 		return $this
@@ -804,7 +804,7 @@ class SocialController extends Controller {
 
 			$decklist = $rows[0];
 			$decklist['prettyname'] = preg_replace('/[^a-z0-9]+/', '-',
-					strtolower($decklist['name']));
+					mb_strtolower($decklist['name']));
 			$arr[] = $decklist;
 		}
 		return $arr;
@@ -890,7 +890,7 @@ class SocialController extends Controller {
 		}
 		$content = implode("\r\n", $lines);
 
-		$name = strtolower($decklist->getName());
+		$name = mb_strtolower($decklist->getName());
 		$name = preg_replace('/[^a-zA-Z0-9_\-]/', '-', $name);
 		$name = preg_replace('/--+/', '-', $name);
 
@@ -929,7 +929,7 @@ class SocialController extends Controller {
 						"qty" => $slot->getQuantity());
 			}
 		}
-		$name = strtolower($decklist->getName());
+		$name = mb_strtolower($decklist->getName());
 		$name = preg_replace('/[^a-zA-Z0-9_\-]/', '-', $name);
 		$name = preg_replace('/--+/', '-', $name);
 		if (empty($identity)) {
@@ -966,14 +966,14 @@ class SocialController extends Controller {
 		foreach ($decklists_popular as $i => $decklist) {
 			$decklists_popular[$i]['prettyname'] = preg_replace(
 					'/[^a-z0-9]+/', '-',
-					strtolower($decklists_popular[$i]['name']));
+					mb_strtolower($decklists_popular[$i]['name']));
 		}
 
 		$decklists_recent = $this->recent(0, 5)['decklists'];
 
 		foreach ($decklists_recent as $i => $decklist) {
 			$decklists_recent[$i]['prettyname'] = preg_replace('/[^a-z0-9]+/',
-					'-', strtolower($decklists_recent[$i]['name']));
+					'-', mb_strtolower($decklists_recent[$i]['name']));
 		}
 
 		return $this
@@ -1042,7 +1042,7 @@ class SocialController extends Controller {
 		
 		foreach ($decklists as $i => $decklist) {
 			$decklists[$i]['prettyname'] = preg_replace('/[^a-z0-9]+/', '-',
-					strtolower($decklists[$i]['name']));
+					mb_strtolower($decklists[$i]['name']));
 		}
 		
 		// pagination : calcul de nbpages // currpage // prevpage // nextpage

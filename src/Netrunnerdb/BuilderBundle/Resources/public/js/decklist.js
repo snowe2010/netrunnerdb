@@ -11,14 +11,14 @@ function when_all_parsed() {
 
 	var cards_data = CardsData || JSON.parse(localStorage.getItem('cards_data_'+Locale));
 	CardDB = TAFFY(cards_data);
-	CardDB({setcode:"alt"}).remove();
+	CardDB({set_code:"alt"}).remove();
 	console.log('when_all_parsed: '+CardDB().count()+' cards in database');
 	
 	$(this).closest('tr').siblings().removeClass('active');
 	$(this).closest('tr').addClass('active');
 	for(var i=0; i<Decklist.cards.length; i++) {
 		var slot = Decklist.cards[i];
-		CardDB({indexkey:slot.card_code}).update({indeck:parseInt(slot.qty,10)});
+		CardDB({code:slot.card_code}).update({indeck:parseInt(slot.qty,10)});
 	}
 	update_deck();
 }

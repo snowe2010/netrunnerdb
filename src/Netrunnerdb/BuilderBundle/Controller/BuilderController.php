@@ -46,7 +46,7 @@ class BuilderController extends Controller
 			->render('NetrunnerdbBuilderBundle:Builder:deck.html.twig',
 				array(
 					'locales' => $this->renderView('NetrunnerdbCardsBundle:Default:langs.html.twig'),
-					'deck' => array('side_name' => $card->getSide()->getName(),"slots" => $arr, "name" => "New " . $card->getSide()->getName() . " Deck", "description" => "", "id" => ""),
+					'deck' => array('side_name' => mb_strtolower($card->getSide()->getName()),"slots" => $arr, "name" => "New " . $card->getSide()->getName() . " Deck", "description" => "", "id" => ""),
 					"published_decklists"=>array()));
 	}
 
@@ -189,7 +189,7 @@ class BuilderController extends Controller
 		}
 		$content = implode("\r\n", $lines);
 		
-		$name = strtolower($deck->getName());
+		$name = mb_strtolower($deck->getName());
 		$name = preg_replace('/[^a-zA-Z0-9_\-]/', '-', $name);
 		$name = preg_replace('/--+/', '-', $name);
 		
@@ -221,7 +221,7 @@ class BuilderController extends Controller
 				$rd[] = array("index" => $slot->getCard()->getCode(), "name" => $slot->getCard()->getTitle(), "qty" => $slot->getQuantity());
 			}
 		}
-		$name = strtolower($deck->getName());
+		$name = mb_strtolower($deck->getName());
 		$name = preg_replace('/[^a-zA-Z0-9_\-]/', '-', $name);
 		$name = preg_replace('/--+/', '-', $name);
 		if (empty($identity)) {
@@ -415,7 +415,7 @@ class BuilderController extends Controller
 					order by d.creation asc", array($deck_id))->fetchAll();
 		foreach($published_decklists as $i => $decklist) {
 			$published_decklists[$i]['prettyname'] = preg_replace('/[^a-z0-9]+/', '-',
-					strtolower($decklist['name']));
+					mb_strtolower($decklist['name']));
 		}
 		
 

@@ -22,9 +22,9 @@ class SearchController extends Controller
 		{
 			$alternatives[] = array(
 				"setname" => $alt->getPack()->getName($this->getRequest()->getLocale()),
-				"setcode" => $alt->getPack()->getCode(),
+				"set_code" => $alt->getPack()->getCode(),
 				"number" => $alt->getNumber(),
-				"indexkey" => $alt->getCode(),
+				"code" => $alt->getCode(),
 				"url" => $this->get('router')->generate('netrunnerdb_netrunner_cards_zoom', array('card_code' => $alt->getCode()), true),
 			);
 		}
@@ -37,19 +37,19 @@ class SearchController extends Controller
 		$cardinfo = array(
 				"id" => $card->getId(),
 				"last-modified" => $card->getTs()->format('c'),
-				"indexkey" => $card->getCode(),
+				"code" => $card->getCode(),
 				"title" => $card->getTitle($locale),
 				"type" => $card->getType()->getName($locale),
-				"type_en" => $card->getType()->getName(),
+				"type_code" => mb_strtolower($card->getType()->getName()),
 				"subtype" => $card->getKeywords($locale),
-				"subtype_en" => $card->getKeywords(),
+				"subtype_code" => mb_strtolower($card->getKeywords()),
 				"text" => $card->getText($locale),
 				"advancementcost" => $card->getAdvancementCost(),
 				"agendapoints" => $card->getAgendaPoints(),
 				"baselink" => $card->getBaseLink(),
 				"cost" => $card->getCost(),
 				"faction" => $card->getFaction()->getName($locale),
-				"faction_en" => $card->getFaction()->getName(),
+				"faction_code" => $card->getFaction()->getCode(),
 				"factioncost" => $card->getFactionCost(),
 				"flavor" => $card->getFlavor($locale),
 				"illustrator" => $card->getIllustrator(),
@@ -60,9 +60,9 @@ class SearchController extends Controller
 				"quantity" => $card->getQuantity(),
 				"id_set" => $card->getPack()->getId(),
 				"setname" => $card->getPack()->getName($locale),
-				"setcode" => $card->getPack()->getCode(),
+				"set_code" => $card->getPack()->getCode(),
 				"side" => $card->getSide()->getName($locale),
-				"side_en" => $card->getSide()->getName(),
+				"side_code" => mb_strtolower($card->getSide()->getName()),
 				"strength" => $card->getStrength(),
 				"trash" => $card->getTrashCost(),
 				"uniqueness" => $card->getUniqueness(),
@@ -78,7 +78,7 @@ class SearchController extends Controller
 			unset($cardinfo['id_set']);
 			$cardinfo = array_filter($cardinfo, function ($var) { return isset($var); });
 		} else {
-			$cardinfo['cssfaction'] = str_replace(" ", "-", strtolower($card->getFaction()->getName()));
+			$cardinfo['cssfaction'] = str_replace(" ", "-", mb_strtolower($card->getFaction()->getName()));
 		}
 		return $cardinfo;
 	}
@@ -242,7 +242,7 @@ class SearchController extends Controller
 				}
 				// on commence par rechercher un type de condition
 				if(preg_match('/^(\p{L})([:<>!])(.*)/u', $query, $match)) { // jeton "condition:"
-					$cond = array(strtolower($match[1]), $match[2]);
+					$cond = array(mb_strtolower($match[1]), $match[2]);
 					$query = $match[3];
 				} else {
 					$cond = array("", ":");
@@ -289,7 +289,7 @@ class SearchController extends Controller
 	private function get_search_rows($conditions, $sortorder)
 	{
 		$i=0;
-		$factioncodes = array(
+		$faction_codes = array(
 			'h' => "Haas-Bioroid",
 			'w' => "Weyland Consortium",
 			'a' => "Anarch",
@@ -299,7 +299,7 @@ class SearchController extends Controller
 			'n' => "NBN",
 			'-' => "Neutral",
 		);
-		$sidecodes = array(
+		$side_codes = array(
 			'r' => 'Runner',
 			'c' => 'Corp',
 		);
@@ -397,12 +397,12 @@ class SearchController extends Controller
 				case 'f': // faction
 					$or = array();
 					foreach($condition as $arg) {
-						if(array_key_exists($arg, $factioncodes)) {
+						if(array_key_exists($arg, $faction_codes)) {
 							switch($operator) {
 								case ':': $or[] = "(f.name = ?$i)"; break;
 								case '!': $or[] = "(f.name != ?$i)"; break;
 							}
-							$qb->setParameter($i++, $factioncodes[$arg]);
+							$qb->setParameter($i++, $faction_codes[$arg]);
 						}
 					}
 					$qb->andWhere(implode($operator == '!' ? " and " : " or ", $or));
@@ -432,12 +432,12 @@ class SearchController extends Controller
 				case 'd': // side
 					$or = array();
 					foreach($condition as $arg) {
-						if(array_key_exists($arg, $sidecodes)) {
+						if(array_key_exists($arg, $side_codes)) {
 							switch($operator) {
 								case ':': $or[] = "(s.name = ?$i)"; break;
 								case '!': $or[] = "(s.name != ?$i)"; break;
 							}
-							$qb->setParameter($i++, $sidecodes[$arg]);
+							$qb->setParameter($i++, $side_codes[$arg]);
 						}
 					}
 					$qb->andWhere(implode($operator == '!' ? " and " : " or ", $or));
@@ -552,7 +552,7 @@ class SearchController extends Controller
 		$symbols = array("Subroutine", "Credits", "Trash", "Click", "Recurring Credits", "Memory Unit", "Link", "Unique");
 		foreach($symbols as $symbol)
 		{
-			$text = str_replace("[$symbol]", '<span class="sprite '.strtolower(str_replace(' ','_',$symbol)).'"></span>', $text);
+			$text = str_replace("[$symbol]", '<span class="sprite '.mb_strtolower(str_replace(' ','_',$symbol)).'"></span>', $text);
 		}
 		return $text;
 	}
@@ -868,7 +868,7 @@ class SearchController extends Controller
 				$cards[] = $card;
 			}
 		}
-		
+
 		$content = json_encode($cards);
 		if(isset($jsonp))
 		{

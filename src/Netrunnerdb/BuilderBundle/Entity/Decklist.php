@@ -456,7 +456,7 @@ class Decklist
     
     public function getPrettyName()
     {
-    	return preg_replace('/[^a-z0-9]+/', '-', strtolower($this->name));
+    	return preg_replace('/[^a-z0-9]+/', '-', mb_strtolower($this->name));
     }
 
     /**

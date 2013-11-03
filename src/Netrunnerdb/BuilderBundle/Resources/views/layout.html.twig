@@ -6,7 +6,7 @@
 	<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- Bootstrap -->
-    <link href="{{ asset('/web/bundles/netrunnerdbbuilder/css/bootstrap.min.css') }}" rel="stylesheet" media="screen">
+    <link href="{{ asset('/web/bundles/netrunnerdbbuilder/css/bootstrap.css') }}" rel="stylesheet" media="screen">
 
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -20,25 +20,21 @@
     <link rel="stylesheet" href="{{ asset('/web/bundles/netrunnerdbcards/css/flags.css') }}">
     <script src="{{ asset('/web/bundles/netrunnerdbbuilder/js/modernizr.custom.min.js') }}"></script>
     <script src="{{ asset('/web/bundles/netrunnerdbbuilder/js/jquery-2.0.3.min.js') }}"></script>
-    <script src="{{ asset('/web/bundles/netrunnerdbbuilder/js/taffy-min.js') }}"></script>
+    <script src="{{ asset('/web/bundles/netrunnerdbbuilder/js/taffy.js') }}"></script>
     <script src="{{ asset('/web/bundles/netrunnerdbbuilder/js/jquery.qtip.min.js') }}"></script>
-    <script src="{{ asset('/web/bundles/netrunnerdbbuilder/js/bootstrap.min.js') }}"></script>
+    <script src="{{ asset('/web/bundles/netrunnerdbbuilder/js/bootstrap.js') }}"></script>
     <script src="{{ asset('/web/bundles/netrunnerdbbuilder/js/typeahead.min.js') }}"></script>
     <script src="{{ asset('/web/bundles/netrunnerdbbuilder/js/spinners.min.js') }}"></script>
     <script type="text/javascript">
 var Locale = "{{ app.request.locale }}", SetsData, CardsData, IsModified = null;
 function parseSets(sets_data) {
 	var json = JSON.stringify(SetsData = sets_data);
-	console.log('parseSets: received data '+json.length+' chars');
 	IsModified = IsModified || json != localStorage.getItem("sets_data_"+Locale);
-	console.log('parseSets: IsModified '+IsModified);
 	localStorage.setItem("sets_data_"+Locale, json);
 }
 function parseCards(cards_data) {
 	var json = JSON.stringify(CardsData = cards_data);
-	console.log('parseCards: received data '+json.length+' chars');
 	IsModified = IsModified || json != localStorage.getItem("cards_data_"+Locale);
-	console.log('parseCards: IsModified '+IsModified);
 	localStorage.setItem("cards_data_"+Locale, json);
 }
 var promise1 = $.ajax("{{ path('api_sets') }}?jsonp=parseSets&_locale="+Locale);
