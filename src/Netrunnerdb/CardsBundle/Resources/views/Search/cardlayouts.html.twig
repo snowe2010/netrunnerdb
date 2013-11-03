@@ -93,7 +93,7 @@
 	<td>
 		<a href="{{ card.url }}" class="card card-title{% if card.available == false %} card-preview{% endif %}" data-index="{{ card.code }}">{{ card.title }}</a>
 	</td>
-	<td style="text-align:center">{% if card.faction_code != 'neutral' %}<img src="{{ asset('/web/bundles/netrunnerdbcards/images/factions/16px/' ~ card.faction_code ~ '.png') }}">{% endif %}</td>
+	<td style="text-align:center">{% if card.faction_code != 'neutral' %}<img src="{{ asset('/web/bundles/netrunnerdbbuilder/images/factions/16px/' ~ card.faction_code ~ '.png') }}">{% endif %}</td>
 	<td style="text-align:center">{{ card.cost }}{{ card.advancementcost }}</td>
 	<td>{{ card.type }}</td>
 	<td style="text-align:center">{{ card.strength }}{{ card.agendapoints }}{{ card.trash }}</td>
