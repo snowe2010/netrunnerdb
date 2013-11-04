@@ -13,7 +13,7 @@ function process_deck() {
 				 type = "barrier";
 			 }
 			 if(subtypes.indexOf("code gate") >= 0) {
-				 type = "code gate";
+				 type = "code-gate";
 			 }
 			 if(subtypes.indexOf("sentry") >= 0) {
 				 type = "sentry";
@@ -67,7 +67,7 @@ function update_deck() {
 		var type = record.type_code, subtypes = record.subtype_code ? record.subtype_code.split(" - ") : [];
 		if(type == "ice") {
 			 if(subtypes.indexOf("barrier") >= 0) type = "barrier";
-			 if(subtypes.indexOf("code gate") >= 0) type = "code gate";
+			 if(subtypes.indexOf("code gate") >= 0) type = "code-gate";
 			 if(subtypes.indexOf("sentry") >= 0) type = "sentry";
 		}
 		if(type == "program") {
@@ -254,7 +254,7 @@ function export_bbcode() {
 	var lines = [];
 	lines.push("[b]"+SelectedDeck.name+"[/b]");
 	lines.push("");
-	var types = ["Identity", "Event", "Hardware", "Resource", "Icebreaker", "Program", "Agenda", "Asset", "Upgrade", "Operation", "Barrier", "Code Gate", "Sentry", "ICE"];
+	var types = ["identity", "event", "hardware", "resource", "icebreaker", "program", "agenda", "asset", "upgrade", "operation", "barrier", "code-gate", "sentry", "ice"];
 	$.each(types, function (n, type) {
 		if(deck[type] != null) {
 			if(type == "Identity") {
