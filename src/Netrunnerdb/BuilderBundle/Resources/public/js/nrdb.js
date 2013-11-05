@@ -255,6 +255,7 @@ function export_bbcode() {
 	lines.push("[b]"+SelectedDeck.name+"[/b]");
 	lines.push("");
 	var types = ["identity", "event", "hardware", "resource", "icebreaker", "program", "agenda", "asset", "upgrade", "operation", "barrier", "code-gate", "sentry", "ice"];
+	var typesstr = ["Identity", "Event", "Hardware", "Resource", "Icebreaker", "Program", "Agenda", "Asset", "Upgrade", "Operation", "Barrier", "Code Gate", "Sentry", "ICE"];
 	$.each(types, function (n, type) {
 		if(deck[type] != null) {
 			if(type == "Identity") {
@@ -269,7 +270,7 @@ function export_bbcode() {
 				 lines.push("");
 			} else {
 				var count = deck[type].reduce(function (prev, curr) { return prev + curr.qty; }, 0);
-				lines.push("[b]"+type+"[/b] ("+count+")");
+				lines.push("[b]"+typesstr[n]+"[/b] ("+count+")");
 				$.each(deck[type], function (n, slot) {
 					var inf = "";
 					for(var i=0; i<slot.influence; i++) {
@@ -305,7 +306,8 @@ function export_markdown() {
 	var lines = [];
 	lines.push("# "+SelectedDeck.name);
 	lines.push("");
-	var types = ["Identity", "Event", "Hardware", "Resource", "Icebreaker", "Program", "Agenda", "Asset", "Upgrade", "Operation", "Barrier", "Code Gate", "Sentry", "ICE"];
+	var types = ["identity", "event", "hardware", "resource", "icebreaker", "program", "agenda", "asset", "upgrade", "operation", "barrier", "code-gate", "sentry", "ice"];
+	var typesstr = ["Identity", "Event", "Hardware", "Resource", "Icebreaker", "Program", "Agenda", "Asset", "Upgrade", "Operation", "Barrier", "Code Gate", "Sentry", "ICE"];
 	$.each(types, function (n, type) {
 		if(deck[type] != null) {
 			if(type == "Identity") {
@@ -321,7 +323,7 @@ function export_markdown() {
 			} else {
 				var count = deck[type].reduce(function (prev, curr) { return prev + curr.qty; }, 0);
 				lines.push("");
-				lines.push("## "+type+" ("+count+")");
+				lines.push("## "+typesstr[n]+" ("+count+")");
 				lines.push("");
 				$.each(deck[type], function (n, slot) {
 					var inf = "";
@@ -359,7 +361,8 @@ function export_plaintext() {
 	var lines = [];
 	lines.push(SelectedDeck.name);
 	lines.push("");
-	var types = ["Identity", "Event", "Hardware", "Resource", "Icebreaker", "Program", "Agenda", "Asset", "Upgrade", "Operation", "Barrier", "Code Gate", "Sentry", "ICE"];
+	var types = ["identity", "event", "hardware", "resource", "icebreaker", "program", "agenda", "asset", "upgrade", "operation", "barrier", "code-gate", "sentry", "ice"];
+	var typesstr = ["Identity", "Event", "Hardware", "Resource", "Icebreaker", "Program", "Agenda", "Asset", "Upgrade", "Operation", "Barrier", "Code Gate", "Sentry", "ICE"];
 	$.each(types, function (n, type) {
 		if(deck[type] != null) {
 			if(type == "Identity") {
@@ -371,7 +374,7 @@ function export_plaintext() {
 			} else {
 				var count = deck[type].reduce(function (prev, curr) { return prev + curr.qty; }, 0);
 				lines.push("");
-				lines.push(type+" ("+count+")");
+				lines.push(typesstr[n]+" ("+count+")");
 				$.each(deck[type], function (n, slot) {
 					var inf = "";
 					for(var i=0; i<slot.influence; i++) {
