@@ -258,7 +258,7 @@ function export_bbcode() {
 	var typesstr = ["Identity", "Event", "Hardware", "Resource", "Icebreaker", "Program", "Agenda", "Asset", "Upgrade", "Operation", "Barrier", "Code Gate", "Sentry", "ICE"];
 	$.each(types, function (n, type) {
 		if(deck[type] != null) {
-			if(type == "Identity") {
+			if(type == "identity") {
 				var slot = deck[type][0];
 				lines.push('[url=http://netrunnerdb.com/'+Locale+'/card/'
 				 + slot.card.code
@@ -310,7 +310,7 @@ function export_markdown() {
 	var typesstr = ["Identity", "Event", "Hardware", "Resource", "Icebreaker", "Program", "Agenda", "Asset", "Upgrade", "Operation", "Barrier", "Code Gate", "Sentry", "ICE"];
 	$.each(types, function (n, type) {
 		if(deck[type] != null) {
-			if(type == "Identity") {
+			if(type == "identity") {
 				var slot = deck[type][0];
 				lines.push('['
 				 + slot.card.title
@@ -365,7 +365,7 @@ function export_plaintext() {
 	var typesstr = ["Identity", "Event", "Hardware", "Resource", "Icebreaker", "Program", "Agenda", "Asset", "Upgrade", "Operation", "Barrier", "Code Gate", "Sentry", "ICE"];
 	$.each(types, function (n, type) {
 		if(deck[type] != null) {
-			if(type == "Identity") {
+			if(type == "identity") {
 				var slot = deck[type][0];
 				lines.push(slot.card.title
 				 + ' ('
