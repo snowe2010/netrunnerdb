@@ -8,7 +8,7 @@
 /bin/
 /composer.phar
 /src/Netrunnerdb/CardsBundle/Resources/public/images/cards/
+/.settings/
+/.buildpath
+/.project
 .DS_Store
-.settings/
-.buildpath
-.project
