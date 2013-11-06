@@ -214,10 +214,12 @@ function display_qtip(event) {
 	if(card.type_code == "asset" || card.type_code == "upgrade") type += ' &middot; <span class="card-prop">'+card.cost+'<span class="sprite credits"></span> '+card.trash+'<span class="sprite trash"></span></span>';
 	if(card.type_code == "ice") type += ' &middot; <span class="card-prop">'+card.cost+'<span class="sprite credits"></span></span>';
 	type += '</p>';
+	var influence = '';
+	for(var i=0; i<card.factioncost; i++) influence += "&bull;";
 	if(card.strength != null) type += '<p>Strength <b>'+card.strength+'</b></p>';
 	$(this).qtip({
 		content: {
-			text: '<h4>'+card.title+'</h4>'+type+text_format(card.text)
+			text: '<h4>'+card.title+'</h4>'+type+text_format(card.text)+'<p style="text-align:right">'+influence+' '+card.faction+'</p>'
 		},
 		style: { 
 			classes: 'qtip-bootstrap'
