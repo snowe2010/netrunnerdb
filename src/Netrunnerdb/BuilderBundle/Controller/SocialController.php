@@ -696,7 +696,7 @@ class SocialController extends Controller {
 
 		$comment_text = trim(filter_var($request->get('comment'),
 				FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES));
-		if(!empty($comment_text)) {
+		if($decklist && !empty($comment_text)) {
 			$comment_html = Markdown::defaultTransform($comment_text);
 			
 			$comment = new Comment();
