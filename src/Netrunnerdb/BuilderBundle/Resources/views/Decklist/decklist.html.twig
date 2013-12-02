@@ -192,7 +192,7 @@ var CardDB = null,
 <div class="col-md-6">
 
 <h3 class="decklist-author"><a href="{{ path('user_profile_view', {user_id:decklist.user_id,user_name:decklist.username}) }}" class="{{ decklist.usercolor }}">{{ decklist.username }}</a> <small title="User Reputation">{{ decklist.reputation }}</small></h3>  
-<p id="deck-description">{{ decklist.description|raw }}</p>
+<div id="deck-description">{{ decklist.description|raw }}</div>
 
 <table class="table">
 <thead>
