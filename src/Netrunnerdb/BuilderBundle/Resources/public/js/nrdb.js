@@ -160,7 +160,7 @@ function fill_modal(code) {
 	modal.find('h3.modal-title').text(card.title);
 	modal.find('#modal-image').html('<img class="img-responsive" src="'+card.imagesrc+'">');
 	modal.find('#modal-info').html(
-	  '<div><b>'+card.type+'</b>'+(card.subtype ? ': '+card.subtype : '')+'</div>'
+	  '<div class="card-info">'+get_type_line(card)+'</div>'
 	  +'<div><small>' + card.faction + ' &bull; '+ card.setname + '</small></div>'
 	  +'<div class="card-text"><small>'+text_format(card.text)+'</small></div>'
 	);
@@ -199,11 +199,8 @@ function text_format(text) {
 	return "<p>"+text+"</p>";
 	
 }
-
-function display_qtip(event) {
-	var code = $(this).data('index') || $(this).closest('tr').data('index');
-	var card = CardDB({code:code}).first();
-	var type = '<p class="card-info"><span class="card-type">'+card.type+'</span>';
+function get_type_line(card) {
+	var type = '<span class="card-type">'+card.type+'</span>';
 	if(card.subtype) type += '<span class="card-keywords">: '+card.subtype+'</span>';
 	if(card.type_code == "agenda") type += ' &middot; <span class="card-prop">'+card.advancementcost+'/'+card.agendapoints+'</span>';
 	if(card.type_code == "identity" && card.side_code == "corp") type += ' &middot; <span class="card-prop">'+card.minimumdecksize+'/'+card.influencelimit+'</span>';
@@ -213,7 +210,13 @@ function display_qtip(event) {
 	if(card.type_code == "program") type += ' &middot; <span class="card-prop">'+card.cost+'<span class="sprite credits"></span> '+card.memoryunits+'<span class="sprite memory_unit"></span></span>';
 	if(card.type_code == "asset" || card.type_code == "upgrade") type += ' &middot; <span class="card-prop">'+card.cost+'<span class="sprite credits"></span> '+card.trash+'<span class="sprite trash"></span></span>';
 	if(card.type_code == "ice") type += ' &middot; <span class="card-prop">'+card.cost+'<span class="sprite credits"></span></span>';
-	type += '</p>';
+	return type;
+}
+
+function display_qtip(event) {
+	var code = $(this).data('index') || $(this).closest('tr').data('index');
+	var card = CardDB({code:code}).first();
+	var type = '<p class="card-info">'+get_type_line(card)+'</p>';
 	var influence = '';
 	for(var i=0; i<card.factioncost; i++) influence += "&bull;";
 	if(card.strength != null) type += '<p>Strength <b>'+card.strength+'</b></p>';
