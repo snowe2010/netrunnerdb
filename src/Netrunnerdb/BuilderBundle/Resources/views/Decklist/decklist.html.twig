@@ -14,7 +14,9 @@ var CardDB = null,
 	SelectedDeck = DeckDB().first()
 	Url_Like = "{{ path('decklist_like') }}",
 	Url_Favorite = "{{ path('decklist_favorite') }}",
-	Url_Copy = "{{ path('deck_copy', {decklist_id:decklist.id}) }}";
+	Url_Copy = "{{ path('deck_copy', {decklist_id:decklist.id}) }}",
+	Url_OctgnExport = "{{ path('decklist_export_octgn', {decklist_id:decklist.id}) }}",
+	Url_TextExport = "{{ path('decklist_export_text', {decklist_id:decklist.id}) }}";
 
 </script>
 {% endblock %}

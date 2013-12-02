@@ -945,16 +945,16 @@ class SocialController extends Controller {
 		if (empty($identity)) {
 			return new Response('no identity found');
 		}
-		return $this->octgnexport("$name.o8d", $identity, $rd);
+		return $this->octgnexport("$name.o8d", $identity, $rd, $decklist->getDescription());
 	}
 
 	/*
 	 * does the "downloadable file" part of the export
 	 */
-	public function octgnexport($filename, $identity, $rd) {
+	public function octgnexport($filename, $identity, $rd, $description) {
 		$content = $this
 				->renderView('NetrunnerdbBuilderBundle::octgn.xml.twig',
-						array("identity" => $identity, "rd" => $rd,));
+						array("identity" => $identity, "rd" => $rd, "description" => strip_tags($description)));
 
 		$response = new Response();
 

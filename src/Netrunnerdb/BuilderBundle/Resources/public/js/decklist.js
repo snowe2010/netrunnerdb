@@ -51,8 +51,8 @@ function do_action_decklist(event) {
 	if(!action_id || !SelectedDeck) return;
 	switch(action_id) {
 		case 'btn-copy': location.href=Url_Copy; break;
-		case 'btn-download-text': location.href='/decklist/export/text/'+SelectedDeck.id; break;
-		case 'btn-download-octgn': location.href='/decklist/export/octgn/'+SelectedDeck.id; break;
+		case 'btn-download-text': location.href=Url_TextExport; break;
+		case 'btn-download-octgn': location.href=Url_OctgnExport; break;
 		case 'btn-export-bbcode': export_bbcode(); break;
 		case 'btn-export-markdown': export_markdown(); break;
 		case 'btn-export-plaintext': export_plaintext(); break;
