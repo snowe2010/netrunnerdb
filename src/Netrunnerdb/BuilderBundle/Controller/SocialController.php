@@ -87,8 +87,8 @@ class SocialController extends Controller {
 
 		$name = filter_var($request->request->get('name'),
 				FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
-		$description = filter_var($request->request->get('description'),
-				FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
+		$description = Markdown::defaultTransform(filter_var($request->request->get('description'),
+				FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES));
 
 		$decklist = new Decklist;
 		$decklist->setName(substr($name, 0, 60));
