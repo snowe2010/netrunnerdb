@@ -94,11 +94,11 @@ class BuilderController extends Controller
 		}
 
 		if ($filetype == "octgn" || ($filetype == "auto" && $origext == "o8d")) {
-			$content = $this->parseOctgnImport(file_get_contents($filename));
+			$parse = $this->parseOctgnImport(file_get_contents($filename));
 		} else {
-			$content = $this->parseTextImport(file_get_contents($filename));
+			$parse = $this->parseTextImport(file_get_contents($filename));
 		}
-		return $this->forward('NetrunnerdbBuilderBundle:Builder:save', array('name' => $origname, 'content' => json_encode($content)));
+		return $this->forward('NetrunnerdbBuilderBundle:Builder:save', array('name' => $origname, 'content' => json_encode($parse['content']), 'description' => $parse['description']));
 	}
 
 	public function parseTextImport($text)
@@ -127,7 +127,7 @@ class BuilderController extends Controller
 				$content[$card->getCode()] = $quantity;
 			}
 		}
-		return $content;
+		return array("content" => $content, "description" => "");
 	}
 
 	public function parseOctgnImport($octgn)
@@ -138,10 +138,10 @@ class BuilderController extends Controller
 
 		$crawler = new Crawler();
 		$crawler->addXmlContent($octgn);
-		$crawler = $crawler->filter('deck > section > card');
+		$cardcrawler = $crawler->filter('deck > section > card');
 
 		$content = array();
-		foreach ($crawler as $domElement) {
+		foreach ($cardcrawler as $domElement) {
 			$quantity = intval($domElement->getAttribute('qty'));
 			if (preg_match('/bc0f047c-01b1-427f-a439-d451eda(\d{5})/', $domElement->getAttribute('id'), $matches)) {
 				$card_code = $matches[1];
@@ -153,7 +153,13 @@ class BuilderController extends Controller
 				$content[$card->getCode()] = $quantity;
 			}
 		}
-		return $content;
+		
+		$desccrawler = $crawler->filter('deck > notes');
+		$description = array();
+		foreach ($desccrawler as $domElement) {
+			$description[] = $domElement->nodeValue;
+		}
+		return array("content" => $content, "description" => implode("\n", $description));
 	}
 
 	public function textexportAction($deck_id)
@@ -227,12 +233,12 @@ class BuilderController extends Controller
 		if (empty($identity)) {
 			return new Response('no identity found');
 		}
-		return $this->octgnexport("$name.o8d", $identity, $rd);
+		return $this->octgnexport("$name.o8d", $identity, $rd, $decklist->getDescription());
 	}
 
-	public function octgnexport($filename, $identity, $rd)
+	public function octgnexport($filename, $identity, $rd, $description)
 	{
-		$content = $this->renderView('NetrunnerdbBuilderBundle::octgn.xml.twig', array("identity" => $identity, "rd" => $rd,));
+		$content = $this->renderView('NetrunnerdbBuilderBundle::octgn.xml.twig', array("identity" => $identity, "rd" => $rd, "description" => strip_tags($description)));
 
 		$response = new Response();
 
