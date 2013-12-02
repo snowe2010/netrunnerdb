@@ -578,6 +578,15 @@ class SocialController extends Controller {
 		$decklist['comments'] = $comments;
 		$decklist['cards'] = $cards;
 
+		$is_liked = $this->getUser() ? (boolean) $dbh
+		->executeQuery(
+				"SELECT
+				count(*)
+				from decklist d
+				join vote v on v.decklist_id=d.id
+				where v.user_id=?
+				and d.id=?", array($this->getUser()->getId(), $decklist_id))->fetch(\PDO::FETCH_NUM)[0] : false;
+		
 		$is_favorite = $this->getUser() ? (boolean) $dbh
 				->executeQuery(
 						"SELECT
@@ -631,6 +640,7 @@ class SocialController extends Controller {
 												'NetrunnerdbCardsBundle:Default:langs.html.twig'),
 								'decklist' => $decklist,
 								'similar' => $similar_decklists,
+								'is_liked' => $is_liked,
 								'is_favorite' => $is_favorite,
 								'is_author' => $is_author,
 								'precedent_decklists' => $precedent_decklists,
