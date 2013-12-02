@@ -27,6 +27,7 @@
 		</div>
 		<div class="card-illustrator">
 			<small>
+			{{ card.faction }} &bull;
 			{% if card.illustrator %}{{ card.illustrator }} &bull; {% endif %}{{ card.setname }} #{{ card.number }}
 			{% for alternative in card.alternatives %}
 				| <a href="{{ alternative.url }}" title="Alternative">{{ alternative.setname }} #{{ alternative.number }}</a>
