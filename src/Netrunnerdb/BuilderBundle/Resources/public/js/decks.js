@@ -70,6 +70,7 @@ function confirm_publish() {
 	});
 	$('#publish-deck-name').val(SelectedDeck.name);
 	$('#publish-deck-id').val(SelectedDeck.id);
+	$('#publish-deck-description').val(SelectedDeck.description);
 	$('#publishModal').modal('show');
 }
 
