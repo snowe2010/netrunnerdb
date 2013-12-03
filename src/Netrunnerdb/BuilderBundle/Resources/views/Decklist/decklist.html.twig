@@ -16,7 +16,8 @@ var CardDB = null,
 	Url_Favorite = "{{ path('decklist_favorite') }}",
 	Url_Copy = "{{ path('deck_copy', {decklist_id:decklist.id}) }}",
 	Url_OctgnExport = "{{ path('decklist_export_octgn', {decklist_id:decklist.id}) }}",
-	Url_TextExport = "{{ path('decklist_export_text', {decklist_id:decklist.id}) }}";
+	Url_TextExport = "{{ path('decklist_export_text', {decklist_id:decklist.id}) }}",
+	DisplaySort = 'type';
 
 </script>
 {% endblock %}
@@ -76,7 +77,7 @@ var CardDB = null,
 		<div id="btn-group-decklist">
 			<button type="button" id="btn-copy" class="btn btn-default  btn-xs"><span class="glyphicon glyphicon-save"></span> Copy</button>
 			<div class="btn-group">
-				<button type="button" class="btn btn-default dropdown-toggle  btn-xs" data-toggle="dropdown">
+				<button type="button" class="btn btn-default dropdown-toggle btn-xs" data-toggle="dropdown">
 					<span class="glyphicon glyphicon-download"></span> Download <span class="caret"></span>
 				</button>
 				<ul class="dropdown-menu" role="menu">
@@ -85,7 +86,7 @@ var CardDB = null,
 				</ul>
 			</div>
 			<div class="btn-group">
-				<button type="button" class="btn btn-default dropdown-toggle  btn-xs" data-toggle="dropdown">
+				<button type="button" class="btn btn-default dropdown-toggle btn-xs" data-toggle="dropdown">
 					<span class="glyphicon glyphicon-export"></span> Export <span class="caret"></span>
 				</button>
 				<ul class="dropdown-menu" role="menu">
@@ -94,7 +95,18 @@ var CardDB = null,
 					<li><a href="#" id="btn-export-plaintext">plain text</a></li>
 				</ul>
 			</div>
-		</div>
+			<div class="btn-group">
+				<button type="button" class="btn btn-default dropdown-toggle btn-xs" data-toggle="dropdown">
+					<span class="glyphicon glyphicon-list"></span> Sort <span class="caret"></span>
+				</button>
+				<ul class="dropdown-menu" role="menu" id="menu-sort">
+					<li><a href="#" id="btn-sort-type"><label><input type="radio" name="sort-order" checked="checked">by Type</label></a></li>
+					<li><a href="#" id="btn-sort-number"><label><input type="radio" name="sort-order">by Set</label></a></li>
+					<li><a href="#" id="btn-sort-faction"><label><input type="radio" name="sort-order">by Faction</label></a></li>
+					<li><a href="#" id="btn-sort-title"><label><input type="radio" name="sort-order">by Name</label></a></li>
+				</ul>
+			</div>
+			</div>
 		<div id="influence"></div>
 		<div id="agendapoints"></div>
 		<div id="cardcount"></div>
@@ -105,23 +117,6 @@ var CardDB = null,
 
 <!-- Deck Content -->
 <div class="row" id="deck-content" style="margin-bottom:10px">
-	<div class="col-sm-6">
-		<h5><img class="type-icon" src="{{ asset('/web/bundles/netrunnerdbbuilder/images/types/event.png') }}"> Event (<span></span>)</h5><div class="deck-event"></div>
-		<h5><img class="type-icon" src="{{ asset('/web/bundles/netrunnerdbbuilder/images/types/hardware.png') }}"> Hardware (<span></span>)</h5><div class="deck-hardware"></div>
-		<h5><img class="type-icon" src="{{ asset('/web/bundles/netrunnerdbbuilder/images/types/resource.png') }}"> Resource (<span></span>)</h5><div class="deck-resource"></div>
-		<h5><img class="type-icon" src="{{ asset('/web/bundles/netrunnerdbbuilder/images/types/agenda.png') }}"> Agenda (<span></span>)</h5><div class="deck-agenda"></div>
-		<h5><img class="type-icon" src="{{ asset('/web/bundles/netrunnerdbbuilder/images/types/asset.png') }}"> Asset (<span></span>)</h5><div class="deck-asset"></div>
-		<h5><img class="type-icon" src="{{ asset('/web/bundles/netrunnerdbbuilder/images/types/upgrade.png') }}"> Upgrade (<span></span>)</h5><div class="deck-upgrade"></div>
-		<h5><img class="type-icon" src="{{ asset('/web/bundles/netrunnerdbbuilder/images/types/operation.png') }}"> Operation (<span></span>)</h5><div class="deck-operation"></div>
-	</div><!-- /.col-sm-6 -->
-	<div class="col-sm-6">
-		<h5><img class="type-icon" src="{{ asset('/web/bundles/netrunnerdbbuilder/images/types/program.png') }}"> Icebreaker (<span></span>)</h5><div class="deck-icebreaker"></div>
-		<h5><img class="type-icon" src="{{ asset('/web/bundles/netrunnerdbbuilder/images/types/program.png') }}"> Program (<span></span>)</h5><div class="deck-program"></div>
-		<h5><img class="type-icon" src="{{ asset('/web/bundles/netrunnerdbbuilder/images/types/ice.png') }}"> Barrier (<span></span>)</h5><div class="deck-barrier"></div>
-		<h5><img class="type-icon" src="{{ asset('/web/bundles/netrunnerdbbuilder/images/types/ice.png') }}"> Code Gate (<span></span>)</h5><div class="deck-code-gate"></div>
-		<h5><img class="type-icon" src="{{ asset('/web/bundles/netrunnerdbbuilder/images/types/ice.png') }}"> Sentry (<span></span>)</h5><div class="deck-sentry"></div>
-		<h5><img class="type-icon" src="{{ asset('/web/bundles/netrunnerdbbuilder/images/types/ice.png') }}"> ICE (<span></span>)</h5><div class="deck-ice"></div>
-	</div><!-- /.col-sm-6 -->
 </div><!-- /#deck-content -->
 <!-- Deck Content -->
 

@@ -26,6 +26,15 @@ $(function() {
 	$('#decks-filter').on({
 		change: filter_decks
 	}, 'input[type=checkbox]');
+	$('#menu-sort').on({
+		change: function(event) {
+			if($(this).attr('id').match(/btn-sort-(\w+)/)) {
+				DisplaySort = RegExp.$1;
+				update_deck();
+			}
+		}
+	}, 'a');
+
 	when_all_parsed();
 	$.when(promise1, promise2).done(when_all_parsed);
 	

@@ -40,6 +40,14 @@ $(function() {
 	$('#btn-group-decklist').on({
 		click: do_action_decklist
 	}, 'button[id],a[id]');
+	$('#menu-sort').on({
+		change: function(event) {
+			if($(this).attr('id').match(/btn-sort-(\w+)/)) {
+				DisplaySort = RegExp.$1;
+				update_deck();
+			}
+		}
+	}, 'a');
 });
 
 function edit_form() {

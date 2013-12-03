@@ -48,12 +48,158 @@ function process_deck() {
 	return bytype;
 }
 
+function getDisplayDescriptions(sort) {
+	var dd = {
+	    'type': [
+	        [ // first column
+
+	            {
+	                id: 'event',
+	                label: 'Event',
+	                image: 'bundles/netrunnerdbbuilder/images/types/event.png'
+	            }, {
+	                id: 'hardware',
+	                label: 'Hardware',
+	                image: 'bundles/netrunnerdbbuilder/images/types/hardware.png'
+	            }, {
+	                id: 'resource',
+	                label: 'Resource',
+	                image: 'bundles/netrunnerdbbuilder/images/types/resource.png'
+	            }, {
+	                id: 'agenda',
+	                label: 'Agenda',
+	                image: 'bundles/netrunnerdbbuilder/images/types/agenda.png'
+	            }, {
+	                id: 'asset',
+	                label: 'Asset',
+	                image: 'bundles/netrunnerdbbuilder/images/types/asset.png'
+	            }, {
+	                id: 'upgrade',
+	                label: 'Upgrade',
+	                image: 'bundles/netrunnerdbbuilder/images/types/upgrade.png'
+	            }, {
+	                id: 'operation',
+	                label: 'Operation',
+	                image: 'bundles/netrunnerdbbuilder/images/types/operation.png'
+	            },
+
+	        ],
+	        [ // second column
+	            {
+	                id: 'icebreaker',
+	                label: 'Icebreaker',
+	                image: 'bundles/netrunnerdbbuilder/images/types/program.png'
+	            }, {
+	                id: 'program',
+	                label: 'Program',
+	                image: 'bundles/netrunnerdbbuilder/images/types/program.png'
+	            }, {
+	                id: 'barrier',
+	                label: 'Barrier',
+	                image: 'bundles/netrunnerdbbuilder/images/types/ice.png'
+	            }, {
+	                id: 'code-gate',
+	                label: 'Code Gate',
+	                image: 'bundles/netrunnerdbbuilder/images/types/ice.png'
+	            }, {
+	                id: 'sentry',
+	                label: 'Sentry',
+	                image: 'bundles/netrunnerdbbuilder/images/types/ice.png'
+	            }, {
+	                id: 'ice',
+	                label: 'ICE',
+	                image: 'bundles/netrunnerdbbuilder/images/types/ice.png'
+	            }
+	        ]
+	    ],
+	    'faction': [
+	        [],
+	        [{
+	            id: 'anarch',
+	            label: 'Anarch',
+	            image: 'bundles/netrunnerdbbuilder/images/factions/16px/anarch.png'
+	        }, {
+	            id: 'criminal',
+	            label: 'Criminal',
+	            image: 'bundles/netrunnerdbbuilder/images/factions/16px/criminal.png'
+	        }, {
+	            id: 'haas-bioroid',
+	            label: 'Haas-Bioroid',
+	            image: 'bundles/netrunnerdbbuilder/images/factions/16px/haas-bioroid.png'
+	        }, {
+	            id: 'jinteki',
+	            label: 'Jinteki',
+	            image: 'bundles/netrunnerdbbuilder/images/factions/16px/jinteki.png'
+	        }, {
+	            id: 'nbn',
+	            label: 'NBN',
+	            image: 'bundles/netrunnerdbbuilder/images/factions/16px/nbn.png'
+	        }, {
+	            id: 'shaper',
+	            label: 'Shaper',
+	            image: 'bundles/netrunnerdbbuilder/images/factions/16px/shaper.png'
+	        }, {
+	            id: 'weyland-consortium',
+	            label: 'Weyland Consortium',
+	            image: 'bundles/netrunnerdbbuilder/images/factions/16px/weyland-consortium.png'
+	        }, {
+	            id: 'neutral',
+	            label: 'Neutral',
+	            image: 'bundles/netrunnerdbbuilder/images/factions/16px/neutral.png'
+	        }, ]
+	    ],
+	    'number': [],
+	    'title': [
+	        [{
+	            id: 'cards',
+	            label: 'Cards'
+	        }]
+	    ]
+	};
+	return dd[sort];
+}
+
 function update_deck() {
-	$('#deck-content').find('h5').hide().find('span').empty().parent().next().empty();
-	InfluenceLimit = 0;
-	var bytype = {};
 	Identity = CardDB({indeck:{'gt':0},type_code:'identity'}).first();
 	if(!Identity) return;
+
+	var displayDescription = getDisplayDescriptions(DisplaySort);
+	if(displayDescription == null) return;
+	
+	if(DisplaySort === 'faction') {
+		for(var i=0; i<displayDescription[1].length; i++) {
+			if(displayDescription[1][i].id === Identity.faction_code) {
+				displayDescription[0] = displayDescription[1].splice(i, 1);
+				break;
+			}
+		}
+	}
+	if(DisplaySort === 'number' && displayDescription.length === 0) {
+		var rows = [];
+		SetDB().order('cyclenumber,number').each(function (record) {
+			rows.push({id: record.code, label: record.name});
+		});
+		displayDescription.push(rows);
+	}
+	
+	$('#deck-content').empty();
+	var cols_size = 12/displayDescription.length;
+	for(var colnum=0; colnum<displayDescription.length; colnum++) {
+		var rows = displayDescription[colnum];
+		var div = $('<div>').addClass('col-sm-'+cols_size).appendTo($('#deck-content'));
+		for(var rownum=0; rownum<rows.length; rownum++) {
+			var row = rows[rownum];
+			var item = $('<h5> '+row.label+' (<span></span>)</h5>').hide();
+			if(row.image) {
+				$('<img>').addClass(DisplaySort+'-icon').attr('src', Url_Asset.replace('XXX', row.image)).prependTo(item);
+			}
+			var content = $('<div class="deck-'+row.id+'"></div>')
+			div.append(item).append(content);
+		}
+	}
+	
+	InfluenceLimit = 0;
+	var cabinet = {};
 	var parts = Identity.title.split(/: /);
 	$('#identity').html('<a href="#cardModal" class="card" data-toggle="modal" data-index="'+Identity.code+'">'+parts[0]+' <small>'+parts[1]+'</small></a>');
 	$('#img_identity').prop('src', Identity.imagesrc);
@@ -61,18 +207,10 @@ function update_deck() {
 	MinimumDeckSize = Identity.minimumdecksize;
 
 	var latestpack = SetDB({name:Identity.setname}).first();
-	CardDB({indeck:{'gt':0},type_code:{'!is':'identity'}}).order("type,title").each(function(record) {
+	CardDB({indeck:{'gt':0},type_code:{'!is':'identity'}}).order(DisplaySort === 'number' ? 'code' : 'title').each(function(record) {
 		var pack = SetDB({name:record.setname}).first();
 		if(latestpack.cyclenumber < pack.cyclenumber || (latestpack.cyclenumber == pack.cyclenumber && latestpack.number < pack.number)) latestpack = pack;
-		var type = record.type_code, subtypes = record.subtype_code ? record.subtype_code.split(" - ") : [];
-		if(type == "ice") {
-			 if(subtypes.indexOf("barrier") >= 0) type = "barrier";
-			 if(subtypes.indexOf("code gate") >= 0) type = "code-gate";
-			 if(subtypes.indexOf("sentry") >= 0) type = "sentry";
-		}
-		if(type == "program") {
-			 if(subtypes.indexOf("icebreaker") >= 0) type = "icebreaker";
-		}
+		
 		var influence = '';
 		if(record.faction != Identity.faction) {
 			var faction = record.faction.toLowerCase().replace(' ','-');
@@ -83,12 +221,38 @@ function update_deck() {
 			}
 			influence = ' <span class="influence-'+faction+'">'+influence+'</span>';
 		}
+
+		var item = null;
+		var criteria = null;
 		
-		$('<div>'+record.indeck+'x <a href="#cardModal" class="card" data-toggle="modal" data-index="'+record.code+'">'+record.title+'</a>'+influence+'</div>').appendTo($('#deck-content .deck-'+type));
+		if(DisplaySort === 'type') {
+			criteria = record.type_code, subtypes = record.subtype_code ? record.subtype_code.split(" - ") : [];
+			if(criteria == "ice") {
+				 if(subtypes.indexOf("barrier") >= 0) criteria = "barrier";
+				 if(subtypes.indexOf("code gate") >= 0) criteria = "code-gate";
+				 if(subtypes.indexOf("sentry") >= 0) criteria = "sentry";
+			}
+			if(criteria == "program") {
+				 if(subtypes.indexOf("icebreaker") >= 0) criteria = "icebreaker";
+			}
+		} else if(DisplaySort === 'faction') {
+			criteria = record.faction_code;
+		} else if(DisplaySort === 'number') {
+			criteria = record.set_code;
+			var number_of_sets = Math.ceil(record.indeck / record.quantity);
+			var alert_number_of_sets = number_of_sets > 1 ? '<small class="text-warning">'+number_of_sets+' sets needed</small> ' : '';
+			item = $('<div>'+record.indeck+'x <a href="#cardModal" class="card" data-toggle="modal" data-index="'+record.code+'">'+record.title+'</a> (#'+record.number+') '+alert_number_of_sets+influence+'</div>');
+		} else if(DisplaySort === 'title') {
+			criteria = 'cards';
+		}
+
+		if(item === null) item = $('<div>'+record.indeck+'x <a href="#cardModal" class="card" data-toggle="modal" data-index="'+record.code+'">'+record.title+'</a>'+influence+'</div>');
+		item.appendTo($('#deck-content .deck-'+criteria));
 		
-		bytype[type] |= 0;
-		bytype[type] = bytype[type] + record.indeck;
-		$('#deck-content .deck-'+type).prev().show().find('span').html(bytype[type]);
+		cabinet[criteria] |= 0;
+		cabinet[criteria] = cabinet[criteria] + record.indeck;
+		$('#deck-content .deck-'+criteria).prev().show().find('span').html(cabinet[criteria]);
+		
 	});
 	$('#latestpack').html('Cards up to <i>'+latestpack.name+'</i>');
 	check_influence();
