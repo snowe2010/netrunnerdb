@@ -375,16 +375,6 @@ function handle_quantity_change(event) {
 }
 
 function build_div(record) {
-	var faction_colors = {
-		"anarch": "orangered",
-		"criminal": "royalblue",
-		"shaper": "limegreen",
-		"haas-bioroid": "blueviolet",
-		"jinteki": "crimson",
-		"nbn": "darkorange",
-		"weyland-consortium": "darkgreen",
-		"neutral": "gray",
-	};
 	var faction = record.faction_code;
 	var influ = "";
 	for(var i=0; i<record.factioncost; i++) influ+="&bull;";

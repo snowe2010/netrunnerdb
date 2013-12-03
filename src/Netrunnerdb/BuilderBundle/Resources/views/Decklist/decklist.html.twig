@@ -97,7 +97,7 @@ var CardDB = null,
 			</div>
 			<div class="btn-group">
 				<button type="button" class="btn btn-default dropdown-toggle btn-xs" data-toggle="dropdown">
-					<span class="glyphicon glyphicon-list"></span> Sort <span class="caret"></span>
+					<span class="glyphicon glyphicon-sort"></span> Sort <span class="caret"></span>
 				</button>
 				<ul class="dropdown-menu" role="menu" id="menu-sort">
 					<li><a href="#" id="btn-sort-type"><label><input type="radio" name="sort-order" checked="checked">by Type</label></a></li>
@@ -120,6 +120,28 @@ var CardDB = null,
 </div><!-- /#deck-content -->
 <!-- Deck Content -->
 
+
+<table class="table table-condensed" id="table-graph-costs">
+<thead>
+<tr><th colspan="1"><span class="glyphicon glyphicon-stats"></span> Repartition by Cost</th></tr>
+</thead>
+<tbody>
+<tr>
+	<td><canvas id="costChart" width="1" height="200"></canvas></td>
+</tr>
+</tbody>
+</table>
+
+<table class="table table-condensed" id="table-graph-strengths">
+<thead>
+<tr><th colspan="1"><span class="glyphicon glyphicon-stats"></span> Repartition by Strength</th></tr>
+</thead>
+<tbody>
+<tr>
+	<td><canvas id="strengthChart" width="1" height="200"></canvas></td>
+</tr>
+</tbody>
+</table>
 
 <table class="table table-condensed" id="table-predecessor">
 <thead>

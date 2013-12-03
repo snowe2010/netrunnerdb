@@ -48,6 +48,7 @@ $(function() {
 			}
 		}
 	}, 'a');
+	make_graphs();
 });
 
 function edit_form() {

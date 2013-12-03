@@ -1,4 +1,4 @@
-function process_deck() {
+function process_deck_by_type() {
 	
 	var bytype = {};
 	Identity = CardDB({indeck:{'gt':0},type_code:'identity'}).first();
@@ -406,19 +406,19 @@ function display_qtip(event) {
 	}, event);
 }
 
+var FactionColors = {
+	"anarch": "#FF4500",
+	"criminal": "#4169E1",
+	"shaper": "#32CD32",
+	"neutral": "#708090",
+	"haas-bioroid": "#8A2BE2",
+	"jinteki": "#DC143C",
+	"nbn": "#FF8C00",
+	"weyland-consortium": "#006400"
+};
 
 function export_bbcode() {
-	var deck = process_deck(SelectedDeck);
-	var colors = {
-		"anarch": "#FF4500",
-		"criminal": "#4169E1",
-		"shaper": "#32CD32",
-		"neutral": "#708090",
-		"haas-bioroid": "#8A2BE2",
-		"jinteki": "#DC143C",
-		"nbn": "#FF8C00",
-		"weyland-consortium": "#006400"
-	};
+	var deck = process_deck_by_type(SelectedDeck);
 	
 	var lines = [];
 	lines.push("[b]"+SelectedDeck.name+"[/b]");
@@ -453,7 +453,7 @@ function export_bbcode() {
 					 + '[/url] [i]('
 					 + slot.card.setname
 					 + ")[/i]"
-					 + ( slot.influence ? '[color=' + colors[slot.faction] + ']' + inf + '[/color]' : '' )
+					 + ( slot.influence ? '[color=' + FactionColors[slot.faction] + ']' + inf + '[/color]' : '' )
 					);
 				});
 				lines.push("");
@@ -471,7 +471,7 @@ function export_bbcode() {
 }
 
 function export_markdown() {
-	var deck = process_deck(SelectedDeck);
+	var deck = process_deck_by_type(SelectedDeck);
 	var lines = [];
 	lines.push("# "+SelectedDeck.name);
 	lines.push("");
@@ -526,7 +526,7 @@ function export_markdown() {
 }
 
 function export_plaintext() {
-	var deck = process_deck(SelectedDeck);
+	var deck = process_deck_by_type(SelectedDeck);
 	var lines = [];
 	lines.push(SelectedDeck.name);
 	lines.push("");
@@ -570,4 +570,61 @@ function export_plaintext() {
 	}
 	$('#export-deck').html(lines.join("\n"));
 	$('#exportModal').modal('show');
+}
+
+function make_graphs() {
+	var canvasWidth = Math.floor( $('#table-graph-costs').find('th').width() - 10 );
+	console.log(canvasWidth);
+	
+	if(Identity.side_code === 'runner') $('#table-graph-strengths').hide();
+	
+	var costs = {}, xmaxcost = 10, ymaxcost = 0;
+	var strengths = {}, xmaxstrength = 10, ymaxstrength = 0;
+	CardDB({indeck:{'gt':0},type_code:{'!is':'identity'}}).each(function(record) {
+		if(record.cost != null) {
+			if(costs[record.cost] == null) costs[record.cost] = 0;
+			costs[record.cost] += record.indeck;
+			if(xmaxcost < record.cost) xmaxcost = record.cost;
+			if(ymaxcost < costs[record.cost]) ymaxcost = costs[record.cost];
+		}
+		if(record.strength != null) {
+			if(strengths[record.strength] == null) strengths[record.strength] = 0;
+			strengths[record.strength] += record.indeck;
+			if(xmaxstrength < record.strength) xmaxstrength = record.strength;
+			if(ymaxstrength < strengths[record.strength]) ymaxstrength = strengths[record.strength];
+		}
+	});
+	
+	// costChart
+	var data = {
+			labels: [],
+			datasets: [{
+				fillColor : Identity.side_code == "corp" ? "rgba(0,0,220,0.1)" : "rgba(220,0,0,0.1)",
+				strokeColor : Identity.side_code == "corp" ? "rgba(0,0,220,0.5)" : "rgba(220,0,0,0.5)",
+				data : []
+			}]
+	};
+	for(var cost=0; cost<xmaxcost; cost++) {
+		data.labels.push(cost);
+		data.datasets[0].data.push(costs[cost]);
+	}
+	var ctx = $('#costChart').attr('width', canvasWidth).get(0).getContext("2d");
+	var myNewChart = new Chart(ctx).Bar(data, {animation:false,scaleOverride:true,scaleSteps:ymaxcost,scaleStepWidth:1,scaleStartValue:0});
+
+	// strengthChart
+	var data = {
+			labels: [],
+			datasets: [{
+				fillColor : Identity.side_code == "corp" ? "rgba(0,0,220,0.1)" : "rgba(220,0,0,0.1)",
+				strokeColor : Identity.side_code == "corp" ? "rgba(0,0,220,0.5)" : "rgba(220,0,0,0.5)",
+				data : []
+			}]
+	};
+	for(var strength=0; strength<xmaxstrength; strength++) {
+		data.labels.push(strength);
+		data.datasets[0].data.push(strengths[strength]);
+	}
+	var ctx = $('#strengthChart').attr('width', canvasWidth).get(0).getContext("2d");
+	var myNewChart = new Chart(ctx).Bar(data, {animation:false,scaleOverride:true,scaleSteps:ymaxstrength,scaleStepWidth:1,scaleStartValue:0});
+	
 }
