@@ -48,117 +48,6 @@ function process_deck_by_type() {
 	return bytype;
 }
 
-function getDisplayDescriptions(sort) {
-	var dd = {
-	    'type': [
-	        [ // first column
-
-	            {
-	                id: 'event',
-	                label: 'Event',
-	                image: 'images/types/event.png'
-	            }, {
-	                id: 'hardware',
-	                label: 'Hardware',
-	                image: 'images/types/hardware.png'
-	            }, {
-	                id: 'resource',
-	                label: 'Resource',
-	                image: 'images/types/resource.png'
-	            }, {
-	                id: 'agenda',
-	                label: 'Agenda',
-	                image: 'images/types/agenda.png'
-	            }, {
-	                id: 'asset',
-	                label: 'Asset',
-	                image: 'images/types/asset.png'
-	            }, {
-	                id: 'upgrade',
-	                label: 'Upgrade',
-	                image: 'images/types/upgrade.png'
-	            }, {
-	                id: 'operation',
-	                label: 'Operation',
-	                image: 'images/types/operation.png'
-	            },
-
-	        ],
-	        [ // second column
-	            {
-	                id: 'icebreaker',
-	                label: 'Icebreaker',
-	                image: 'images/types/program.png'
-	            }, {
-	                id: 'program',
-	                label: 'Program',
-	                image: 'images/types/program.png'
-	            }, {
-	                id: 'barrier',
-	                label: 'Barrier',
-	                image: 'images/types/ice.png'
-	            }, {
-	                id: 'code-gate',
-	                label: 'Code Gate',
-	                image: 'images/types/ice.png'
-	            }, {
-	                id: 'sentry',
-	                label: 'Sentry',
-	                image: 'images/types/ice.png'
-	            }, {
-	                id: 'ice',
-	                label: 'ICE',
-	                image: 'images/types/ice.png'
-	            }
-	        ]
-	    ],
-	    'faction': [
-	        [],
-	        [{
-	            id: 'anarch',
-	            label: 'Anarch',
-	            image: 'images/factions/16px/anarch.png'
-	        }, {
-	            id: 'criminal',
-	            label: 'Criminal',
-	            image: 'images/factions/16px/criminal.png'
-	        }, {
-	            id: 'haas-bioroid',
-	            label: 'Haas-Bioroid',
-	            image: 'images/factions/16px/haas-bioroid.png'
-	        }, {
-	            id: 'jinteki',
-	            label: 'Jinteki',
-	            image: 'images/factions/16px/jinteki.png'
-	        }, {
-	            id: 'nbn',
-	            label: 'NBN',
-	            image: 'images/factions/16px/nbn.png'
-	        }, {
-	            id: 'shaper',
-	            label: 'Shaper',
-	            image: 'images/factions/16px/shaper.png'
-	        }, {
-	            id: 'weyland-consortium',
-	            label: 'Weyland Consortium',
-	            image: 'images/factions/16px/weyland-consortium.png'
-	        }, {
-	            id: 'neutral',
-	            label: 'Neutral',
-	            image: 'images/factions/16px/neutral.png'
-	        }, ]
-	    ],
-	    'number': [],
-	    'title': [
-	        [{
-	            id: 'cards',
-	            label: 'Cards'
-	        }]
-	    ]
-	};
-	return dd[sort];
-}
-
 function update_deck() {
 	Identity = CardDB({indeck:{'gt':0},type_code:'identity'}).first();
 	if(!Identity) return;
@@ -191,7 +80,7 @@ function update_deck() {
 			var row = rows[rownum];
 			var item = $('<h5> '+row.label+' (<span></span>)</h5>').hide();
 			if(row.image) {
-				$('<img>').addClass(DisplaySort+'-icon').attr('src', Url_Asset.replace('XXX', row.image)).prependTo(item);
+				$('<img>').addClass(DisplaySort+'-icon').attr('src', row.image).prependTo(item);
 			}
 			var content = $('<div class="deck-'+row.id+'"></div>')
 			div.append(item).append(content);
