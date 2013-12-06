@@ -27,7 +27,7 @@
     <script src="{{ asset('/web/bundles/netrunnerdbbuilder/js/spinners.min.js') }}"></script>
     <script src="{{ asset('/web/bundles/netrunnerdbbuilder/js/chart.min.js') }}"></script>
     <script type="text/javascript">
-var Locale = "{{ app.request.locale }}", SetsData, CardsData, IsModified = null, Url_Asset = "{{ asset('XXX') }}";
+var Locale = "{{ app.request.locale }}", SetsData, CardsData, IsModified = null;
 function parseSets(sets_data) {
 	var json = JSON.stringify(SetsData = sets_data);
 	IsModified = IsModified || json != localStorage.getItem("sets_data_"+Locale);

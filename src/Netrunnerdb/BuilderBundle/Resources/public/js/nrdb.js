@@ -80,7 +80,7 @@ function update_deck() {
 			var row = rows[rownum];
 			var item = $('<h5> '+row.label+' (<span></span>)</h5>').hide();
 			if(row.image) {
-				$('<img>').addClass(DisplaySort+'-icon').attr('src', Url_Asset.replace('XXX', row.image)).prependTo(item);
+				$('<img>').addClass(DisplaySort+'-icon').attr('src', row.image).prependTo(item);
 			}
 			var content = $('<div class="deck-'+row.id+'"></div>')
 			div.append(item).append(content);
