@@ -233,7 +233,7 @@ class BuilderController extends Controller
 		if (empty($identity)) {
 			return new Response('no identity found');
 		}
-		return $this->octgnexport("$name.o8d", $identity, $rd, $decklist->getDescription());
+		return $this->octgnexport("$name.o8d", $identity, $rd, $deck->getDescription());
 	}
 
 	public function octgnexport($filename, $identity, $rd, $description)
