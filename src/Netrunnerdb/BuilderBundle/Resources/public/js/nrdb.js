@@ -56,31 +56,31 @@ function getDisplayDescriptions(sort) {
 	            {
 	                id: 'event',
 	                label: 'Event',
-	                image: 'bundles/netrunnerdbbuilder/images/types/event.png'
+	                image: 'netrunnerdbbuilder/images/types/event.png'
 	            }, {
 	                id: 'hardware',
 	                label: 'Hardware',
-	                image: 'bundles/netrunnerdbbuilder/images/types/hardware.png'
+	                image: 'netrunnerdbbuilder/images/types/hardware.png'
 	            }, {
 	                id: 'resource',
 	                label: 'Resource',
-	                image: 'bundles/netrunnerdbbuilder/images/types/resource.png'
+	                image: 'netrunnerdbbuilder/images/types/resource.png'
 	            }, {
 	                id: 'agenda',
 	                label: 'Agenda',
-	                image: 'bundles/netrunnerdbbuilder/images/types/agenda.png'
+	                image: 'netrunnerdbbuilder/images/types/agenda.png'
 	            }, {
 	                id: 'asset',
 	                label: 'Asset',
-	                image: 'bundles/netrunnerdbbuilder/images/types/asset.png'
+	                image: 'netrunnerdbbuilder/images/types/asset.png'
 	            }, {
 	                id: 'upgrade',
 	                label: 'Upgrade',
-	                image: 'bundles/netrunnerdbbuilder/images/types/upgrade.png'
+	                image: 'netrunnerdbbuilder/images/types/upgrade.png'
 	            }, {
 	                id: 'operation',
 	                label: 'Operation',
-	                image: 'bundles/netrunnerdbbuilder/images/types/operation.png'
+	                image: 'netrunnerdbbuilder/images/types/operation.png'
 	            },
 
 	        ],
@@ -88,27 +88,27 @@ function getDisplayDescriptions(sort) {
 	            {
 	                id: 'icebreaker',
 	                label: 'Icebreaker',
-	                image: 'bundles/netrunnerdbbuilder/images/types/program.png'
+	                image: 'netrunnerdbbuilder/images/types/program.png'
 	            }, {
 	                id: 'program',
 	                label: 'Program',
-	                image: 'bundles/netrunnerdbbuilder/images/types/program.png'
+	                image: 'netrunnerdbbuilder/images/types/program.png'
 	            }, {
 	                id: 'barrier',
 	                label: 'Barrier',
-	                image: 'bundles/netrunnerdbbuilder/images/types/ice.png'
+	                image: 'netrunnerdbbuilder/images/types/ice.png'
 	            }, {
 	                id: 'code-gate',
 	                label: 'Code Gate',
-	                image: 'bundles/netrunnerdbbuilder/images/types/ice.png'
+	                image: 'netrunnerdbbuilder/images/types/ice.png'
 	            }, {
 	                id: 'sentry',
 	                label: 'Sentry',
-	                image: 'bundles/netrunnerdbbuilder/images/types/ice.png'
+	                image: 'netrunnerdbbuilder/images/types/ice.png'
 	            }, {
 	                id: 'ice',
 	                label: 'ICE',
-	                image: 'bundles/netrunnerdbbuilder/images/types/ice.png'
+	                image: 'netrunnerdbbuilder/images/types/ice.png'
 	            }
 	        ]
 	    ],
@@ -117,35 +117,35 @@ function getDisplayDescriptions(sort) {
 	        [{
 	            id: 'anarch',
 	            label: 'Anarch',
-	            image: 'bundles/netrunnerdbbuilder/images/factions/16px/anarch.png'
+	            image: 'netrunnerdbbuilder/images/factions/16px/anarch.png'
 	        }, {
 	            id: 'criminal',
 	            label: 'Criminal',
-	            image: 'bundles/netrunnerdbbuilder/images/factions/16px/criminal.png'
+	            image: 'netrunnerdbbuilder/images/factions/16px/criminal.png'
 	        }, {
 	            id: 'haas-bioroid',
 	            label: 'Haas-Bioroid',
-	            image: 'bundles/netrunnerdbbuilder/images/factions/16px/haas-bioroid.png'
+	            image: 'netrunnerdbbuilder/images/factions/16px/haas-bioroid.png'
 	        }, {
 	            id: 'jinteki',
 	            label: 'Jinteki',
-	            image: 'bundles/netrunnerdbbuilder/images/factions/16px/jinteki.png'
+	            image: 'netrunnerdbbuilder/images/factions/16px/jinteki.png'
 	        }, {
 	            id: 'nbn',
 	            label: 'NBN',
-	            image: 'bundles/netrunnerdbbuilder/images/factions/16px/nbn.png'
+	            image: 'netrunnerdbbuilder/images/factions/16px/nbn.png'
 	        }, {
 	            id: 'shaper',
 	            label: 'Shaper',
-	            image: 'bundles/netrunnerdbbuilder/images/factions/16px/shaper.png'
+	            image: 'netrunnerdbbuilder/images/factions/16px/shaper.png'
 	        }, {
 	            id: 'weyland-consortium',
 	            label: 'Weyland Consortium',
-	            image: 'bundles/netrunnerdbbuilder/images/factions/16px/weyland-consortium.png'
+	            image: 'netrunnerdbbuilder/images/factions/16px/weyland-consortium.png'
 	        }, {
 	            id: 'neutral',
 	            label: 'Neutral',
-	            image: 'bundles/netrunnerdbbuilder/images/factions/16px/neutral.png'
+	            image: 'netrunnerdbbuilder/images/factions/16px/neutral.png'
 	        }, ]
 	    ],
 	    'number': [],
