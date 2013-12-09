@@ -58,8 +58,8 @@ function do_action_deck(event) {
 		case 'btn-publish': confirm_publish(); break;
 		case 'btn-delete': confirm_delete(); break;
 		//case 'btn-mail': confirm_mail(); break;
-		case 'btn-download-text': location.href='/deck/export/text/'+SelectedDeck.id; break;
-		case 'btn-download-octgn': location.href='/deck/export/octgn/'+SelectedDeck.id; break;
+		case 'btn-download-text': location.href=Url_TextExport.replace('xxx', SelectedDeck.id); break;
+		case 'btn-download-octgn': location.href=Url_OctgnExport.replace('xxx', SelectedDeck.id); break;
 		case 'btn-export-bbcode': export_bbcode(); break;
 		case 'btn-export-markdown': export_markdown(); break;
 		case 'btn-export-plaintext': export_plaintext(); break;

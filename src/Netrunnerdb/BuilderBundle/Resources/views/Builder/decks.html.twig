@@ -11,6 +11,8 @@ var CardDB = null,
 	Decks = {{ decks|json_encode|raw }}, 
 	DeckDB = TAFFY(Decks),
 	Url_Edit = "{{ path('deck_edit', {deck_id:'xxx'}) }}",
+	Url_OctgnExport = "{{ path('deck_export_octgn', {deck_id:'xxx'}) }}",
+	Url_TextExport = "{{ path('deck_export_text', {deck_id:'xxx'}) }}",
 	Url_CanPublish = "{{ path('deck_publish', {deck_id:'xxx'}) }}",
 	DisplaySort = 'type';
 	
