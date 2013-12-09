@@ -409,6 +409,7 @@ class SocialController extends Controller {
 	 */
 	public function listAction($type, $code = null, $page = 1) {
 		$limit = 30;
+		if($page<1) $page=1;
 		$start = ($page-1)*$limit;
 		
 		switch ($type) {
