@@ -549,6 +549,10 @@ class SocialController extends Controller {
 				where d.id=?
 				", array($decklist_id))->fetchAll();
 
+		if(empty($rows)) {
+			throw new AccessDeniedException('Wrong id');
+		}
+		
 		$decklist = $rows[0];
 		$decklist['prettyname'] = preg_replace('/[^a-z0-9]+/', '-',
 				mb_strtolower($decklist['name']));
