@@ -412,9 +412,6 @@ class SocialController extends Controller {
 		$start = ($page-1)*$limit;
 		
 		switch ($type) {
-		case 'popular':
-			$result = $this->popular($start, $limit);
-			break;
 		case 'recent':
 			$result = $this->recent($start, $limit);
 			break;
@@ -436,7 +433,10 @@ class SocialController extends Controller {
 			else
 				$result = $this->by_author($this->getUser()->getId(), $start, $limit);
 			break;
+		case 'popular':
 		default:
+			$result = $this->popular($start, $limit);
+			break;
 		}
 		
 		$decklists = $result['decklists'];
