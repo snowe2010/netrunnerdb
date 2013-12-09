@@ -603,7 +603,7 @@ class SocialController extends Controller {
 		
 		$is_author = $this->getUser() ? $this->getUser()->getId() == $decklist['user_id'] : false;
 		
-		$similar_decklists = $this->findSimilarDecklists($decklist_id, 5);
+		$similar_decklists = array();//$this->findSimilarDecklists($decklist_id, 5);
 
 		$precedent_decklists = $dbh->executeQuery(
 							"SELECT
