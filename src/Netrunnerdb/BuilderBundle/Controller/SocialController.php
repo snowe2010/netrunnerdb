@@ -1047,6 +1047,7 @@ class SocialController extends Controller {
 		
 		
 		$limit = 10;
+		if($page<1) $page=1;
 		$start = ($page-1)*$limit;
 		
 		$result = $this->by_author($user_id, $start, $limit);
