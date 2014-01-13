@@ -465,8 +465,7 @@ class SocialController extends Controller {
 												. $this->getRequest()
 														->getLocale())
 								. " name,
-				f.code,
-				(select count(*) from decklist where decklist.faction_id=f.id) nbdecklists
+				f.code
 				from faction f
 				order by f.side_id asc, f.name asc")->fetchAll();
 
@@ -479,11 +478,10 @@ class SocialController extends Controller {
 												. $this->getRequest()
 														->getLocale())
 								. " name,
-				p.code,
-				(select count(*) from decklist where decklist.last_pack_id=p.id) nbdecklists
+				p.code
 				from pack p
-				having nbdecklists>0
-				order by p.cycle_id desc, p.number desc
+				where p.released is not null
+				order by p.released desc
 				limit 0,5")->fetchAll();
 
 		
@@ -509,10 +507,9 @@ class SocialController extends Controller {
 		return $this->render(
 			'NetrunnerdbBuilderBundle:Decklist:decklists.html.twig',
 			array(
-					'locales' => $this
-							->renderView(
-									'NetrunnerdbCardsBundle:Default:langs.html.twig'),
-					'decklists' => $decklists, 'packs' => $packs,
+					'locales' => $this->renderView('NetrunnerdbCardsBundle:Default:langs.html.twig'),
+					'decklists' => $decklists,
+					'packs' => $packs,
 					'factions' => $factions,
 					'url' => $this->getRequest()->getRequestUri(),
 					'route' => $route,

@@ -26,7 +26,6 @@
 {% if faction.code != "neutral" %}
 {% set linkurl = path('decklists_list_code', {type:'faction', code:faction.code}) %}<li class="{% if url == linkurl %}active{% endif %}">
   <a href="{{ linkurl }}">
-    <span class="badge pull-right">{{ faction.nbdecklists }}</span>
     {{ faction.name }}
   </a>
 </li>
@@ -39,7 +38,6 @@
 {% for pack in packs %}
 {% set linkurl = path('decklists_list_code', {type:'lastpack', code:pack.code}) %}<li class="{% if url == linkurl %}active{% endif %}">
   <a href="{{ linkurl }}">
-    <span class="badge pull-right">{{ pack.nbdecklists }}</span>
     {{ pack.name }}
   </a>
 </li>
