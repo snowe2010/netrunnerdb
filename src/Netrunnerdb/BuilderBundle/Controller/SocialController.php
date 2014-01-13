@@ -256,6 +256,43 @@ class SocialController extends Controller {
 	 * @param integer $limit
 	 * @return \Doctrine\DBAL\Driver\PDOStatement
 	 */
+	public function halloffame($start = 0, $limit = 30) {
+		/* @var $dbh \Doctrine\DBAL\Driver\PDOConnection */
+		$dbh = $this->get('doctrine')->getConnection();
+		/* @var $stmt \Doctrine\DBAL\Driver\PDOStatement */
+		$stmt = $dbh->prepare("SELECT
+				count(*)
+				from decklist d");
+		$stmt->execute();
+		$count = $stmt->fetch(\PDO::FETCH_NUM);
+	
+		$rows = $dbh
+		->executeQuery(
+				"SELECT
+				d.id,
+				d.name,
+				d.creation,
+				d.user_id,
+				u.username,
+				u.faction usercolor,
+				u.reputation,
+				c.code,
+				(select count(*) from vote where decklist_id=d.id) nbvotes,
+				(select count(*) from favorite where decklist_id=d.id) nbfavorites,
+				(select count(*) from comment where decklist_id=d.id) nbcomments
+				from decklist d
+				join user u on d.user_id=u.id
+				join card c on d.identity_id=c.id
+				order by nbvotes desc, creation desc
+				limit $start, $limit")->fetchAll(\PDO::FETCH_ASSOC);
+	
+		return array("count" => $count[0], "decklists" => $rows);
+	}
+	
+	/**
+	 * @param integer $limit
+	 * @return \Doctrine\DBAL\Driver\PDOStatement
+	 */
 	public function hottopics($start = 0, $limit = 30) {
 		/* @var $dbh \Doctrine\DBAL\Driver\PDOConnection */
 		$dbh = $this->get('doctrine')->getConnection();
@@ -418,6 +455,9 @@ class SocialController extends Controller {
 		switch ($type) {
 		case 'recent':
 			$result = $this->recent($start, $limit);
+			break;
+		case 'halloffame':
+			$result = $this->halloffame($start, $limit);
 			break;
 		case 'hottopics':
 			$result = $this->hottopics($start, $limit);
