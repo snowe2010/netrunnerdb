@@ -649,6 +649,7 @@ class SearchController extends Controller
 				if($view == "spoiler" || $view == "card") {
 					$cardinfo['text'] = implode(array_map(function ($l) { return "<p>$l</p>"; }, explode("\r\n", $cardinfo['text'])));
 					$cardinfo['text'] = $this->replaceSymbols($cardinfo['text']);
+					$cardinfo['flavor'] = $this->replaceSymbols($cardinfo['flavor']);
 					if($view == "card") {
 						$cardinfo['rulings'] = array();//$this->getCardRulings($cardinfo['id']);
 						$cardinfo['alternatives'] = $this->getCardAlternatives($card);
