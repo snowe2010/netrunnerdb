@@ -65,7 +65,7 @@ function update_deck() {
 	}
 	if(DisplaySort === 'number' && displayDescription.length === 0) {
 		var rows = [];
-		SetDB().order('cyclenumber,number').each(function (record) {
+		SetDB().each(function (record) {
 			rows.push({id: record.code, label: record.name});
 		});
 		displayDescription.push(rows);

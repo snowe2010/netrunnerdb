@@ -5,6 +5,7 @@ function when_all_parsed() {
 	var sets_data = SetsData || JSON.parse(localStorage.getItem('sets_data_'+Locale));
 	if(!sets_data) return;
 	SetDB = TAFFY(sets_data);
+	SetDB.sort("cyclenumber,number");
 	SetDB({code:"alt"}).remove();
 
 	var cards_data = CardsData || JSON.parse(localStorage.getItem('cards_data_'+Locale));
@@ -42,11 +43,9 @@ function when_all_parsed() {
 	});
 
 	$('#set_code').empty();
-	SetDB({available:{"!is":""}}).each(function (record) {
-		$('#set_code').append('<li><a href="#"><label><input type="checkbox" name="'+record.code+'" checked="checked">'+record.name+'</label></a></li>');
-	});
-	SetDB({available:{"is":""}}).each(function (record) {
-		$('#set_code').append('<li><a href="#"><label><input type="checkbox" name="'+record.code+'"'+(sets_in_deck[record.code] == null ? '' : ' checked="checked"')+'>'+record.name+'</label></a></li>');
+	SetDB().each(function (record) {
+		var checked = record.available === "" && sets_in_deck[record.code] == null ? '' : ' checked="checked"';
+		$('#set_code').append('<li><a href="#"><label><input type="checkbox" name="'+record.code+'"'+checked+'>'+record.name+'</label></a></li>');
 	});
 	
 	$('input[name=Identity]').prop("checked", false);

@@ -6,6 +6,7 @@ function when_all_parsed() {
 	var sets_data = SetsData || JSON.parse(localStorage.getItem('sets_data_'+Locale));
 	if(!sets_data) return;
 	SetDB = TAFFY(sets_data);
+	SetDB.sort("cyclenumber,number");
 	SetDB({code:"alt"}).remove();
 
 	var cards_data = CardsData || JSON.parse(localStorage.getItem('cards_data_'+Locale));
