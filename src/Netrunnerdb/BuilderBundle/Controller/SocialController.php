@@ -246,7 +246,7 @@ class SocialController extends Controller {
 					from decklist d
 					join user u on d.user_id=u.id
 					join card c on d.identity_id=c.id
-					order by nbvotes/(1+nbjours) DESC, nbvotes desc, nbcomments desc
+					order by nbvotes/(1+nbjours*nbjours) DESC, nbvotes desc, nbcomments desc
 					limit $start, $limit")->fetchAll(\PDO::FETCH_ASSOC);
 		
 		return array("count" => $count[0], "decklists" => $rows);
