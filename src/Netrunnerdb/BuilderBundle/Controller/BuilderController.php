@@ -36,8 +36,10 @@ class BuilderController extends Controller
 
 	public function initbuildAction($card_code)
 	{
+		/* @var $em \Doctrine\ORM\EntityManager */
 		$em = $this->get('doctrine')->getManager();
-		$card = $this->getDoctrine()->getRepository('NetrunnerdbCardsBundle:Card')->findOneBy(array("code" => $card_code));
+
+		$card = $em->getRepository('NetrunnerdbCardsBundle:Card')->findOneBy(array("code" => $card_code));
 		if (!$card)
 			return new Response('card not found.');
 
@@ -61,8 +63,6 @@ class BuilderController extends Controller
 	/* obsolete */
 	public function textimportAction()
 	{
-		$em = $this->get('doctrine')->getManager();
-
 		$request = $this->getRequest();
 		$deck_name = filter_var($request->get('name'), FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
 		$import = filter_var($request->get('import'), FILTER_UNSAFE_RAW);
@@ -72,8 +72,6 @@ class BuilderController extends Controller
 
 	public function fileimportAction()
 	{
-		$em = $this->get('doctrine')->getManager();
-
 		$request = $this->getRequest();
 		$filetype = filter_var($request->get('type'), FILTER_SANITIZE_STRING);
 		$uploadedFile = $request->files->get('upfile');
@@ -103,8 +101,9 @@ class BuilderController extends Controller
 
 	public function parseTextImport($text)
 	{
+		/* @var $em \Doctrine\ORM\EntityManager */
 		$em = $this->get('doctrine')->getManager();
-
+		
 		$content = array();
 		$lines = explode("\n", $text);
 		$identity = null;
@@ -132,8 +131,9 @@ class BuilderController extends Controller
 
 	public function parseOctgnImport($octgn)
 	{
+		/* @var $em \Doctrine\ORM\EntityManager */
 		$em = $this->get('doctrine')->getManager();
-
+		
 		$content = array();
 
 		$crawler = new Crawler();
@@ -164,10 +164,11 @@ class BuilderController extends Controller
 
 	public function textexportAction($deck_id)
 	{
-		$em = $this->getDoctrine()->getManager();
-		
+		/* @var $em \Doctrine\ORM\EntityManager */
+		$em = $this->get('doctrine')->getManager();
+				
 		/* @var $deck \Netrunnerdb\BuilderBundle\Entity\Deck */
-		$deck = $this->getDoctrine()->getRepository('NetrunnerdbBuilderBundle:Deck')->find($deck_id);
+		$deck = $em->getRepository('NetrunnerdbBuilderBundle:Deck')->find($deck_id);
 		if ($this->getUser()->getId() != $deck->getUser()->getId())
 			throw new UnauthorizedHttpException("You don't have access to this deck.");
 		
@@ -210,10 +211,11 @@ class BuilderController extends Controller
 	
 	public function octgnexportAction($deck_id)
 	{
-		$em = $this->getDoctrine()->getManager();
-
+		/* @var $em \Doctrine\ORM\EntityManager */
+		$em = $this->get('doctrine')->getManager();
+		
 		/* @var $deck \Netrunnerdb\BuilderBundle\Entity\Deck */
-		$deck = $this->getDoctrine()->getRepository('NetrunnerdbBuilderBundle:Deck')->find($deck_id);
+		$deck = $em->getRepository('NetrunnerdbBuilderBundle:Deck')->find($deck_id);
 		if ($this->getUser()->getId() != $deck->getUser()->getId())
 			throw new UnauthorizedHttpException("You don't have access to this deck.");
 
@@ -251,6 +253,9 @@ class BuilderController extends Controller
 
 	public function saveAction()
 	{
+		/* @var $em \Doctrine\ORM\EntityManager */
+		$em = $this->get('doctrine')->getManager();
+		
 		$user = $this->getUser();
 		if(count($user->getDecks()) > $user->getMaxNbDecks())
 			return new Response('You have reached the maximum number of decks allowed. Delete some decks or increase your reputation.');
@@ -268,14 +273,12 @@ class BuilderController extends Controller
 
 		$deck_content = array();
 
-		$em = $this->getDoctrine()->getManager();
-
 		if($is_copy && $id) {
 			$id = null;
 		}
 		
 		if ($id) {
-			$deck = $this->getDoctrine()->getRepository('NetrunnerdbBuilderBundle:Deck')->find($id);
+			$deck = $em->getRepository('NetrunnerdbBuilderBundle:Deck')->find($id);
 			if ($user->getId() != $deck->getUser()->getId())
 				throw new UnauthorizedHttpException("You don't have access to this deck.");
 			foreach ($deck->getSlots() as $slot) {
@@ -286,7 +289,7 @@ class BuilderController extends Controller
 			$deck = new Deck;
 		}
 		if($decklist_id) {
-			$decklist = $this->getDoctrine()->getRepository('NetrunnerdbBuilderBundle:Decklist')->find($decklist_id);
+			$decklist = $em->getRepository('NetrunnerdbBuilderBundle:Decklist')->find($decklist_id);
 			if($decklist) $deck->setParent($decklist);
 		}
 		$deck->setName($name);
@@ -301,7 +304,7 @@ class BuilderController extends Controller
 		/* @var $latestPack \Netrunnerdb\CardsBundle\Entity\Pack */
 		$latestPack = null;
 		foreach ($content as $card_code => $qty) {
-			$card = $this->getDoctrine()->getRepository('NetrunnerdbCardsBundle:Card')->findOneBy(array("code" => $card_code));
+			$card = $em->getRepository('NetrunnerdbCardsBundle:Card')->findOneBy(array("code" => $card_code));
 			$pack = $card->getPack();
 			if (!$latestPack) {
 				$latestPack = $pack;
@@ -321,7 +324,7 @@ class BuilderController extends Controller
 			$deck->setIdentity($identity);
 		} else {
 			$deck->setSide(current($cards)->getSide());
-			$identity = $this->getDoctrine()->getRepository('NetrunnerdbCardsBundle:Card')->findOneBy(array("side" => $deck->getSide()));
+			$identity = $em->getRepository('NetrunnerdbCardsBundle:Card')->findOneBy(array("side" => $deck->getSide()));
 			$cards[$identity->getCode()] = $identity;
 			$content[$identity->getCode()] = 1;
 			$deck->setIdentity($identity);
@@ -359,10 +362,12 @@ class BuilderController extends Controller
 
 	public function deleteAction()
 	{
-		$em = $this->getDoctrine()->getManager();
+		/* @var $em \Doctrine\ORM\EntityManager */
+		$em = $this->get('doctrine')->getManager();
+		
 		$request = $this->getRequest();
 		$deck_id = filter_var($request->get('deck_id'), FILTER_SANITIZE_NUMBER_INT);
-		$deck = $this->getDoctrine()->getRepository('NetrunnerdbBuilderBundle:Deck')->find($deck_id);
+		$deck = $em->getRepository('NetrunnerdbBuilderBundle:Deck')->find($deck_id);
 		if (!$deck)
 			return $this->redirect($this->generateUrl('decks_list'));
 		if ($this->getUser()->getId() != $deck->getUser()->getId())
@@ -491,10 +496,11 @@ class BuilderController extends Controller
 	
 	public function copyAction($decklist_id)
 	{
-		$em = $this->getDoctrine()->getManager();
-		
+		/* @var $em \Doctrine\ORM\EntityManager */
+		$em = $this->get('doctrine')->getManager();
+				
 		/* @var $decklist \Netrunnerdb\BuilderBundle\Entity\Decklist */
-		$decklist = $this->getDoctrine()->getRepository('NetrunnerdbBuilderBundle:Decklist')->find($decklist_id);
+		$decklist = $em->getRepository('NetrunnerdbBuilderBundle:Decklist')->find($decklist_id);
 		
 		$content = array();
 		foreach($decklist->getSlots() as $slot) {

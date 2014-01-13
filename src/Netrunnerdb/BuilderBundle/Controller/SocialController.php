@@ -22,10 +22,11 @@ class SocialController extends Controller {
 	 * checks to see if a deck can be published in its current saved state
 	 */
 	public function publishAction($deck_id) {
+		/* @var $em \Doctrine\ORM\EntityManager */
+		$em = $this->get('doctrine')->getManager();
+		
 		$request = $this->getRequest();
-		$deck = $this->getDoctrine()
-				->getRepository('NetrunnerdbBuilderBundle:Deck')
-				->find($deck_id);
+		$deck = $em->getRepository('NetrunnerdbBuilderBundle:Deck')->find($deck_id);
 
 		if ($this->getUser()->getId() != $deck->getUser()->getId())
 			throw new UnauthorizedHttpException(
@@ -56,6 +57,9 @@ class SocialController extends Controller {
 	 * creates a new decklist from a deck (publish action)
 	 */
 	public function newAction() {
+		/* @var $em \Doctrine\ORM\EntityManager */
+		$em = $this->get('doctrine')->getManager();
+		
 		$request = $this->getRequest();
 		$deck_id = filter_var($request->request->get('deck_id'),
 				FILTER_SANITIZE_NUMBER_INT);
@@ -115,7 +119,6 @@ class SocialController extends Controller {
 		}
 		$decklist->setParent($deck);
 
-		$em = $this->getDoctrine()->getManager();
 		$em->persist($decklist);
 		$em->flush();
 
@@ -658,16 +661,16 @@ class SocialController extends Controller {
 	 * adds a decklist to a user's list of favorites
 	 */
 	public function favoriteAction() {
+		/* @var $em \Doctrine\ORM\EntityManager */
+		$em = $this->get('doctrine')->getManager();
+		
 		$user = $this->getUser();
 		
 		$request = $this->getRequest();
 		$decklist_id = filter_var($request->get('id'),
 				FILTER_SANITIZE_NUMBER_INT);
 
-		/* @var $em \Doctrine\ORM\EntityManager */
-		$em = $this->get('doctrine');
-		$repo = $em->getRepository('NetrunnerdbBuilderBundle:Decklist');
-		$decklist = $repo->find($decklist_id);
+		$decklist = $em->getRepository('NetrunnerdbBuilderBundle:Decklist')->find($decklist_id);
 		if (!$decklist)
 			throw new AccessDeniedException('Wrong id');
 
@@ -737,16 +740,16 @@ class SocialController extends Controller {
 	 * records a user's vote
 	 */
 	public function voteAction() {
+		/* @var $em \Doctrine\ORM\EntityManager */
+		$em = $this->get('doctrine')->getManager();
+		
 		$user = $this->getUser();
 		$request = $this->getRequest();
 		$decklist_id = filter_var($request->get('id'),
 				FILTER_SANITIZE_NUMBER_INT);
 
-		/* @var $em \Doctrine\ORM\EntityManager */
-		$em = $this->get('doctrine');
-		$repo = $em->getRepository('NetrunnerdbBuilderBundle:Decklist');
-		$decklist = $repo->find($decklist_id);
-		$query = $repo->createQueryBuilder('d')->innerJoin('d.votes', 'u')
+		$decklist = $em->getRepository('NetrunnerdbBuilderBundle:Decklist')->find($decklist_id);
+		$query = $em->getRepository('NetrunnerdbBuilderBundle:Decklist')->createQueryBuilder('d')->innerJoin('d.votes', 'u')
 				->where('d.id = :decklist_id')->andWhere('u.id = :user_id')
 				->setParameter('decklist_id', $decklist_id)
 				->setParameter('user_id', $user->getId())->getQuery();
@@ -829,12 +832,13 @@ class SocialController extends Controller {
 	 * (unused) adds a user to a user's list of follows
 	 */
 	public function followAction() {
+		/* @var $em \Doctrine\ORM\EntityManager */
 		$em = $this->get('doctrine')->getManager();
+		
 		$request = $this->getRequest();
 		$follow_id = $request->request->get('following');
 		$user = $this->getUser();
-		$following = $em->getRepository('NetrunnerdbUserBundle:User')
-				->find($follow_id);
+		$following = $em->getRepository('NetrunnerdbUserBundle:User')->find($follow_id);
 		$user->addFollowing($following);
 		$em->flush();
 		return $this->forward('NetrunnerdbBuilderBundle:Social:following');
@@ -867,17 +871,15 @@ class SocialController extends Controller {
 	 * returns a text file with the content of a decklist
 	 */
 	public function textexportAction($decklist_id) {
-		$em = $this->getDoctrine()->getManager();
-
+		/* @var $em \Doctrine\ORM\EntityManager */
+		$em = $this->get('doctrine')->getManager();
+		
 		/* @var $decklist \Netrunnerdb\BuilderBundle\Entity\Decklist */
-		$decklist = $this->getDoctrine()
-				->getRepository('NetrunnerdbBuilderBundle:Decklist')
-				->find($decklist_id);
+		$decklist = $em->getRepository('NetrunnerdbBuilderBundle:Decklist')->find($decklist_id);
 
 		/* @var $judge \Netrunnerdb\SocialBundle\Services\Judge */
 		$judge = $this->get('judge');
-		$classement = $judge
-				->classe($decklist->getCards(), $decklist->getIdentity());
+		$classement = $judge->classe($decklist->getCards(), $decklist->getIdentity());
 
 		$lines = array();
 		$types = array("Event", "Hardware", "Resource", "Icebreaker",
@@ -924,12 +926,11 @@ class SocialController extends Controller {
 	 * returns a octgn file with the content of a decklist
 	 */
 	public function octgnexportAction($decklist_id) {
-		$em = $this->getDoctrine()->getManager();
-
+		/* @var $em \Doctrine\ORM\EntityManager */
+		$em = $this->get('doctrine')->getManager();
+		
 		/* @var $decklist \Netrunnerdb\BuilderBundle\Entity\Decklist */
-		$decklist = $this->getDoctrine()
-				->getRepository('NetrunnerdbBuilderBundle:Decklist')
-				->find($decklist_id);
+		$decklist = $em->getRepository('NetrunnerdbBuilderBundle:Decklist')->find($decklist_id);
 
 		$rd = array();
 		$identity = null;
@@ -1007,11 +1008,13 @@ class SocialController extends Controller {
 	 */
 	public function editAction($decklist_id)
 	{
+		/* @var $em \Doctrine\ORM\EntityManager */
+		$em = $this->get('doctrine')->getManager();
+		
 		$user = $this->getUser();
 		if(!$user) throw new UnauthorizedHttpException(
 				"You must be logged in for this operation.");
 		
-		$em = $this->get('doctrine')->getManager();
 		$decklist = $em->getRepository('NetrunnerdbBuilderBundle:Decklist')->find($decklist_id);
 		if(!$decklist || $decklist->getUser()->getId() != $user->getId()) throw new UnauthorizedHttpException(
 				"You don't have access to this decklist.");
@@ -1040,7 +1043,9 @@ class SocialController extends Controller {
 	 */
 	public function profileAction($user_id, $user_name, $page)
 	{
+		/* @var $em \Doctrine\ORM\EntityManager */
 		$em = $this->get('doctrine')->getManager();
+		
 		/* @var $user \Netrunnerdb\UserBundle\Entity\User */
 		$user = $em->getRepository('NetrunnerdbUserBundle:User')->find($user_id);
 		if(!$user) throw new NotFoundHttpException("No such user.");
