@@ -964,7 +964,7 @@ class SearchController extends Controller
 				}
 				
 				if($card['faction'] == "Weyland Consortium") {
-					$card['faction'] = "The Weyland Consortium"
+					$card['faction'] = "The Weyland Consortium";
 				}
 				
 				$card['text'] = str_replace("<strong>", '', $card['text']);
