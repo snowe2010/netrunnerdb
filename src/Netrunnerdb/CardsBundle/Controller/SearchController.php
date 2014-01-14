@@ -882,6 +882,110 @@ class SearchController extends Controller
 		$response->setContent($content);
 		return $response;
 	}
+
+	public function apisetAction($pack_code)
+	{
+		$response = new Response();
+		$response->setPublic();
+		$response->setMaxAge(600);
+	
+		$locale = $this->getRequest()->query->get('_locale');
+		if(isset($locale)) $this->getRequest()->setLocale($locale);
+	
+		$format = $this->getRequest()->getRequestFormat();
+		
+		$pack = $this->getDoctrine()->getRepository('NetrunnerdbCardsBundle:Pack')->findOneBy(array('code' => $pack_code));
+		if(!$pack) die();
+		
+		$conditions = $this->syntax("e:$pack_code");
+		$this->validateConditions($conditions);
+		$query = $this->buildQueryFromConditions($conditions);
+	
+		$cards = array();
+		$last_modified = null;
+		if($query && $rows = $this->get_search_rows($conditions, "set"))
+		{
+			for($rowindex = 0; $rowindex < count($rows); $rowindex++) {
+				if(empty($last_modified) || $last_modified < $rows[$rowindex]->getTs()) $last_modified = $rows[$rowindex]->getTs();
+			}
+			$response->setLastModified($last_modified);
+			if ($response->isNotModified($this->getRequest())) {
+				return $response;
+			}
+			for($rowindex = 0; $rowindex < count($rows); $rowindex++) {
+				$card = $this->getCardInfo($rows[$rowindex], true, "en");
+				$cards[] = $card;
+			}
+		}
+
+		if($format == "json") {
+			$response->headers->set('Content-Type', 'application/javascript');
+			$response->setContent(json_encode($cards));
+		} else if($format == "xml") {
+			$cardsxml = array();
+			foreach($cards as $card) {
+				
+				if(empty($card['subtype'])) $card['subtype'] = "";
+				if($card['uniqueness']) $card['subtype'] .= " - Unique";
+				$card['subtype'] = str_replace(' - ','-',$card['subtype']);
+				
+				if(preg_match('/(.*): (.*)/', $card['title'], $matches)) {
+					$card['title'] = $matches[1];
+					$card['subtitle'] = $matches[2];
+				} else {
+					$card['subtitle'] = "";
+				}
+			
+				if(!isset($card['cost'])) {
+					if(isset($card['advancementcost'])) $card['cost'] = $card['advancementcost'];
+					if(isset($card['baselink'])) $card['cost'] = $card['baselink'];
+					else $card['cost'] = 0;
+				}
+				
+				if(!isset($card['strength'])) {
+					if(isset($card['agendapoints'])) $card['strength'] = $card['agendapoints'];
+					else if(isset($card['trash'])) $card['strength'] = $card['trash'];
+					else if(isset($card['influencelimit'])) $card['strength'] = $card['influencelimit'];
+					else if($card['type_code'] == "program") $card['strength'] = '-'; 
+					else $card['strength'] = '';
+				}
+				
+				if(!isset($card['memoryunits'])) {
+					if(isset($card['minimumdecksize'])) $card['memoryunits'] = $card['minimumdecksize'];
+					else $card['memoryunits'] = '';
+				}
+				
+				if(!isset($card['factioncost'])) {
+					$card['factioncost'] = '';
+				}
+				
+				if(!isset($card['flavor'])) {
+					$card['flavor'] = '';
+				}
+				
+				$card['text'] = str_replace("<strong>", '', $card['text']);
+				$card['text'] = str_replace("</strong>", '', $card['text']);
+				$card['text'] = str_replace("<sup>", '', $card['text']);
+				$card['text'] = str_replace("</sup>", '', $card['text']);
+				$card['text'] = str_replace("&ndash;", ' -', $card['text']);
+				$card['text'] = htmlspecialchars($card['text'], ENT_QUOTES | ENT_XML1);
+				$card['text'] = str_replace("\n", '&#xd;', $card['text']);
+				
+				$card['flavor'] = htmlspecialchars($card['flavor'], ENT_QUOTES | ENT_XML1);
+				$card['flavor'] = str_replace("\n", '&#xd;', $card['flavor']);
+				
+				$cardsxml[] = $card;
+			}
+			
+			$response->headers->set('Content-Type', 'application/xml');
+			$response->setContent($this->renderView('NetrunnerdbCardsBundle::apiset.xml.twig', array(
+				"name" => $pack->getName(),
+				"cards" => $cardsxml,
+			)));
+			
+		}
+		return $response;
+	}
 	
 	
 }

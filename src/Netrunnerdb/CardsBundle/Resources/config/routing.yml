@@ -94,6 +94,14 @@ api_sets:
     defaults:
         _controller: NetrunnerdbCardsBundle:Default:apisets
 
+api_set:
+    pattern: /api/set/{pack_code}.{_format}
+    defaults:
+        _controller: NetrunnerdbCardsBundle:Search:apiset
+        _format: json
+    requirements:
+        _format: json|xml
+
 NetrunnerdbCardsBundle_admin_cards:
     resource: "@NetrunnerdbCardsBundle/Resources/config/routing/cards.yml"
     prefix:   /admin/cards
