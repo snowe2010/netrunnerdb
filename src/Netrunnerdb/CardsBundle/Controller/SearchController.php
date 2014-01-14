@@ -967,17 +967,21 @@ class SearchController extends Controller
 					$card['faction'] = "The Weyland Consortium";
 				}
 				
+				$card['side'] = strtolower($card['side']);
+				
 				$card['text'] = str_replace("<strong>", '', $card['text']);
 				$card['text'] = str_replace("</strong>", '', $card['text']);
 				$card['text'] = str_replace("<sup>", '', $card['text']);
 				$card['text'] = str_replace("</sup>", '', $card['text']);
 				$card['text'] = str_replace("&ndash;", ' -', $card['text']);
 				$card['text'] = htmlspecialchars($card['text'], ENT_QUOTES | ENT_XML1);
-				$card['text'] = str_replace("\n", '&#xD;&#xA;', $card['text']);
+				$card['text'] = str_replace("\r", '&#xD;', $card['text']);
+				$card['text'] = str_replace("\n", '&#xA;', $card['text']);
 				
 				$card['flavor'] = htmlspecialchars($card['flavor'], ENT_QUOTES | ENT_XML1);
-				$card['flavor'] = str_replace("\n", '&#xD;&#xA;', $card['flavor']);
-				
+				$card['flavor'] = str_replace("\r", '&#xD;', $card['flavor']);
+				$card['flavor'] = str_replace("\n", '&#xA;', $card['flavor']);
+								
 				$cardsxml[] = $card;
 			}
 			
