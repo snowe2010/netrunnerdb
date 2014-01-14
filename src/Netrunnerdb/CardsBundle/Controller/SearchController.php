@@ -925,8 +925,8 @@ class SearchController extends Controller
 			$cardsxml = array();
 			foreach($cards as $card) {
 				
-				if(empty($card['subtype'])) $card['subtype'] = "";
-				if($card['uniqueness']) $card['subtype'] .= " - Unique";
+				if(!isset($card['subtype'])) $card['subtype'] = "";
+				if($card['uniqueness']) $card['subtype'] .= empty($card['subtype']) ? "Unique" : " - Unique";
 				$card['subtype'] = str_replace(' - ','-',$card['subtype']);
 				
 				if(preg_match('/(.*): (.*)/', $card['title'], $matches)) {
@@ -963,16 +963,20 @@ class SearchController extends Controller
 					$card['flavor'] = '';
 				}
 				
+				if($card['faction'] == "Weyland Consortium") {
+					$card['faction'] = "The Weyland Consortium"
+				}
+				
 				$card['text'] = str_replace("<strong>", '', $card['text']);
 				$card['text'] = str_replace("</strong>", '', $card['text']);
 				$card['text'] = str_replace("<sup>", '', $card['text']);
 				$card['text'] = str_replace("</sup>", '', $card['text']);
 				$card['text'] = str_replace("&ndash;", ' -', $card['text']);
 				$card['text'] = htmlspecialchars($card['text'], ENT_QUOTES | ENT_XML1);
-				$card['text'] = str_replace("\n", '&#xd;', $card['text']);
+				$card['text'] = str_replace("\n", '&#xD;&#xA;', $card['text']);
 				
 				$card['flavor'] = htmlspecialchars($card['flavor'], ENT_QUOTES | ENT_XML1);
-				$card['flavor'] = str_replace("\n", '&#xd;', $card['flavor']);
+				$card['flavor'] = str_replace("\n", '&#xD;&#xA;', $card['flavor']);
 				
 				$cardsxml[] = $card;
 			}
