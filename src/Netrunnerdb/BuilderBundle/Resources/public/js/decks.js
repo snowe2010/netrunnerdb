@@ -72,7 +72,7 @@ function confirm_publish() {
 	$('#btn-publish-submit').prop('disabled', true);
 	$.ajax(Url_CanPublish.replace('xxx', SelectedDeck.id), {
 	  success: function( response ) {
-		  if(text == "") {
+		  if(response == "") {
 			  $('#btn-publish-submit').prop('disabled', false);
 		  }
 		  else 
