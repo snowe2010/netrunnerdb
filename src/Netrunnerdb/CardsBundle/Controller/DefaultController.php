@@ -99,11 +99,13 @@ class DefaultController extends Controller
 	
 	private function replaceSymbols($text)
 	{
-		$symbols = array("Subroutine", "Credits", "Trash", "Click", "Recurring Credits", "Memory Unit", "Link", "Unique");
-		foreach($symbols as $symbol)
-		{
-			$text = str_replace("[$symbol]", '<span class="sprite '.mb_strtolower(str_replace(' ','_',$symbol)).'"></span>', $text);
-		}
+		$text = str_replace('[Subroutine]', '<span class="icon icon-subroutine"></span>', $text);
+		$text = str_replace('[Credits]', '<span class="icon icon-credit"></span>', $text);
+		$text = str_replace('[Trash]', '<span class="icon icon-trash"></span>', $text);
+		$text = str_replace('[Click]', '<span class="icon icon-click"></span>', $text);
+		$text = str_replace('[Recurring Credits]', '<span class="icon icon-recurring-credit"></span>', $text);
+		$text = str_replace('[Memory Unit]', '<span class="icon icon-mu"></span>', $text);
+		$text = str_replace('[Link]', '<span class="icon icon-link"></span>', $text);
 		return $text;
 	}
 	

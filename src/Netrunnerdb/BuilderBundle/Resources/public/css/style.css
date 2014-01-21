@@ -3,6 +3,80 @@
 @font-face{font-family:'exoregular';src:url('../fonts/exo-regular-webfont.eot');src:url('../fonts/exo-regular-webfont.eot?#iefix') format('embedded-opentype'),url('../fonts/exo-regular-webfont.woff') format('woff'),url('../fonts/exo-regular-webfont.ttf') format('truetype'),url('../fonts/exo-regular-webfont.svg#exoregular') format('svg');font-weight:normal;font-style:normal}
 @font-face{font-family:'exodemibold';src:url('../fonts/exo-semibold-webfont.eot');src:url('../fonts/exo-semibold-webfont.eot?#iefix') format('embedded-opentype'),url('../fonts/exo-semibold-webfont.woff') format('woff'),url('../fonts/exo-semibold-webfont.ttf') format('truetype'),url('../fonts/exo-semibold-webfont.svg#exodemibold') format('svg');font-weight:normal;font-style:normal}
 @font-face{font-family:'exolight';src:url('../fonts/exo-light-webfont.eot');src:url('../fonts/exo-light-webfont.eot?#iefix') format('embedded-opentype'),url('../fonts/exo-light-webfont.woff') format('woff'),url('../fonts/exo-light-webfont.ttf') format('truetype'),url('../fonts/exo-light-webfont.svg#exolight') format('svg');font-weight:normal;font-style:normal}
+@font-face{font-family:'netrunner';src:url('../fonts/netrunner.eot');src:url('../fonts/netrunner.eot?#iefix') format('embedded-opentype'),url('../fonts/netrunner.woff') format('woff'),url('../fonts/netrunner.ttf') format('truetype'),url('../fonts/netrunner.svg#netrunner') format('svg');font-weight: normal;font-style: normal;}
+
+.icon {
+	font-family: 'netrunner';
+	speak: none;
+	font-style: normal;
+	font-weight: normal;
+	font-variant: normal;
+	text-transform: none;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	font-size:120%;
+	line-height:83.33%;
+	margin:0px 1px;
+}
+
+.icon-credit:before {
+	content: "\e600";
+}
+.icon-link:before {
+	content: "\e601";
+}
+.icon-haas-bioroid:before {
+	content: "\e602";
+}
+.icon-shaper:before {
+	content: "\e603";
+}
+.icon-subroutine:before {
+	content: "\e604";
+}
+.icon-anarch:before {
+	content: "\e605";
+}
+.icon-trash:before {
+	content: "\e606";
+}
+.icon-wayland-consortium:before {
+	content: "\e607";
+}
+.icon-recurring-credit:before {
+	content: "\e608";
+}
+.icon-jinteki:before {
+	content: "\e609";
+}
+.icon-1mu:before {
+	content: "\e60a";
+}
+.icon-nbn:before {
+	content: "\e60b";
+}
+.icon-2mu:before {
+	content: "\e60c";
+}
+.icon-asset:before {
+	content: "\e60d";
+}
+.icon-3mu:before {
+	content: "\e60e";
+}
+.icon-rez:before {
+	content: "\e60f";
+}
+.icon-mu:before {
+	content: "\e610";
+}
+.icon-click:before {
+	content: "\e611";
+}
+.icon-criminal:before {
+	content: "\e612";
+}
+
 h1,h2,h3,h4,h5,h6{font-family:exoregular,sans-serif}
 .navbar{font-family:exomedium,sans-serif}
 #push{clear:both}
@@ -34,16 +108,7 @@ h1,h2,h3,h4,h5,h6{font-family:exoregular,sans-serif}
 .background-weyland-consortium{background-color:#cce0cc}
 .qtip-card{background-color:#fff;border-color:#888;-moz-border-radius:15px;-webkit-border-radius:15px;border-radius:15px}
 .qtip-card .qtip-content{padding:5px}
-.qtip-bootstrap{max-width:310px}
-.sprite{background:url('/web/bundles/netrunnerdbcards/images/sprites.png') no-repeat 0 0;display:inline-block;vertical-align:text-bottom;height:18px;margin-left:1px}
-.click{background-position:0 0;width:17px}
-.credits{background-position:0 -18px;width:10px}
-.link{background-position:0 -36px;width:15px}
-.memory_unit{background-position:0 -54px;width:22px}
-.recurring_credits{background-position:0 -72px;width:17px}
-.subroutine{background-position:0 -90px;width:12px}
-.trash{background-position:0 -108px;width:17px}
-.unique{background-position:0 -126px;width:7px}
+.qtip-bootstrap{max-width:310px;font-size:85.7%}
 div.card-text{font-size:14px;font-family:"Palatino Linotype",Palatino,"URW Palladio L",serif;border-left:1px solid #888}
 div.card-text sup{line-height:0;font-size:x-small}
 div.card-text p{margin:6px}
