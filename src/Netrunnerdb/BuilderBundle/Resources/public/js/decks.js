@@ -71,8 +71,14 @@ function confirm_publish() {
 	$('#publish-form-alert').remove();
 	$('#btn-publish-submit').prop('disabled', true);
 	$.ajax(Url_CanPublish.replace('xxx', SelectedDeck.id), {
-	  success: function() {
-	    $('#btn-publish-submit').prop('disabled', false);
+	  success: function( response ) {
+		  if(text == "") {
+			  $('#btn-publish-submit').prop('disabled', false);
+		  }
+		  else 
+		  {
+			  $('#publish-deck-form').prepend('<div id="publish-form-alert" class="alert alert-danger">That deck cannot be published because <a href="'+response+'">another decklist</a> already has the same composition.</div>');
+		  }
 	  },
 	  error: function( jqXHR, textStatus, errorThrown ) {
 	    $('#publish-deck-form').prepend('<div id="publish-form-alert" class="alert alert-danger">'+jqXHR.responseText+'</div>');
