@@ -88,13 +88,13 @@ class SocialController extends Controller {
 			}
 		}
 
-		$name = filter_var($request->request->get('name'),
-				FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
-		$description = Markdown::defaultTransform(filter_var($request->request->get('description'),
-				FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES));
+		$name = filter_var($request->request->get('name'), FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
+		$rawdescription = filter_var($request->request->get('description'), FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
+		$description = Markdown::defaultTransform($rawdescription);
 
 		$decklist = new Decklist;
 		$decklist->setName(substr($name, 0, 60));
+		$decklist->setRawdescription($rawdescription);
 		$decklist->setDescription($description);
 		$decklist->setUser($this->getUser());
 		$decklist->setCreation(new \DateTime());
@@ -562,6 +562,7 @@ class SocialController extends Controller {
 				d.id,
 				d.name,
 				d.creation,
+				d.rawdescription,
 				d.description,
 				d.precedent_decklist_id precedent,
 				u.id user_id,
@@ -979,7 +980,7 @@ class SocialController extends Controller {
 		if (empty($identity)) {
 			return new Response('no identity found');
 		}
-		return $this->octgnexport("$name.o8d", $identity, $rd, $decklist->getDescription());
+		return $this->octgnexport("$name.o8d", $identity, $rd, $decklist->getRawdescription());
 	}
 
 	/*
@@ -1048,12 +1049,12 @@ class SocialController extends Controller {
 				"You don't have access to this decklist.");
 		
 		$request = $this->get('request');
-		$name = trim(filter_var($request->request->get('name'),
-				FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES));
-		$description = Markdown::defaultTransform(trim(filter_var($request->request->get('description'),
-				FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES)));
+		$name = trim(filter_var($request->request->get('name'), FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES));
+		$rawdescription = trim(filter_var($request->request->get('description'), FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES));
+		$description = Markdown::defaultTransform($rawdescription);
 		
 		$decklist->setName($name);
+		$decklist->setRawdescription($rawdescription);
 		$decklist->setDescription($description);
 		$em->flush();
 		

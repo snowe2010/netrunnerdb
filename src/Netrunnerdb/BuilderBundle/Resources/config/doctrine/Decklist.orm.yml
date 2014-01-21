@@ -101,6 +101,9 @@ Netrunnerdb\BuilderBundle\Entity\Decklist:
         name:
             type: string
             length: 60
+        rawdescription:
+            type: text
+            nullable: true
         description:
             type: text
             nullable: true

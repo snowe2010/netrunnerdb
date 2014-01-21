@@ -31,6 +31,11 @@ class Decklist
     /**
      * @var string
      */
+    private $rawdescription;
+    
+    /**
+     * @var string
+     */
     private $description;
 
     /**
@@ -144,6 +149,29 @@ class Decklist
         return $this->summary;
     }
 
+    /**
+     * Set rawdescription
+     *
+     * @param string $rawdescription
+     * @return List
+     */
+    public function setRawdescription($rawdescription)
+    {
+    	$this->rawdescription = $rawdescription;
+    
+    	return $this;
+    }
+    
+    /**
+     * Get rawdescription
+     *
+     * @return string
+     */
+    public function getRawdescription()
+    {
+    	return $this->rawdescription;
+    }
+    
     /**
      * Set description
      *
