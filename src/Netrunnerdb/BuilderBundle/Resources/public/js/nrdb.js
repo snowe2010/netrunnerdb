@@ -210,7 +210,7 @@ function display_modal(event) {
 function fill_modal(code) {
 	var card = CardDB({code:code}).first();
 	var modal = $('div.modal').data('index', code);
-	modal.find('h3.modal-title').text(card.title);
+	modal.find('h3.modal-title').html((card.uniqueness ? "&diams; " : "")+card.title);
 	modal.find('#modal-image').html('<img class="img-responsive" src="'+card.imagesrc+'">');
 	modal.find('#modal-info').html(
 	  '<div class="card-info">'+get_type_line(card)+'</div>'
@@ -278,7 +278,7 @@ function display_qtip(event) {
 	if(card.strength != null) type += '<p>Strength <b>'+card.strength+'</b></p>';
 	$(this).qtip({
 		content: {
-			text: '<h4>'+card.title+'</h4>'+type+text_format(card.text)+'<p style="text-align:right">'+influence+' '+card.faction+'</p>'
+			text: '<h4>'+(card.uniqueness ? "&diams; " : "")+card.title+'</h4>'+type+text_format(card.text)+'<p style="text-align:right">'+influence+' '+card.faction+'</p>'
 		},
 		style: { 
 			classes: 'qtip-bootstrap'
