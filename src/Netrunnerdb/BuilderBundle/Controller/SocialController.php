@@ -45,12 +45,11 @@ class SocialController extends Controller {
 				->findBy(array('signature' => $new_signature));
 		foreach ($old_decklists as $decklist) {
 			if (json_encode($decklist->getContent()) == $new_content) {
-				throw new AccessDeniedHttpException(
-						'That decklist already exists.');
+				return new Response($this->generateUrl('decklist_detail',array('decklist_id' => $decklist->getId(),'decklist_name' => $decklist->getPrettyName())));
 			}
 		}
 
-		return new Response('OK');
+		return new Response('');
 	}
 
 	/*
@@ -122,15 +121,7 @@ class SocialController extends Controller {
 		$em->persist($decklist);
 		$em->flush();
 
-		return $this
-				->redirect(
-						$this
-								->generateUrl('decklist_detail',
-										array(
-												'decklist_id' => $decklist
-														->getId(),
-												'decklist_name' => $decklist
-														->getPrettyName())));
+		return $this->redirect($this->generateUrl('decklist_detail',array('decklist_id' => $decklist->getId(),'decklist_name' => $decklist->getPrettyName())));
 
 	}
 
