@@ -32,11 +32,10 @@ $(function() {
 	$('#decklist-social-icon-like').on('click', send_like);
 	$('#decklist-social-icon-favorite').on('click', send_favorite);
 	$('#decklist-social-icon-comment').on('click', function () { $('#comment-form-text').trigger('focus'); });
-	$('#markdown-help').popover({
-		html: true,
-		content: "[a link](http://www.example.net)<br><a href=\"http://www.example.net\">a link</a><br><br>> This is quoted<br><blockquote>This is quoted</blockquote>* This is<br>* a list<ul><li>This is</li><li>a list</li></ul>1. with<br>1. numbers<ol><li>with</li><li>number</li></ol>_italic_ or *italic*<br>__bold__ or **bold**",
-		placement: "left",
-		container: 'body'
+
+	var converter = new Markdown.Converter();
+	$('#comment-form-text').on('keyup', function () {
+		$('#comment-form-preview').html(converter.makeHtml($('#comment-form-text').val()));
 	});
 	$('#btn-group-decklist').on({
 		click: do_action_decklist
