@@ -146,6 +146,7 @@ function update_deck() {
 	$('#latestpack').html('Cards up to <i>'+latestpack.name+'</i>');
 	check_influence();
 	check_decksize();
+	setTimeout(make_graphs, 100);
 	$('#deck').show();
 }
 
@@ -466,8 +467,6 @@ function export_plaintext() {
 
 function make_graphs() {
 	var canvasWidth = Math.floor( $('#table-graph-costs').find('th').width() - 10 );
-	console.log(canvasWidth);
-	
 	if(Identity.side_code === 'runner') $('#table-graph-strengths').hide();
 	
 	var costs = {}, xmaxcost = 10, ymaxcost = 0;
@@ -496,7 +495,7 @@ function make_graphs() {
 				data : []
 			}]
 	};
-	for(var cost=0; cost<xmaxcost; cost++) {
+	for(var cost=0; cost<=xmaxcost; cost++) {
 		data.labels.push(cost);
 		data.datasets[0].data.push(costs[cost]);
 	}
@@ -512,10 +511,11 @@ function make_graphs() {
 				data : []
 			}]
 	};
-	for(var strength=0; strength<xmaxstrength; strength++) {
+	for(var strength=0; strength<=xmaxstrength; strength++) {
 		data.labels.push(strength);
 		data.datasets[0].data.push(strengths[strength]);
 	}
+	console.log(data.labels);
 	var ctx = $('#strengthChart').attr('width', canvasWidth).get(0).getContext("2d");
 	var myNewChart = new Chart(ctx).Bar(data, {animation:false,scaleOverride:true,scaleSteps:ymaxstrength,scaleStepWidth:1,scaleStartValue:0});
 	
