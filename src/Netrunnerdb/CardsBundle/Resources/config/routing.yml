@@ -114,3 +114,10 @@ NetrunnerdbCardsBundle_admin_rxc:
     resource: "@NetrunnerdbCardsBundle/Resources/config/routing/rxc.yml"
     prefix:   /admin/rxc
 
+card_opinion:
+    pattern: /user/opinion
+    defaults:
+        _controller: NetrunnerdbCardsBundle:Search:opinion
+    methods: [POST]
+
+

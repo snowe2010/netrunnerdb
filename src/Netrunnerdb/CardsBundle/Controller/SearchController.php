@@ -6,6 +6,9 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Serializer\Normalizer\GetSetMethodNormalizer;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Netrunnerdb\CardsBundle\Controller\DefaultController;
+use \Michelf\Markdown;
+use Netrunnerdb\CardsBundle\NetrunnerdbCardsBundle;
+use Netrunnerdb\CardsBundle\Entity\Opinion;
 
 class SearchController extends Controller
 {
@@ -33,6 +36,7 @@ class SearchController extends Controller
 	
 	private function getCardInfo($card, $api = false)
 	{
+		$dbh = $this->getDoctrine()->getConnection();
 		$locale = $this->getRequest()->getLocale();
 		$cardinfo = array(
 				"id" => $card->getId(),
@@ -71,7 +75,14 @@ class SearchController extends Controller
 		if(file_exists(__DIR__."/../Resources/public/images/cards/$locale/".$card->getCode() . ".png")) {
 			$cardinfo['imagesrc'] = "/web/bundles/netrunnerdbcards/images/cards/$locale/". $card->getCode() . ".png";
 		} else {
-			$cardinfo['imagesrc'] = "/web/bundles/netrunnerdbcards/images/cards/en/". $card->getCode() . ".png";
+			if($locale != "en") $cardinfo['imagesrc'] = "/web/bundles/netrunnerdbcards/images/cards/en/". $card->getCode() . ".png";
+			else $cardinfo['imagesrc'] = "";
+		}
+		if(file_exists(__DIR__."/../Resources/public/images/cards/$locale-large/".$card->getCode() . ".png")) {
+			$cardinfo['largeimagesrc'] = "/web/bundles/netrunnerdbcards/images/cards/$locale-large/". $card->getCode() . ".png";
+		} else {
+			if($locale != "en") $cardinfo['largeimagesrc'] = "/web/bundles/netrunnerdbcards/images/cards/en-large/". $card->getCode() . ".png";
+			else $cardinfo['largeimagesrc'] = "";
 		}
 		if($api) {
 			unset($cardinfo['id']);
@@ -80,6 +91,25 @@ class SearchController extends Controller
 		} else {
 			$cardinfo['cssfaction'] = str_replace(" ", "-", mb_strtolower($card->getFaction()->getName()));
 		}
+		
+		/* looking up Opinions */
+		$cardinfo['nbopinions'] = 0;
+		$cardinfo['opinions'] = array();
+		
+		$opinions = $dbh->executeQuery(
+				"SELECT
+				o.creation,
+				o.user_id,
+				u.username author,
+				u.faction authorcolor,
+				o.text
+				from opinion o
+				join user u on o.user_id=u.id
+				where o.card_id=?
+				order by creation asc", array($card->getId()))->fetchAll();
+		
+		$cardinfo['opinions'] = $opinions;
+		
 		return $cardinfo;
 	}
 
@@ -584,8 +614,6 @@ class SearchController extends Controller
 		$this->getRequest()->setLocale($locale);
 		
 		$response = new Response();
-		$response->setPublic();
-		$response->setMaxAge(600);
 
 		$cards = array();
 		$first = 0;
@@ -995,6 +1023,39 @@ class SearchController extends Controller
 			
 		}
 		return $response;
+	}
+	
+
+	/*
+	 * records a user's opinion
+	*/
+	public function opinionAction() {
+		$user = $this->getUser();
+		$request = $this->getRequest();
+	
+		$card_id = filter_var($request->get('id'),
+				FILTER_SANITIZE_NUMBER_INT);
+		$card = $this->getDoctrine()
+		->getRepository('NetrunnerdbCardsBundle:Card')
+		->find($card_id);
+	
+		$opinion_text = trim(filter_var($request->get('opinion'),
+				FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES));
+		if($card && !empty($opinion_text)) {
+			$opinion_html = Markdown::defaultTransform($opinion_text);
+				
+			$opinion = new \Netrunnerdb\CardsBundle\Entity\Opinion;
+			$opinion->setText($opinion_html);
+			$opinion->setCreation(new \DateTime());
+			$opinion->setAuthor($user);
+			$opinion->setCard($card);
+				
+			$this->get('doctrine')->getManager()->persist($opinion);
+			$this->get('doctrine')->getManager()->flush();
+		}
+	
+		return $this
+		->redirect($this->generateUrl('netrunnerdb_netrunner_cards_zoom', array('card_code' => $card->getCode())));
 	}
 	
 	

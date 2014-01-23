@@ -199,7 +199,13 @@ $(function () {
 	if(Modernizr.touch) $('#svg').remove();
 		
 	$('body').on({click: display_modal}, '.card');
-	
+
+	if($('#opinion-form-text').size()) {
+		var converter = new Markdown.Converter();
+		$('#opinion-form-text').on('keyup', function () {
+			$('#opinion-form-preview').html(converter.makeHtml($('#opinion-form-text').val()));
+		});
+	}
 });
 
 function display_modal(event) {

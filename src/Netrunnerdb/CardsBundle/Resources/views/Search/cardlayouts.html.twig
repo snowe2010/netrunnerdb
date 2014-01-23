@@ -1,12 +1,15 @@
-{% macro with_scan(card) %}
-<div class="row panel panel-default">
-<div class="panel-body">
-	<div class="card-image col-sm-4"><img src="{{ card.imagesrc }}" class="img-responsive"></div>
-	<div class="card-info col-sm-8">
-		<h3 class="card-title">
-			{% if card.uniqueness == true %}&diams;{% endif %}
-			<a href="{{ card.url }}" class="card-title{% if card.available == false %} card-preview{% endif %}">{{ card.title }}</a>
-		</h3>
+{% macro zoom(card) %}
+<div class="row">
+	<div class="card-image col-sm-5"><img src="{% if card.largeimagesrc %}{{ card.largeimagesrc }}{% else %}{{ card.imagesrc }}{% endif %}" class="img-responsive"></div>
+	<div class="card-info col-sm-7">
+	<div class="panel panel-default panel-primary">
+		<div class="panel-heading">
+    		<h3 class="panel-title card-title">
+    			{% if card.uniqueness == true %}&diams;{% endif %}
+				<a href="{{ card.url }}" class="card-title{% if card.available == false %} card-preview{% endif %}">{{ card.title }}</a>
+			</h3>
+  		</div>
+	<div class="panel-body">
 		<div class="card-type">
 			<span class="card-type">{{ card.type }}</span>{% if card.subtype %}<span class="card-subtype">: {{ card.subtype }}</span>{% endif %}
 			&bull;
@@ -45,7 +48,91 @@
 			{% endif %}
 		</div>
 	</div>
-</div>
+	</div>
+		
+		<table class="table">
+		<thead>
+		<tr><th><span class="glyphicon glyphicon-comment"></span> {{ card.opinions|length }} comments</th></tr>
+		</thead>
+		<tbody>
+		{% for opinion in card.opinions %}
+		<tr><td>
+		<span class="opinion-date">{{ opinion.creation|date('M d') }}</span>
+		<a href="{{ path('user_profile_view', {user_id:opinion.user_id,user_name:opinion.author}) }}" class="opinion-author username {{ opinion.authorcolor }}">{{ opinion.author }}</a>
+		<div class="opinion-text">{{ opinion.text|raw }}</div>
+		</td></tr>
+		{% endfor %}
+		</tbody>
+		</table>
+		{% if app.user %} 
+		<a name="opinion-form"></a>
+		<form method="POST" action="{{ path('card_opinion') }}">
+			<input type="hidden" name="id" value="{{ card.id }}">
+			<div class="form-group">
+				<textarea id="opinion-form-text" class="form-control" rows="4" name="opinion" placeholder="Enter your comment in Markdown format"></textarea>
+			</div>
+			<div class="well text-muted" id="opinion-form-preview"><small>Preview</small></div>
+			<button type="submit" class="btn btn-success">Submit comment</button> 
+			</form>
+		{% else %}
+		<p>You must be logged in to post comments.</p>
+		{% endif %}
+	</div>
+{% endmacro %}
+
+{% macro with_scan(card) %}
+<div class="row" style="margin-top:2em">
+	<div class="card-image col-sm-5"><img src="{% if card.largeimagesrc %}{{ card.largeimagesrc }}{% else %}{{ card.imagesrc }}{% endif %}" class="img-responsive"></div>
+	<div class="card-info col-sm-5">
+		<div class="panel panel-default panel-primary">
+			<div class="panel-heading">
+    			<h3 class="panel-title card-title">
+    				{% if card.uniqueness == true %}&diams;{% endif %}
+					<a href="{{ card.url }}" class="card-title{% if card.available == false %} card-preview{% endif %}">{{ card.title }}</a>
+				</h3>
+  			</div>
+			<div class="panel-body">
+				<div class="card-type">
+					<span class="card-type">{{ card.type }}</span>{% if card.subtype %}<span class="card-subtype">: {{ card.subtype }}</span>{% endif %}
+					&bull;
+					{% if card.type_code == "agenda" %} Adv: {{ card.advancementcost }} &bull; Score: {{ card.agendapoints }} {% endif %}
+					{% if card.type_code == "identity" and card.side_code == "corp" %}Deck: {{ card.minimumdecksize }} &bull; Influence: {{ card.influencelimit }} {% endif %}
+					{% if card.type_code == "identity" and card.side_code == "runner" %}Link: {{ card.baselink }} &bull; Deck: {{ card.minimumdecksize }} &bull; Influence: {{ card.influencelimit }} {% endif %}
+					{% if card.type_code == "operation" or card.type_code == "event" %}Cost: {{ card.cost }} &bull; Influence: {{ card.factioncost }}{% endif %}
+					{% if card.type_code == "resource" or card.type_code == "hardware" %}Install: {{ card.cost }} &bull; Influence: {{ card.factioncost }}{% endif %}
+					{% if card.type_code == "program" %}Install: {{ card.cost }} &bull; Memory: {{ card.memoryunits }} {% if card.strength is not null %}&bull; Strength: {{ card.strength }}{% endif %} &bull; Influence: {{ card.factioncost }}{% endif %}
+					{% if card.type_code == "asset" or card.type_code == "upgrade" %}Rez: {{ card.cost }} &bull; Trash: {{ card.trash }} &bull; Influence: {{ card.factioncost }}{% endif %}
+					{% if card.type_code == "ice" %}Rez: {{ card.cost }} &bull; Strength: {{ card.strength }} &bull; Influence: {{ card.factioncost }}{% endif %}
+				</div>
+				<div class="card-text">
+					{{ card.text|raw }}
+				</div>
+				<div class="card-flavor">
+					<small>{{ card.flavor|raw|nl2br }}</small>
+				</div>
+				<div class="card-illustrator">
+					<small>
+					{{ card.faction }} &bull;
+					{% if card.illustrator %}{{ card.illustrator }} &bull; {% endif %}{{ card.setname }} #{{ card.number }}
+					{% for alternative in card.alternatives %}
+						| <a href="{{ alternative.url }}" title="Alternative">{{ alternative.setname }} #{{ alternative.number }}</a>
+					{% endfor %}
+					</small>
+				</div>
+				<div class="card-rulings">
+					{% if card.rulings %}
+					{% for i in 0..card.rulings|length-1 %}
+					<div class="card-ruling">
+						<div class="ruling-question">{{ card.rulings[i].question|raw }}</div>
+						<div class="ruling-answer">{{ card.rulings[i].answer|raw }} <span class="ruling-source">({{ card.rulings[i].source }}, {{ card.rulings[i].created }})</span></div>
+					</div>
+					{% endfor %}
+					{% endif %}
+				</div>
+			</div>
+		</div>
+		<p style="padding:8px;font-weight:bold"><span class="glyphicon glyphicon-comment"></span> {{ card.opinions|length }} comments</p>
+	</div>
 </div>
 {% endmacro %}
 

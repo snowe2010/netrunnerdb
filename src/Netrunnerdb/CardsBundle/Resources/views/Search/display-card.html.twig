@@ -5,7 +5,11 @@
 {% block main %}
 
 {% for i in 0..cards|length-1 %}
+{% if cards|length>1 %}
 {{ cardlayouts.with_scan(cards[i]) }}
+{% else %}
+{{ cardlayouts.zoom(cards[i]) }}
+{% endif %}
 {% endfor %}
 
 {% endblock %}

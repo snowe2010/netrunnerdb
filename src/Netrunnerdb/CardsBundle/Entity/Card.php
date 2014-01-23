@@ -1090,6 +1090,7 @@ class Card
         $this->ts = new \DateTime(); 
     	$this->rulings = new \Doctrine\Common\Collections\ArrayCollection();
     	$this->decklists = new \Doctrine\Common\Collections\ArrayCollection();
+    	$this->opinions = new \Doctrine\Common\Collections\ArrayCollection();
     }
     
     /**
@@ -1226,4 +1227,58 @@ class Card
     {
     	return $this->decklists;
     }
+    
+
+    /**
+     * @var Opinions[]
+     */
+    private $opinions;
+    
+
+    /**
+     * Set opinions
+     *
+     * @param string $opinions
+     * @return Deck
+     */
+    public function setOpinions($opinions)
+    {
+    	$this->opinions = $opinions;
+    
+    	return $this;
+    }
+    
+    /**
+     * Get opinions
+     *
+     * @return string
+     */
+    public function getOpinions()
+    {
+    	return $this->opinions;
+    }
+
+    /**
+     * Add opinions
+     *
+     * @param \Netrunnerdb\CardsBundle\Entity\Opinion $opinions
+     * @return Card
+     */
+    public function addOpinion(\Netrunnerdb\CardsBundle\Entity\Opinion $opinions)
+    {
+    	$this->opinions[] = $opinions;
+    
+    	return $this;
+    }
+    
+    /**
+     * Remove opinions
+     *
+     * @param \Netrunnerdb\CardsBundle\Entity\Opinion $opinions
+     */
+    public function removeOpinion(\Netrunnerdb\CardsBundle\Entity\Opinion $opinions)
+    {
+    	$this->opinions->removeElement($opinions);
+    }
+    
 }

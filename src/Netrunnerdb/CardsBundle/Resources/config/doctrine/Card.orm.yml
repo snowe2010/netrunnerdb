@@ -30,6 +30,10 @@ Netrunnerdb\CardsBundle\Entity\Card:
         decklists:
             targetEntity: Netrunnerdb\BuilderBundle\Entity\Decklist
             mappedBy: identity
+        opinions:
+            targetEntity: Opinion
+            mappedBy: card
+            cascade: ["persist"]
     manyToMany:
         rulings:
             targetEntity: Ruling

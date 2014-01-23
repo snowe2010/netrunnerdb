@@ -166,7 +166,7 @@ tbody .btn-group{white-space:nowrap}
 .decklist .reputation{font-family:'exodemibold',sans-serif}
 .decklist .username{font-family:'exolight',sans-serif}
 .decklist .comment-date{color:lightgray;float:right}
-.decklist .comment-text{clear:right}
+.decklist .comment-text{clear:right;font-size:93%;}
 .decklist h1{border-bottom:1px solid lightgray}
 .decklist h1 img{vertical-align:text-top;margin-right:10px}
 .decklist-social{color:darkgray}
@@ -186,3 +186,6 @@ tbody .btn-group{white-space:nowrap}
 .decklists .decklist-name{font-family:'exoregular',sans-serif}
 .decklists .decklist-identity-image img{height:64px}
 .table-striped>tbody>tr:nth-child(odd)>td,.table-striped>tbody>tr:nth-child(odd)>th{background-color:rgba(0,0,0,0.05)}
+.card-info .opinion-date{color:lightgray;float:right}
+.card-info .opinion-text{clear:right;font-size:93%}
+.card-info .username{font-family:'exolight',sans-serif}
