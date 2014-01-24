@@ -1206,8 +1206,8 @@ class SocialController extends Controller {
 			'url' => $this->getRequest()->getRequestUri(),
 			'route' => $route,
 			'pages' => $pages,
-			'prevurl' => $currpage == 1 ? null : $this->generateUrl($route, array("user_id" => $user_id, "user_name" => $user_name, "page" => $prevpage)),
-			'nexturl' => $currpage == $nbpages ? null : $this->generateUrl($route, array("user_id" => $user_id, "user_name" => $user_name, "page" => $nextpage))
+			'prevurl' => $currpage == 1 ? null : $this->generateUrl($route, array("page" => $prevpage)),
+			'nexturl' => $currpage == $nbpages ? null : $this->generateUrl($route, array("page" => $nextpage))
 		));
 	}
 }

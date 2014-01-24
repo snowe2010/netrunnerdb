@@ -1064,5 +1064,66 @@ class SearchController extends Controller
 		->redirect($this->generateUrl('netrunnerdb_netrunner_cards_zoom', array('card_code' => $card->getCode())));
 	}
 	
+	public function opinionsAction($page)
+	{
+		$limit = 100;
+		if($page<1) $page=1;
+		$start = ($page-1)*$limit;
+	
+		/* @var $dbh \Doctrine\DBAL\Driver\PDOConnection */
+		$dbh = $this->get('doctrine')->getConnection();
+		/* @var $stmt \Doctrine\DBAL\Driver\PDOStatement */
+		$count = $dbh->executeQuery("SELECT
+				count(*)
+				from opinion o", array())->fetch(\PDO::FETCH_NUM)[0];
+	
+		$opinions = $dbh
+		->executeQuery(
+				"SELECT
+				o.id,
+				o.text,
+				o.creation,
+				c.id card_id,
+				c.code card_code,
+				c.title card_title,
+				u.id user_id,
+				u.username author
+				from opinion o
+				join card c on o.card_id=c.id
+				join user u on o.user_id=u.id
+				order by creation desc
+				limit $start, $limit", array())->fetchAll(\PDO::FETCH_ASSOC);
+	
+		$maxcount = count($opinions);
+	
+		// pagination : calcul de nbpages // currpage // prevpage // nextpage
+		// à partir de $start, $limit, $count, $maxcount, $page
+	
+		$currpage = $page;
+		$prevpage = max(1, $currpage-1);
+		$nbpages = min(10, ceil($maxcount / $limit));
+		$nextpage = min($nbpages, $currpage+1);
+	
+		$route = $this->getRequest()->get('_route');
+	
+		$pages = array();
+		for($page=1; $page<=$nbpages; $page++) {
+			$pages[] = array(
+					"numero" => $page,
+					"url" => $this->generateUrl($route, array("page" => $page)),
+					"current" => $page == $currpage,
+			);
+		}
+	
+		return $this->render('NetrunnerdbCardsBundle:Default:allopinions.html.twig', array(
+				'locales' => $this->renderView('NetrunnerdbCardsBundle:Default:langs.html.twig'),
+				'opinions' => $opinions,
+				'url' => $this->getRequest()->getRequestUri(),
+				'route' => $route,
+				'pages' => $pages,
+				'prevurl' => $currpage == 1 ? null : $this->generateUrl($route, array("page" => $prevpage)),
+				'nexturl' => $currpage == $nbpages ? null : $this->generateUrl($route, array("page" => $nextpage))
+		));
+	}
 	
 }

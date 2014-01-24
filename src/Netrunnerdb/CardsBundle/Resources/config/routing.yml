@@ -121,3 +121,12 @@ card_opinion:
     methods: [POST]
 
 
+all_opinions:
+    pattern: /{_locale}/cardcomments/{page}
+    defaults:
+        _controller: NetrunnerdbCardsBundle:Search:opinions
+        page: 1
+    requirements:
+        _locale: en|fr|de|es|it|pl
+
+    
