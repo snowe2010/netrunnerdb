@@ -954,7 +954,6 @@ class SearchController extends Controller
 		} else if($format == "xml") {
 			$cardsxml = array();
 			foreach($cards as $card) {
-				
 				if(!isset($card['subtype'])) $card['subtype'] = "";
 				if($card['uniqueness']) $card['subtype'] .= empty($card['subtype']) ? "Unique" : " - Unique";
 				$card['subtype'] = str_replace(' - ','-',$card['subtype']);
@@ -968,7 +967,7 @@ class SearchController extends Controller
 			
 				if(!isset($card['cost'])) {
 					if(isset($card['advancementcost'])) $card['cost'] = $card['advancementcost'];
-					if(isset($card['baselink'])) $card['cost'] = $card['baselink'];
+					else if(isset($card['baselink'])) $card['cost'] = $card['baselink'];
 					else $card['cost'] = 0;
 				}
 				
