@@ -13,6 +13,7 @@ Netrunnerdb\UserBundle\Entity\User:
             mappedBy: user
         comments:
             targetEntity: Netrunnerdb\BuilderBundle\Entity\Comment
+            orderBy: {'creation':'DESC'}
             mappedBy: author
     manyToMany:
         favorites:

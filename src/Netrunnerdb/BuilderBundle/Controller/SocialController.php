@@ -601,6 +601,7 @@ class SocialController extends Controller {
 		$comments = $dbh
 				->executeQuery(
 						"SELECT
+				c.id,
 				c.creation,
 				c.user_id,
 				u.username author,
@@ -1093,7 +1094,7 @@ class SocialController extends Controller {
 		if(!$user) throw new NotFoundHttpException("No such user.");
 		
 		
-		$limit = 10;
+		$limit = 100;
 		if($page<1) $page=1;
 		$start = ($page-1)*$limit;
 		
@@ -1131,6 +1132,77 @@ class SocialController extends Controller {
 			'user' => $user,
 			'locales' => $this->renderView('NetrunnerdbCardsBundle:Default:langs.html.twig'),
 			'decklists' => $decklists,
+			'url' => $this->getRequest()->getRequestUri(),
+			'route' => $route,
+			'pages' => $pages,
+			'prevurl' => $currpage == 1 ? null : $this->generateUrl($route, array("user_id" => $user_id, "user_name" => $user_name, "page" => $prevpage)),
+			'nexturl' => $currpage == $nbpages ? null : $this->generateUrl($route, array("user_id" => $user_id, "user_name" => $user_name, "page" => $nextpage))
+		));
+	}
+	
+	public function usercommentsAction($page)
+	{
+		/* @var $em \Doctrine\ORM\EntityManager */
+		$em = $this->get('doctrine')->getManager();
+		
+		/* @var $user \Netrunnerdb\UserBundle\Entity\User */
+		$user = $this->getUser();
+		
+		$limit = 100;
+		if($page<1) $page=1;
+		$start = ($page-1)*$limit;
+		
+		/* @var $dbh \Doctrine\DBAL\Driver\PDOConnection */
+		$dbh = $this->get('doctrine')->getConnection();
+		/* @var $stmt \Doctrine\DBAL\Driver\PDOStatement */
+		$count = $dbh->executeQuery("SELECT
+				count(*)
+				from comment c
+				where c.user_id=?", array($user->getId()))->fetch(\PDO::FETCH_NUM)[0];
+		
+		$comments = $dbh
+		->executeQuery(
+				"SELECT
+				c.id,
+				c.text,
+				c.creation,
+				d.id decklist_id,
+				d.name decklist_name
+				from comment c
+				join decklist d on c.decklist_id=d.id
+				where c.user_id=?
+				order by creation desc
+				limit $start, $limit", array($user->getId()))->fetchAll(\PDO::FETCH_ASSOC);
+		
+		$maxcount = count($comments);
+		foreach($comments as $i => $comment) {
+			$comments[$i]['decklist_prettyname'] = preg_replace('/[^a-z0-9]+/', '-',
+					mb_strtolower($comments[$i]['decklist_name']));
+		}
+		
+		// pagination : calcul de nbpages // currpage // prevpage // nextpage
+		// à partir de $start, $limit, $count, $maxcount, $page
+		
+		$currpage = $page;
+		$prevpage = max(1, $currpage-1);
+		$nbpages = min(10, ceil($maxcount / $limit));
+		$nextpage = min($nbpages, $currpage+1);
+		
+		$route = $this->getRequest()->get('_route');
+		
+		$pages = array();
+		for($page=1; $page<=$nbpages; $page++) {
+			$pages[] = array(
+					"numero" => $page,
+					"url" => $this->generateUrl($route, array("page" => $page)),
+					"current" => $page == $currpage,
+			);
+		}
+		
+		return $this->render('NetrunnerdbBuilderBundle:Default:usercomments.html.twig', array(
+			'user' => $user,
+			'locales' => $this->renderView('NetrunnerdbCardsBundle:Default:langs.html.twig'),
+			'comments' => $comments,
 			'url' => $this->getRequest()->getRequestUri(),
 			'route' => $route,
 			'pages' => $pages,

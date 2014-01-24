@@ -215,7 +215,6 @@ user_profile:
     pattern: /{_locale}/user/profile
     defaults:
         _controller: NetrunnerdbUserBundle:Default:profile
-        _locale: en
     requirements:
         _locale: en|fr|de|es|it|pl
 
@@ -223,7 +222,6 @@ user_profile_save:
     pattern: /{_locale}/user/profile_save
     defaults:
         _controller: NetrunnerdbUserBundle:Default:saveProfile
-        _locale: en
     requirements:
         _locale: en|fr|de|es|it|pl
     
@@ -235,4 +233,11 @@ user_profile_view:
     requirements:
         _locale: en|fr|de|es|it|pl
     
-        
+user_comments:
+    pattern: /{_locale}/user/comments/{page}
+    defaults:
+        _controller: NetrunnerdbBuilderBundle:Social:usercomments
+        page: 1
+    requirements:
+        _locale: en|fr|de|es|it|pl
+

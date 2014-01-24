@@ -330,7 +330,8 @@ function getDisplayDescriptions(sort) {
 <tbody>
 {% for comment in decklist.comments %}
 <tr><td>
-<span class="comment-date">{{ comment.creation|date('M d') }}</span>
+<a name="{{ comment.id }}" ></a>
+<span class="comment-date">{{ comment.creation|date('M d, Y') }}</span>
 <a href="{{ path('user_profile_view', {user_id:comment.user_id,user_name:comment.author}) }}" class="comment-author username {{ comment.authorcolor }}">{{ comment.author }}</a>
 <div class="comment-text">{{ comment.text|raw }}</div>
 </td></tr>
