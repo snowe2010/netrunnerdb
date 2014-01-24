@@ -1,7 +1,7 @@
 {% macro zoom(card) %}
 <div class="row">
-	<div class="card-image col-sm-5"><img src="{% if card.largeimagesrc %}{{ card.largeimagesrc }}{% else %}{{ card.imagesrc }}{% endif %}" class="img-responsive"></div>
-	<div class="card-info col-sm-7">
+	<div class="card-image col-sm-6"><img src="{% if card.largeimagesrc %}{{ card.largeimagesrc }}{% else %}{{ card.imagesrc }}{% endif %}" class="img-responsive" style="margin:auto"></div>
+	<div class="card-info col-sm-6">
 	<div class="panel panel-default panel-primary">
 		<div class="panel-heading">
     		<h3 class="panel-title card-title">
@@ -36,16 +36,6 @@
 				| <a href="{{ alternative.url }}" title="Alternative">{{ alternative.setname }} #{{ alternative.number }}</a>
 			{% endfor %}
 			</small>
-		</div>
-		<div class="card-rulings">
-			{% if card.rulings %}
-			{% for i in 0..card.rulings|length-1 %}
-			<div class="card-ruling">
-				<div class="ruling-question">{{ card.rulings[i].question|raw }}</div>
-				<div class="ruling-answer">{{ card.rulings[i].answer|raw }} <span class="ruling-source">({{ card.rulings[i].source }}, {{ card.rulings[i].created }})</span></div>
-			</div>
-			{% endfor %}
-			{% endif %}
 		</div>
 	</div>
 	</div>
@@ -118,16 +108,6 @@
 						| <a href="{{ alternative.url }}" title="Alternative">{{ alternative.setname }} #{{ alternative.number }}</a>
 					{% endfor %}
 					</small>
-				</div>
-				<div class="card-rulings">
-					{% if card.rulings %}
-					{% for i in 0..card.rulings|length-1 %}
-					<div class="card-ruling">
-						<div class="ruling-question">{{ card.rulings[i].question|raw }}</div>
-						<div class="ruling-answer">{{ card.rulings[i].answer|raw }} <span class="ruling-source">({{ card.rulings[i].source }}, {{ card.rulings[i].created }})</span></div>
-					</div>
-					{% endfor %}
-					{% endif %}
 				</div>
 			</div>
 		</div>
