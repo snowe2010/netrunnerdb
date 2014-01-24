@@ -53,8 +53,9 @@ function when_all_parsed() {
 	
 	$('.filter').each(function (index, div) {
 		var columnName = $(div).attr('id');
-		var arr = [];
+		var arr = [], checked;
 		$(div).find("input[type=checkbox]").each(function (index, elt) {
+			if(columnName == "set_code" && localStorage && ( checked = localStorage.getItem( 'set_code_'+$(elt).attr('name') ) ) !== null) $(elt).prop('checked', checked === "on");
 			if($(elt).prop('checked')) arr.push($(elt).attr('name'));
 		});
 		Filters[columnName] = arr;
@@ -196,6 +197,7 @@ function handle_input_change(event) {
 	var arr = [];
 	div.find("input[type=checkbox]").each(function (index, elt) {
 		if($(elt).prop('checked')) arr.push($(elt).attr('name'));
+		if(columnName == "set_code" && localStorage)  localStorage.setItem('set_code_'+$(elt).attr('name'), $(elt).prop('checked') ? "on" : "off");
 	});
 	Filters[columnName] = arr;
 	
@@ -205,6 +207,7 @@ function handle_input_change(event) {
 			FilterQuery[k] = Filters[k];
 		}
 	});
+	// 3 change events are fired at the same time, throttling repaint
 	if(!Update_Incoming) {
 		Update_Incoming = true;
 		setTimeout(update_filtered, 100);
