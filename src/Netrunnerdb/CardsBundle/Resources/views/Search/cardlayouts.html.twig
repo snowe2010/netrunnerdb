@@ -47,7 +47,7 @@
 		<tbody>
 		{% for opinion in card.opinions %}
 		<tr><td>
-		<span class="opinion-date">{{ opinion.creation|date('M d') }}</span>
+		<span class="opinion-date">{{ opinion.creation|date('M d, Y') }}</span>
 		<a href="{{ path('user_profile_view', {user_id:opinion.user_id,user_name:opinion.author}) }}" class="opinion-author username {{ opinion.authorcolor }}">{{ opinion.author }}</a>
 		<div class="opinion-text">{{ opinion.text|raw }}</div>
 		</td></tr>
@@ -72,8 +72,8 @@
 
 {% macro with_scan(card) %}
 <div class="row" style="margin-top:2em">
-	<div class="card-image col-sm-5"><img src="{% if card.largeimagesrc %}{{ card.largeimagesrc }}{% else %}{{ card.imagesrc }}{% endif %}" class="img-responsive"></div>
-	<div class="card-info col-sm-5">
+	<div class="card-image col-sm-6"><img src="{% if card.largeimagesrc %}{{ card.largeimagesrc }}{% else %}{{ card.imagesrc }}{% endif %}" class="img-responsive" style="margin:auto"></div>
+	<div class="card-info col-sm-6">
 		<div class="panel panel-default panel-primary">
 			<div class="panel-heading">
     			<h3 class="panel-title card-title">
