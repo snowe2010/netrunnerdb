@@ -1,5 +1,10 @@
 {% extends 'NetrunnerdbBuilderBundle::layout.html.twig' %}
 
+{% block head %}
+<<script type="text/javascript">
+$(function() { $('#version-popover').popover({html:true}); });
+</script>
+{% endblock %}
 {% block body %}
 
 
@@ -18,22 +23,17 @@
 <div class="page-header">
 <h1>Welcome on NetrunnerDB</h1>
 <p class="">You can explore the public <a href="{{ path('decklists_list', {type:'popular'}) }}">decklists</a> or start building your own <a href="{{ path('decks_list') }}">decks</a>.</p>
-</div>
-</div>
-<div class="col-md-6">
-<div class="panel panel-info">
-<div class="panel-heading">
-    <h3 class="panel-title"><small class="pull-right">2013-12-03</small>new in 1.3</h3>
-  </div>
-  <div class="panel-body">
-    <ul>
-    <li>Deck notes are formatted in Markdown</li>
-    <li>Deck notes are published as decklist description</li>
-    <li>Deck content can be sorted by type, faction, set or title</li>
-    <li>Breakdown by card cost and ice strength in decklists</li>
-    <li>Deck notes are imported/exported to OCTGN</li>
-    </ul>
-  </div>
+<p>Version <a id="version-popover" href="#" data-content="<ul>
+    <li>Card comments</li>
+    <li>Larger card images</li>
+    <li>Save sets selection across sessions</li>
+    <li>Graphs in deckbuilder</li>
+    <li>No more error when publishing deck</li>
+    <li>Comments preview</li>
+    <li>More deck slots</li>
+    <li>Decklists Hall of Fame</li>
+    <li>More items in login dropdown</li>
+   </ul>" title="Version 1.4 - 2014-01-24">1.4</a></p>
 </div>
 </div>
 </div>
