@@ -98,6 +98,8 @@ Netrunnerdb\BuilderBundle\Entity\Decklist:
             id: true
             generator:
                 strategy: AUTO
+        ts:
+            type: datetime
         name:
             type: string
             length: 60

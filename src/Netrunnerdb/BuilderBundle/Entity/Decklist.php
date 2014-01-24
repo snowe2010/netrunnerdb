@@ -19,6 +19,11 @@ class Decklist
     private $id;
 
     /**
+     * @var \DateTime
+     */
+    private $ts;
+    
+    /**
      * @var string
      */
     private $name;
@@ -103,6 +108,29 @@ class Decklist
         return $this->id;
     }
 
+    /**
+     * Set ts
+     *
+     * @param \DateTime $ts
+     * @return Decklist
+     */
+    public function setTs($ts)
+    {
+    	$this->ts = $ts;
+    
+    	return $this;
+    }
+    
+    /**
+     * Get ts
+     *
+     * @return \DateTime
+     */
+    public function getTs()
+    {
+    	return $this->ts;
+    }
+    
     /**
      * Set name
      *

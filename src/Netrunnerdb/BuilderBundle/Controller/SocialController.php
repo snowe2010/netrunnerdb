@@ -98,6 +98,7 @@ class SocialController extends Controller {
 		$decklist->setDescription($description);
 		$decklist->setUser($this->getUser());
 		$decklist->setCreation(new \DateTime());
+		$decklist->setTs(new \DateTime());
 		$decklist->setSignature($new_signature);
 		$decklist->setIdentity($deck->getIdentity());
 		$decklist->setFaction($deck->getIdentity()->getFaction());
@@ -555,11 +556,14 @@ class SocialController extends Controller {
 	 * displays the content of a decklist along with comments, siblings, similar, etc.
 	 */
 	public function viewAction($decklist_id, $decklist_name) {
+		$response = new Response();
+		
 		$dbh = $this->get('doctrine')->getConnection();
 		$rows = $dbh
 				->executeQuery(
 						"SELECT
 				d.id,
+				d.ts,
 				d.name,
 				d.creation,
 				d.rawdescription,
@@ -586,6 +590,11 @@ class SocialController extends Controller {
 		}
 		
 		$decklist = $rows[0];
+		$response->setLastModified(new DateTime($decklist['ts']));
+		if ($response->isNotModified($this->getRequest())) {
+			return $response;
+		}
+		
 		$decklist['prettyname'] = preg_replace('/[^a-z0-9]+/', '-',
 				mb_strtolower($decklist['name']));
 
@@ -682,7 +691,7 @@ class SocialController extends Controller {
 								'is_author' => $is_author,
 								'precedent_decklists' => $precedent_decklists,
 								'successor_decklists' => $successor_decklists,
-						));
+						), $response);
 
 	}
 
@@ -720,6 +729,7 @@ class SocialController extends Controller {
 				$author->setReputation($author->getReputation() - 5);
 		} else {
 			$user->addFavorite($decklist);
+			$decklist->setTs(new \DateTime());
 			if ($author->getId() != $user->getId())
 				$author->setReputation($author->getReputation() + 5);
 		}
@@ -753,6 +763,7 @@ class SocialController extends Controller {
 			$comment->setDecklist($decklist);
 			
 			$this->get('doctrine')->getManager()->persist($comment);
+			$decklist->setTs(new \DateTime());
 			$this->get('doctrine')->getManager()->flush();
 		}
 
@@ -790,6 +801,7 @@ class SocialController extends Controller {
 		$user->addVote($decklist);
 		$author = $decklist->getUser();
 		$author->setReputation($author->getReputation() + 1);
+		$decklist->setTs(new \DateTime());
 		$this->get('doctrine')->getManager()->flush();
 
 		VOTE_DONE: return new Response(count($decklist->getVotes()));
@@ -1056,6 +1068,7 @@ class SocialController extends Controller {
 		$decklist->setName($name);
 		$decklist->setRawdescription($rawdescription);
 		$decklist->setDescription($description);
+		$decklist->setTs(new \DateTime());
 		$em->flush();
 		
 		return $this
