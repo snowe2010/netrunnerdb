@@ -47,6 +47,8 @@ Netrunnerdb\CardsBundle\Entity\Card:
                 strategy: AUTO
         ts:
             type: datetime
+        opinionsTs:
+            type: datetime
         code:
             type: string
             length: '5'
@@ -73,6 +75,11 @@ Netrunnerdb\CardsBundle\Entity\Card:
             length: 255
             column: title_pl
             nullable: true
+        titleIt:
+            type: string
+            length: 255
+            column: title_it
+            nullable: true
         keywords:
             type: string
             length: 255
@@ -97,6 +104,11 @@ Netrunnerdb\CardsBundle\Entity\Card:
             length: 255
             column: keywords_pl
             nullable: true
+        keywordsIt:
+            type: string
+            length: 255
+            column: keywords_it
+            nullable: true
         text:
             type: string
             length: '1024'
@@ -119,6 +131,11 @@ Netrunnerdb\CardsBundle\Entity\Card:
             type: string
             length: '1024'
             column: text_pl
+            nullable: true
+        textIt:
+            type: string
+            length: '1024'
+            column: text_it
             nullable: true
         advancementCost:
             type: smallint
@@ -162,6 +179,11 @@ Netrunnerdb\CardsBundle\Entity\Card:
             type: string
             length: '1024'
             column: flavor_pl
+            nullable: true
+        flavorIt:
+            type: string
+            length: '1024'
+            column: flavor_it
             nullable: true
         illustrator:
             type: string

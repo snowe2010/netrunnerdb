@@ -661,6 +661,7 @@ class SearchController extends Controller
 			
 			for($rowindex = $first; $rowindex < $last && $rowindex < count($rows); $rowindex++) {
 				if(empty($last_modified) || $last_modified < $rows[$rowindex]->getTs()) $last_modified = $rows[$rowindex]->getTs();
+				if($last_modified < $rows[$rowindex]->getOpinionsTs()) $last_modified = $rows[$rowindex]->getOpinionsTs();
 			}
 			$response->setLastModified($last_modified);
 			if ($response->isNotModified($this->getRequest())) {
@@ -1039,6 +1040,8 @@ class SearchController extends Controller
 		->getRepository('NetrunnerdbCardsBundle:Card')
 		->find($card_id);
 	
+		$now = new \DateTime();
+		
 		$opinion_text = trim(filter_var($request->get('opinion'),
 				FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES));
 		if($card && !empty($opinion_text)) {
@@ -1046,11 +1049,15 @@ class SearchController extends Controller
 				
 			$opinion = new \Netrunnerdb\CardsBundle\Entity\Opinion;
 			$opinion->setText($opinion_html);
-			$opinion->setCreation(new \DateTime());
+			
+			$opinion->setCreation($now);
 			$opinion->setAuthor($user);
 			$opinion->setCard($card);
 				
 			$this->get('doctrine')->getManager()->persist($opinion);
+			
+			$card->setOpinionsTs($now);
+			
 			$this->get('doctrine')->getManager()->flush();
 		}
 	

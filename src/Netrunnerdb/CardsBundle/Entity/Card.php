@@ -20,6 +20,11 @@ class Card
     private $ts;
 
     /**
+     * @var \DateTime
+     */
+    private $opinionsTs;
+    
+    /**
      * @var string
      */
     private $code;
@@ -52,6 +57,11 @@ class Card
     /**
      * @var string
      */
+    private $titleIt;
+    
+    /**
+     * @var string
+     */
     private $keywords;
 
     /**
@@ -77,6 +87,11 @@ class Card
     /**
      * @var string
      */
+    private $keywordsIt;
+    
+    /**
+     * @var string
+     */
     private $text;
 
     /**
@@ -99,6 +114,11 @@ class Card
      */
     private $textPl;
 
+    /**
+     * @var string
+     */
+    private $textIt;
+    
     /**
      * @var integer
      */
@@ -149,6 +169,11 @@ class Card
      */
     private $flavorPl;
 
+    /**
+     * @var string
+     */
+    private $flavorIt;
+    
     /**
      * @var string
      */
@@ -234,6 +259,29 @@ class Card
     }
 
     /**
+     * Set opinionsTs
+     *
+     * @param \DateTime $opinionsTs
+     * @return Card
+     */
+    public function setOpinionsTs($opinionsTs)
+    {
+    	$this->opinionsTs = $opinionsTs;
+    
+    	return $this;
+    }
+    
+    /**
+     * Get opinionsTs
+     *
+     * @return \DateTime
+     */
+    public function getOpinionsTs()
+    {
+    	return $this->opinionsTs;
+    }
+    
+    /**
      * Set code
      *
      * @param string $code
@@ -281,6 +329,7 @@ class Card
     	if($locale == "de") $res = $this->titleDe ?: $res;
     	if($locale == "es") $res = $this->titleEs ?: $res;
     	if($locale == "pl") $res = $this->titlePl ?: $res;
+    	if($locale == "it") $res = $this->titleIt ?: $res;
     	return $res;
     }
 
@@ -377,6 +426,29 @@ class Card
     }
 
     /**
+     * Set titleIt
+     *
+     * @param string $titleIt
+     * @return Card
+     */
+    public function setTitleIt($titleIt)
+    {
+    	$this->titleIt = $titleIt;
+    
+    	return $this;
+    }
+    
+    /**
+     * Get titleIt
+     *
+     * @return string
+     */
+    public function getTitleIt()
+    {
+    	return $this->titleIt;
+    }
+    
+    /**
      * Set keywords
      *
      * @param string $keywords
@@ -401,6 +473,7 @@ class Card
     	if($locale == "de") $res = $this->keywordsDe ?: $res;
     	if($locale == "es") $res = $this->keywordsEs ?: $res;
     	if($locale == "pl") $res = $this->keywordsPl ?: $res;
+    	if($locale == "it") $res = $this->keywordsIt ?: $res;
     	return $res;
     }
 
@@ -497,6 +570,29 @@ class Card
     }
 
     /**
+     * Set keywordsIt
+     *
+     * @param string $keywordsIt
+     * @return Card
+     */
+    public function setKeywordsIt($keywordsIt)
+    {
+    	$this->keywordsIt = $keywordsIt;
+    
+    	return $this;
+    }
+    
+    /**
+     * Get keywordsIt
+     *
+     * @return string
+     */
+    public function getKeywordsIt()
+    {
+    	return $this->keywordsIt;
+    }
+    
+    /**
      * Set text
      *
      * @param string $text
@@ -521,6 +617,7 @@ class Card
     	if($locale == "de") $res = $this->textDe ?: $res;
     	if($locale == "es") $res = $this->textEs ?: $res;
     	if($locale == "pl") $res = $this->textPl ?: $res;
+    	if($locale == "it") $res = $this->textIt ?: $res;
     	return $res;
     }
 
@@ -614,6 +711,29 @@ class Card
     public function getTextPl()
     {
         return $this->textPl;
+    }
+    
+    /**
+     * Set textIt
+     *
+     * @param string $textIt
+     * @return Card
+     */
+    public function setTextIt($textIt)
+    {
+        $this->textIt = $textIt;
+    
+        return $this;
+    }
+
+    /**
+     * Get textIt
+     *
+     * @return string 
+     */
+    public function getTextIt()
+    {
+        return $this->textIt;
     }
 
     /**
@@ -756,6 +876,7 @@ class Card
     	if($locale == "de") $res = $this->flavorDe ?: $res;
     	if($locale == "es") $res = $this->flavorEs ?: $res;
     	if($locale == "pl") $res = $this->flavorPl ?: $res;
+    	if($locale == "it") $res = $this->flavorIt ?: $res;
     	return $res;
     }
 
@@ -851,6 +972,29 @@ class Card
         return $this->flavorPl;
     }
 
+    /**
+     * Set flavorIt
+     *
+     * @param string $flavorIt
+     * @return Card
+     */
+    public function setFlavorIt($flavorIt)
+    {
+    	$this->flavorIt = $flavorIt;
+    
+    	return $this;
+    }
+    
+    /**
+     * Get flavorIt
+     *
+     * @return string
+     */
+    public function getFlavorIt()
+    {
+    	return $this->flavorIt;
+    }
+    
     /**
      * Set illustrator
      *
