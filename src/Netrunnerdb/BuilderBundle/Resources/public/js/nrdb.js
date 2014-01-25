@@ -505,7 +505,7 @@ function make_graphs() {
 		data.labels.push(cost);
 		data.datasets[0].data.push(costs[cost]);
 	}
-	var ctx = $('#costChart').attr('width', canvasWidth).get(0).getContext("2d");
+	var ctx = $('#costChart').attr('width', canvasWidth).attr('height', 200).get(0).getContext("2d");
 	var myNewChart = new Chart(ctx).Bar(data, {animation:false,scaleOverride:true,scaleSteps:ymaxcost,scaleStepWidth:1,scaleStartValue:0});
 
 	// strengthChart
@@ -521,8 +521,7 @@ function make_graphs() {
 		data.labels.push(strength);
 		data.datasets[0].data.push(strengths[strength]);
 	}
-	console.log(data.labels);
-	var ctx = $('#strengthChart').attr('width', canvasWidth).get(0).getContext("2d");
+	var ctx = $('#strengthChart').attr('width', canvasWidth).attr('height', 200).get(0).getContext("2d");
 	var myNewChart = new Chart(ctx).Bar(data, {animation:false,scaleOverride:true,scaleSteps:ymaxstrength,scaleStepWidth:1,scaleStartValue:0});
 	
 }
