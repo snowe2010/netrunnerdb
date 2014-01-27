@@ -256,21 +256,26 @@ class DefaultController extends Controller
 
 	public function apisetsAction()
 	{
+		$response = new Response();
+		$response->setPublic();
+		$response->setMaxAge(600);
+		$response->headers->add(array('Access-Control-Allow-Origin' => '*'));
+		
 		$jsonp = $this->getRequest()->query->get('jsonp');
 		$locale = $this->getRequest()->query->get('_locale');
 		if(isset($locale)) $this->getRequest()->setLocale($locale);
 		
 		$data = $this->allsetsnocycledata();
+		
 		$content = json_encode($data);
 		if(isset($jsonp))
 		{
 			$content = "$jsonp($content)";
+			$response->headers->set('Content-Type', 'application/javascript');
+		} else
+		{
+			$response->headers->set('Content-Type', 'application/json');
 		}
-
-		$response = new Response();
-		$response->setPublic();
-		$response->setMaxAge(600);
-		$response->headers->set('Content-Type', 'application/javascript');
 		$response->setContent($content);
 		return $response;
 	}

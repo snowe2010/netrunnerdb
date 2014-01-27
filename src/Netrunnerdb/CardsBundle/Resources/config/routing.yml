@@ -25,6 +25,7 @@ netrunnerdb_netrunner_cards_zoom:
         _locale: en
     requirements:
         _locale: en|fr|de|es|it|pl
+        card_code: \d+
 
 netrunnerdb_netrunner_cards_cycle:
     pattern:  /{_locale}/cycle/{cycle_code}
@@ -83,6 +84,20 @@ netrunnerdb_netrunner_cards_rulings:
         _locale: en
     requirements:
         _locale: en|fr|de|es|it|pl
+
+api_cards:
+    pattern: /api/cards/
+    defaults:
+        _controller: NetrunnerdbCardsBundle:Search:apicards
+
+api_card:
+    pattern: /api/card/{card_code}.{_format}
+    defaults:
+        _controller: NetrunnerdbCardsBundle:Search:apicard
+        _format: json
+    requirements:
+        _format: json
+        card_code: \d+
 
 api_search:
     pattern: /api/search/{query}

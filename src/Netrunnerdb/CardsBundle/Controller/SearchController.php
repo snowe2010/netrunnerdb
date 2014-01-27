@@ -317,7 +317,7 @@ class SearchController extends Controller
 		return $list;
 	}
 	
-	private function get_search_rows($conditions, $sortorder)
+	private function get_search_rows($conditions, $sortorder, $forceempty = false)
 	{
 		$i=0;
 		$faction_codes = array(
@@ -551,7 +551,7 @@ class SearchController extends Controller
 			}
 		}
 		
-		if(!$i) {
+		if(!$i && !$forceempty) {
 			return;
 		}
 		switch($sortorder) {
@@ -912,13 +912,101 @@ class SearchController extends Controller
 		$response->setContent($content);
 		return $response;
 	}
+	
+	public function apicardAction($card_code)
+	{
 
+		$response = new Response();
+		$response->setPublic();
+		$response->setMaxAge(600);
+		$response->headers->add(array('Access-Control-Allow-Origin' => '*'));
+		
+		$jsonp = $this->getRequest()->query->get('jsonp');
+		$locale = $this->getRequest()->query->get('_locale');
+		if(isset($locale)) $this->getRequest()->setLocale($locale);
+		
+		$conditions = $this->syntax($card_code);
+		$this->validateConditions($conditions);
+		$query = $this->buildQueryFromConditions($conditions);
+		
+		$cards = array();
+		$last_modified = null;
+		if($query && $rows = $this->get_search_rows($conditions, "set"))
+		{
+			for($rowindex = 0; $rowindex < count($rows); $rowindex++) {
+				if(empty($last_modified) || $last_modified < $rows[$rowindex]->getTs()) $last_modified = $rows[$rowindex]->getTs();
+			}
+			$response->setLastModified($last_modified);
+			if ($response->isNotModified($this->getRequest())) {
+				return $response;
+			}
+			for($rowindex = 0; $rowindex < count($rows); $rowindex++) {
+				$card = $this->getCardInfo($rows[$rowindex], true, "en");
+				$cards[] = $card;
+			}
+		}
+		
+		$content = json_encode($cards);
+		if(isset($jsonp))
+		{
+			$content = "$jsonp($content)";
+		}
+		
+		$response->headers->set('Content-Type', 'application/javascript');
+		$response->setContent($content);
+		return $response;
+		
+	}
+
+	public function apicardsAction()
+	{
+		$response = new Response();
+		$response->setPublic();
+		$response->setMaxAge(600);
+		$response->headers->add(array('Access-Control-Allow-Origin' => '*'));
+	
+		$jsonp = $this->getRequest()->query->get('jsonp');
+		$locale = $this->getRequest()->query->get('_locale');
+		if(isset($locale)) $this->getRequest()->setLocale($locale);
+	
+		$cards = array();
+		$last_modified = null;
+		if($rows = $this->get_search_rows(array(), "set", true))
+		{
+			for($rowindex = 0; $rowindex < count($rows); $rowindex++) {
+				if(empty($last_modified) || $last_modified < $rows[$rowindex]->getTs()) $last_modified = $rows[$rowindex]->getTs();
+			}
+			$response->setLastModified($last_modified);
+			if ($response->isNotModified($this->getRequest())) {
+				return $response;
+			}
+			for($rowindex = 0; $rowindex < count($rows); $rowindex++) {
+				$card = $this->getCardInfo($rows[$rowindex], true, "en");
+				$cards[] = $card;
+			}
+		}
+	
+		$content = json_encode($cards);
+		if(isset($jsonp))
+		{
+			$content = "$jsonp($content)";
+			$response->headers->set('Content-Type', 'application/javascript');
+		} else 
+		{
+			$response->headers->set('Content-Type', 'application/json');
+		}
+	
+		$response->setContent($content);
+		return $response;
+	}
+	
 	public function apisetAction($pack_code)
 	{
 		$response = new Response();
 		$response->setPublic();
 		$response->setMaxAge(600);
-	
+		$response->headers->add(array('Access-Control-Allow-Origin' => '*'));
+		
 		$locale = $this->getRequest()->query->get('_locale');
 		if(isset($locale)) $this->getRequest()->setLocale($locale);
 	
@@ -948,10 +1036,24 @@ class SearchController extends Controller
 			}
 		}
 
-		if($format == "json") {
-			$response->headers->set('Content-Type', 'application/javascript');
-			$response->setContent(json_encode($cards));
-		} else if($format == "xml") {
+		if($format == "json") 
+		{
+			
+			$content = json_encode($cards);
+			if(isset($jsonp))
+			{
+				$content = "$jsonp($content)";
+				$response->headers->set('Content-Type', 'application/javascript');
+			} else
+			{
+				$response->headers->set('Content-Type', 'application/json');
+			}
+			$response->setContent($content);
+			
+		}
+		else if($format == "xml") 
+		{
+			
 			$cardsxml = array();
 			foreach($cards as $card) {
 				if(!isset($card['subtype'])) $card['subtype'] = "";
