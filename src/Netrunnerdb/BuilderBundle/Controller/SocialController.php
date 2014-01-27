@@ -785,6 +785,8 @@ class SocialController extends Controller {
 		$em = $this->get('doctrine')->getManager();
 		
 		$user = $this->getUser();
+		if(!$user) throw new UnauthorizedHttpException("You must be logged in.");
+		
 		$request = $this->getRequest();
 		$decklist_id = filter_var($request->get('id'),
 				FILTER_SANITIZE_NUMBER_INT);

@@ -169,7 +169,7 @@ class BuilderController extends Controller
 				
 		/* @var $deck \Netrunnerdb\BuilderBundle\Entity\Deck */
 		$deck = $em->getRepository('NetrunnerdbBuilderBundle:Deck')->find($deck_id);
-		if ($this->getUser()->getId() != $deck->getUser()->getId())
+		if (!$this->getUser() || $this->getUser()->getId() != $deck->getUser()->getId())
 			throw new UnauthorizedHttpException("You don't have access to this deck.");
 		
 		/* @var $judge \Netrunnerdb\SocialBundle\Services\Judge */
@@ -216,7 +216,7 @@ class BuilderController extends Controller
 		
 		/* @var $deck \Netrunnerdb\BuilderBundle\Entity\Deck */
 		$deck = $em->getRepository('NetrunnerdbBuilderBundle:Deck')->find($deck_id);
-		if ($this->getUser()->getId() != $deck->getUser()->getId())
+		if (!$this->getUser() || $this->getUser()->getId() != $deck->getUser()->getId())
 			throw new UnauthorizedHttpException("You don't have access to this deck.");
 
 		$rd = array();
