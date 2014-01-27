@@ -236,7 +236,6 @@ class DefaultController extends Controller
 					"known" => intval($real),
 					"total" => $max,
 					"url" => $this->get('router')->generate('netrunnerdb_netrunner_cards_list', array('pack_code' => $pack->getCode()), true),
-					"search" => "e:".$pack->getCode(),
 			);
 		}
 		return $packs;
