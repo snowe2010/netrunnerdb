@@ -23,6 +23,7 @@ class SearchController extends Controller
 		$alternatives = array();
 		foreach($rows as $alt)
 		{
+			if($alt->getPack()->getId() == $card->getPack()->getId()) continue;
 			$alternatives[] = array(
 				"setname" => $alt->getPack()->getName($this->getRequest()->getLocale()),
 				"set_code" => $alt->getPack()->getCode(),
