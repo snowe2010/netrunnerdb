@@ -40,7 +40,7 @@ function parseCards(cards_data) {
 	localStorage.setItem("cards_data_"+Locale, json);
 }
 var promise1 = $.ajax("{{ path('api_sets') }}?jsonp=parseSets&_locale="+Locale);
-var promise2 = $.ajax("{{ path('api_search', {query:'d:r|c'}) }}?jsonp=parseCards&_locale="+Locale);
+var promise2 = $.ajax("{{ path('api_cards') }}?jsonp=parseCards&_locale="+Locale);
 function getDisplayDescriptions(sort) {
         var dd = {
             'type': [
