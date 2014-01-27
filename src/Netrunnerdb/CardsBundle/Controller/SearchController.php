@@ -568,7 +568,7 @@ class SearchController extends Controller
 		
 		for($i=0; $i<count($rows); $i++)
 		{
-			while(isset($rows[$i+1]) && $rows[$i]->getTitle() == $rows[$i+1]->getTitle())
+			while(isset($rows[$i+1]) && $rows[$i]->getTitle() == $rows[$i+1]->getTitle() && $rows[$i]->getPack()->getCode() == "alt")
 			{
 				$rows[$i] = $rows[$i+1];
 				array_splice($rows, $i+1, 1);
