@@ -663,7 +663,8 @@ class SearchController extends Controller
 				if(empty($last_modified) || $last_modified < $rows[$rowindex]->getTs()) $last_modified = $rows[$rowindex]->getTs();
 				if($last_modified < $rows[$rowindex]->getOpinionsTs()) $last_modified = $rows[$rowindex]->getOpinionsTs();
 			}
-			$response->setLastModified($last_modified);
+			$user = $this->getUser();
+			$response->setLastModified($user && $user->getLastLogin() > $last_modified ? $user->getLastLogin() : $last_modified);
 			if ($response->isNotModified($this->getRequest())) {
 				return $response;
 			}

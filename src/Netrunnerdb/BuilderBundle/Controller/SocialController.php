@@ -606,7 +606,9 @@ class SocialController extends Controller {
 		}
 		
 		$decklist = $rows[0];
-		$response->setLastModified(new DateTime($decklist['ts']));
+		$user = $this->getUser();
+		$lastModified = new DateTime($decklist['ts']);
+		$response->setLastModified($user && $user->getLastLogin() > $lastModified ? $user->getLastLogin() : $lastModified);
 		if ($response->isNotModified($this->getRequest())) {
 			return $response;
 		}
