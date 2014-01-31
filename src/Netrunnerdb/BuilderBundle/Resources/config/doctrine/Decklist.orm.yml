@@ -103,6 +103,9 @@ Netrunnerdb\BuilderBundle\Entity\Decklist:
         name:
             type: string
             length: 60
+        prettyname:
+            type: string
+            length: 60
         rawdescription:
             type: text
             nullable: true
@@ -114,4 +117,10 @@ Netrunnerdb\BuilderBundle\Entity\Decklist:
         signature:
             type: string
             length: 32
+        nbvotes:
+            type: integer
+        nbfavorites:
+            type: integer
+        nbcomments:
+            type: integer
     lifecycleCallbacks: {  }

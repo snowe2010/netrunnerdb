@@ -94,6 +94,7 @@ class SocialController extends Controller {
 
 		$decklist = new Decklist;
 		$decklist->setName(substr($name, 0, 60));
+		$decklist->setPrettyname(preg_replace('/[^a-z0-9]+/', '-', mb_strtolower(substr($name, 0, 60))));
 		$decklist->setRawdescription($rawdescription);
 		$decklist->setDescription($description);
 		$decklist->setUser($this->getUser());
@@ -104,6 +105,9 @@ class SocialController extends Controller {
 		$decklist->setFaction($deck->getIdentity()->getFaction());
 		$decklist->setSide($deck->getSide());
 		$decklist->setLastPack($deck->getLastPack());
+		$decklist->setNbvotes(0);
+		$decklist->setNbfavorites(0);
+		$decklist->setNbcomments(0);
 		foreach ($deck->getSlots() as $slot) {
 			$card = $slot->getCard();
 			$decklistslot = new Decklistslot;
@@ -127,6 +131,7 @@ class SocialController extends Controller {
 	}
 
 	/**
+	 * returns the list of decklist favorited by user
 	 * @param integer $limit
 	 * @return \Doctrine\DBAL\Driver\PDOStatement
 	 */
@@ -148,15 +153,16 @@ class SocialController extends Controller {
 						"SELECT
 					d.id,
 					d.name,
+					d.prettyname,
 					d.creation,
 					d.user_id,
 					u.username,
 					u.faction usercolor,
 					u.reputation,
 					c.code,
-					(select count(*) from vote where decklist_id=d.id) nbvotes,
-					(select count(*) from favorite where decklist_id=d.id) nbfavorites,
-					(select count(*) from comment where decklist_id=d.id) nbcomments
+					d.nbvotes,
+					d.nbfavorites,
+					d.nbcomments
 					from decklist d
 					join user u on d.user_id=u.id
 					join card c on d.identity_id=c.id
@@ -169,6 +175,7 @@ class SocialController extends Controller {
 	}
 
 	/**
+	 * returns the list of decklists published by user
 	 * @param integer $limit
 	 * @return \Doctrine\DBAL\Driver\PDOStatement
 	 */
@@ -187,15 +194,16 @@ class SocialController extends Controller {
 						"SELECT
 					d.id,
 					d.name,
+					d.prettyname,
 					d.creation,
 					d.user_id,
 					u.username,
 					u.faction usercolor,
 					u.reputation,
 					c.code,
-					(select count(*) from vote where decklist_id=d.id) nbvotes,
-					(select count(*) from favorite where decklist_id=d.id) nbfavorites,
-					(select count(*) from comment where decklist_id=d.id) nbcomments
+					d.nbvotes,
+					d.nbfavorites,
+					d.nbcomments
 					from decklist d
 					join user u on d.user_id=u.id
 					join card c on d.identity_id=c.id
@@ -207,6 +215,7 @@ class SocialController extends Controller {
 	}
 
 	/**
+	 * returns the list of recent decklists with large number of votes
 	 * @param integer $limit
 	 * @return \Doctrine\DBAL\Driver\PDOStatement
 	 */
@@ -225,15 +234,16 @@ class SocialController extends Controller {
 						"SELECT
 					d.id,
 					d.name,
+					d.prettyname,
 					d.creation,
 					d.user_id,
 					u.username,
 					u.faction usercolor,
 					u.reputation,
 					c.code,
-					(select count(*) from vote where decklist_id=d.id) nbvotes,
-					(select count(*) from favorite where decklist_id=d.id) nbfavorites,
-					(select count(*) from comment where decklist_id=d.id) nbcomments,
+					d.nbvotes,
+					d.nbfavorites,
+					d.nbcomments,
 					DATEDIFF(CURRENT_DATE, d.creation) nbjours
 					from decklist d
 					join user u on d.user_id=u.id
@@ -245,6 +255,7 @@ class SocialController extends Controller {
 	}
 
 	/**
+	 * returns the list of decklists with most number of votes
 	 * @param integer $limit
 	 * @return \Doctrine\DBAL\Driver\PDOStatement
 	 */
@@ -263,15 +274,16 @@ class SocialController extends Controller {
 				"SELECT
 				d.id,
 				d.name,
+				d.prettyname,
 				d.creation,
 				d.user_id,
 				u.username,
 				u.faction usercolor,
 				u.reputation,
 				c.code,
-				(select count(*) from vote where decklist_id=d.id) nbvotes,
-				(select count(*) from favorite where decklist_id=d.id) nbfavorites,
-				(select count(*) from comment where decklist_id=d.id) nbcomments
+				d.nbvotes,
+				d.nbfavorites,
+				d.nbcomments
 				from decklist d
 				join user u on d.user_id=u.id
 				join card c on d.identity_id=c.id
@@ -282,6 +294,7 @@ class SocialController extends Controller {
 	}
 	
 	/**
+	 * returns the list of decklists with large number of recent comments
 	 * @param integer $limit
 	 * @return \Doctrine\DBAL\Driver\PDOStatement
 	 */
@@ -300,15 +313,16 @@ class SocialController extends Controller {
 						"SELECT
 				d.id,
 				d.name,
+				d.prettyname,
 				d.creation,
 				d.user_id,
 				u.username,
 				u.faction usercolor,
 				u.reputation,
 				c.code,
-				(select count(*) from vote where decklist_id=d.id) nbvotes,
-				(select count(*) from favorite where decklist_id=d.id) nbfavorites,
-				(select count(*) from comment where decklist_id=d.id) nbcomments,
+				d.nbvotes,
+				d.nbfavorites,
+				d.nbcomments,
 				(select count(*) from comment where comment.decklist_id=d.id and DATEDIFF(CURRENT_DATE, comment.creation)<1) nbrecentcomments
 				from decklist d
 				join user u on d.user_id=u.id
@@ -320,6 +334,7 @@ class SocialController extends Controller {
 	}
 
 	/**
+	 * returns the list of decklists of chosen faction
 	 * @param integer $limit
 	 * @return \Doctrine\DBAL\Driver\PDOStatement
 	 */
@@ -340,15 +355,16 @@ class SocialController extends Controller {
 						"SELECT
 				d.id,
 				d.name,
+				d.prettyname,
 				d.creation,
 				d.user_id,
 				u.username,
 				u.faction usercolor,
 				u.reputation,
 				c.code,
-				(select count(*) from vote where decklist_id=d.id) nbvotes,
-				(select count(*) from favorite where decklist_id=d.id) nbfavorites,
-				(select count(*) from comment where decklist_id=d.id) nbcomments
+				d.nbvotes,
+				d.nbfavorites,
+				d.nbcomments
 				from decklist d
 				join user u on d.user_id=u.id
 				join card c on d.identity_id=c.id
@@ -361,6 +377,7 @@ class SocialController extends Controller {
 	}
 
 	/**
+	 * returns the list of decklists of chosen datapack
 	 * @param integer $limit
 	 * @return \Doctrine\DBAL\Driver\PDOStatement
 	 */
@@ -381,15 +398,16 @@ class SocialController extends Controller {
 						"SELECT
 				d.id,
 				d.name,
+				d.prettyname,
 				d.creation,
 				d.user_id,
 				u.username,
 				u.faction usercolor,
 				u.reputation,
 				c.code,
-				(select count(*) from vote where decklist_id=d.id) nbvotes,
-				(select count(*) from favorite where decklist_id=d.id) nbfavorites,
-				(select count(*) from comment where decklist_id=d.id) nbcomments
+				d.nbvotes,
+				d.nbfavorites,
+				d.nbcomments
 				from decklist d
 				join user u on d.user_id=u.id
 				join card c on d.identity_id=c.id
@@ -402,6 +420,7 @@ class SocialController extends Controller {
 	}
 	
 	/**
+	 * returns the list of recent decklists
 	 * @param integer $limit
 	 * @return \Doctrine\DBAL\Driver\PDOStatement
 	 */
@@ -418,15 +437,16 @@ class SocialController extends Controller {
 		$rows = $dbh->executeQuery("SELECT
 				d.id,
 				d.name,
+				d.prettyname,
 				d.creation,
 				d.user_id,
 				u.username,
 				u.faction usercolor,
 				u.reputation,
 				c.code,
-				(select count(*) from vote where decklist_id=d.id) nbvotes,
-				(select count(*) from favorite where decklist_id=d.id) nbfavorites,
-				(select count(*) from comment where decklist_id=d.id) nbcomments
+				d.nbvotes,
+				d.nbfavorites,
+				d.nbcomments
 				from decklist d
 				join user u on d.user_id=u.id
 				join card c on d.identity_id=c.id
@@ -481,11 +501,6 @@ class SocialController extends Controller {
 		
 		/* @var $user \Netrunnerdb\UserBundle\Entity\User */
 		$user = $this->getUser();
-
-		foreach ($decklists as $i => $decklist) {
-			$decklists[$i]['prettyname'] = preg_replace('/[^a-z0-9]+/', '-',
-					mb_strtolower($decklists[$i]['name']));
-		}
 
 		$dbh = $this->get('doctrine')->getConnection();
 		$factions = $dbh
@@ -565,6 +580,7 @@ class SocialController extends Controller {
 				d.id,
 				d.ts,
 				d.name,
+				d.prettyname,
 				d.creation,
 				d.rawdescription,
 				d.description,
@@ -575,9 +591,9 @@ class SocialController extends Controller {
 				u.reputation,
 				c.code identity_code,
 				f.code faction_code,
-				(select count(*) from vote where decklist_id=d.id) nbvotes,
-				(select count(*) from favorite where decklist_id=d.id) nbfavorites,
-				(select count(*) from comment where decklist_id=d.id) nbcomments
+				d.nbvotes,
+				d.nbfavorites,
+				d.nbcomments
 				from decklist d
 				join user u on d.user_id=u.id
 				join card c on d.identity_id=c.id
@@ -595,9 +611,6 @@ class SocialController extends Controller {
 			return $response;
 		}
 		
-		$decklist['prettyname'] = preg_replace('/[^a-z0-9]+/', '-',
-				mb_strtolower($decklist['name']));
-
 		$comments = $dbh
 				->executeQuery(
 						"SELECT
@@ -651,32 +664,25 @@ class SocialController extends Controller {
 							"SELECT
 					d.id,
 					d.name,
-					(select count(*) from vote where decklist_id=d.id) nbvotes,
-					(select count(*) from favorite where decklist_id=d.id) nbfavorites,
-					(select count(*) from comment where decklist_id=d.id) nbcomments
+					d.prettyname,
+					d.nbvotes,
+					d.nbfavorites,
+					d.nbcomments
 					from decklist d
 					where d.id=?
 					order by d.creation asc", array($decklist['precedent']))->fetchAll();
-
-		foreach($precedent_decklists as $i => $precedent) {
-			$precedent_decklists[$i]['prettyname'] = preg_replace('/[^a-z0-9]+/', '-',
-					mb_strtolower($precedent['name']));
-		}
 
 		$successor_decklists = $dbh->executeQuery(
 				"SELECT
 					d.id,
 					d.name,
-					(select count(*) from vote where decklist_id=d.id) nbvotes,
-					(select count(*) from favorite where decklist_id=d.id) nbfavorites,
-					(select count(*) from comment where decklist_id=d.id) nbcomments
+					d.prettyname,
+					d.nbvotes,
+					d.nbfavorites,
+					d.nbcomments
 					from decklist d
 					where d.precedent_decklist_id=?
 					order by d.creation asc", array($decklist_id))->fetchAll();
-		foreach($successor_decklists as $i => $successor) {
-			$successor_decklists[$i]['prettyname'] = preg_replace('/[^a-z0-9]+/', '-',
-					mb_strtolower($successor['name']));
-		}
 		
 		return $this
 				->render(
@@ -709,6 +715,7 @@ class SocialController extends Controller {
 		$decklist_id = filter_var($request->get('id'),
 				FILTER_SANITIZE_NUMBER_INT);
 
+		/* @var $decklist \Netrunnerdb\BuilderBundle\Entity\Decklist */
 		$decklist = $em->getRepository('NetrunnerdbBuilderBundle:Decklist')->find($decklist_id);
 		if (!$decklist)
 			throw new AccessDeniedException('Wrong id');
@@ -725,10 +732,12 @@ class SocialController extends Controller {
 				and d.id=?", array($user->getId(), $decklist_id))->fetch(\PDO::FETCH_NUM)[0];
 		
 		if ($is_favorite) {
+			$decklist->setNbfavorites($decklist->getNbfavorites() - 1);
 			$user->removeFavorite($decklist);
 			if ($author->getId() != $user->getId())
 				$author->setReputation($author->getReputation() - 5);
 		} else {
+			$decklist->setNbfavorites($decklist->getNbfavorites() + 1);
 			$user->addFavorite($decklist);
 			$decklist->setTs(new \DateTime());
 			if ($author->getId() != $user->getId())
@@ -765,16 +774,11 @@ class SocialController extends Controller {
 			
 			$this->get('doctrine')->getManager()->persist($comment);
 			$decklist->setTs(new \DateTime());
+			$decklist->setNbcomments($decklist->getNbcomments() + 1);
 			$this->get('doctrine')->getManager()->flush();
 		}
 
-		return $this
-				->redirect(
-						$this
-								->generateUrl('decklist_detail',
-										array('decklist_id' => $decklist_id,
-												'decklist_name' => $decklist
-														->getPrettyName())));
+		return $this->redirect($this->generateUrl('decklist_detail',array('decklist_id' => $decklist_id,'decklist_name' => $decklist->getPrettyName())));
 	}
 
 	/*
@@ -805,13 +809,14 @@ class SocialController extends Controller {
 		$author = $decklist->getUser();
 		$author->setReputation($author->getReputation() + 1);
 		$decklist->setTs(new \DateTime());
+		$decklist->setNbvotes($decklist->getNbvotes() + 1);
 		$this->get('doctrine')->getManager()->flush();
 
 		VOTE_DONE: return new Response(count($decklist->getVotes()));
 	}
 
 	/*
-	 * returns an ordered list of decklists similar to the one given
+	 * (unused) returns an ordered list of decklists similar to the one given
 	 */
 	public function findSimilarDecklists($decklist_id, $number) {
 		$dbh = $this->get('doctrine')->getConnection();
@@ -857,16 +862,15 @@ class SocialController extends Controller {
 							"SELECT
 					d.id,
 					d.name,
-					(select count(*) from vote where decklist_id=d.id) nbvotes,
-					(select count(*) from favorite where decklist_id=d.id) nbfavorites,
-					(select count(*) from comment where decklist_id=d.id) nbcomments
+					d.prettyname,
+					d.nbvotes,
+					d.nbfavorites,
+					d.nbcomments
 					from decklist d
 					where d.id=?
 					", array($item["id"]))->fetchAll();
 
 			$decklist = $rows[0];
-			$decklist['prettyname'] = preg_replace('/[^a-z0-9]+/', '-',
-					mb_strtolower($decklist['name']));
 			$arr[] = $decklist;
 		}
 		return $arr;
@@ -1022,19 +1026,7 @@ class SocialController extends Controller {
 	public function indexAction() {
 
 		$decklists_popular = $this->popular(0, 5)['decklists'];
-
-		foreach ($decklists_popular as $i => $decklist) {
-			$decklists_popular[$i]['prettyname'] = preg_replace(
-					'/[^a-z0-9]+/', '-',
-					mb_strtolower($decklists_popular[$i]['name']));
-		}
-
 		$decklists_recent = $this->recent(0, 5)['decklists'];
-
-		foreach ($decklists_recent as $i => $decklist) {
-			$decklists_recent[$i]['prettyname'] = preg_replace('/[^a-z0-9]+/',
-					'-', mb_strtolower($decklists_recent[$i]['name']));
-		}
 
 		return $this
 				->render('NetrunnerdbBuilderBundle:Default:index.html.twig',
@@ -1068,7 +1060,8 @@ class SocialController extends Controller {
 		$rawdescription = trim(filter_var($request->request->get('description'), FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES));
 		$description = Markdown::defaultTransform($rawdescription);
 		
-		$decklist->setName($name);
+		$decklist->setName(substr($name, 0, 60));
+		$decklist->setPrettyname(preg_replace('/[^a-z0-9]+/', '-', mb_strtolower(substr($name, 0, 60))));
 		$decklist->setRawdescription($rawdescription);
 		$decklist->setDescription($description);
 		$decklist->setTs(new \DateTime());
@@ -1105,11 +1098,6 @@ class SocialController extends Controller {
 		$decklists = $result['decklists'];
 		$maxcount = $result['count'];
 		$count = count($decklists);
-		
-		foreach ($decklists as $i => $decklist) {
-			$decklists[$i]['prettyname'] = preg_replace('/[^a-z0-9]+/', '-',
-					mb_strtolower($decklists[$i]['name']));
-		}
 		
 		// pagination : calcul de nbpages // currpage // prevpage // nextpage
 		// à partir de $start, $limit, $count, $maxcount, $page
@@ -1169,7 +1157,8 @@ class SocialController extends Controller {
 				c.text,
 				c.creation,
 				d.id decklist_id,
-				d.name decklist_name
+				d.name decklist_name,
+				d.prettyname decklist_prettyname
 				from comment c
 				join decklist d on c.decklist_id=d.id
 				where c.user_id=?
@@ -1177,10 +1166,6 @@ class SocialController extends Controller {
 				limit $start, $limit", array($user->getId()))->fetchAll(\PDO::FETCH_ASSOC);
 		
 		$maxcount = count($comments);
-		foreach($comments as $i => $comment) {
-			$comments[$i]['decklist_prettyname'] = preg_replace('/[^a-z0-9]+/', '-',
-					mb_strtolower($comments[$i]['decklist_name']));
-		}
 		
 		// pagination : calcul de nbpages // currpage // prevpage // nextpage
 		// à partir de $start, $limit, $count, $maxcount, $page
@@ -1211,5 +1196,69 @@ class SocialController extends Controller {
 			'prevurl' => $currpage == 1 ? null : $this->generateUrl($route, array("page" => $prevpage)),
 			'nexturl' => $currpage == $nbpages ? null : $this->generateUrl($route, array("page" => $nextpage))
 		));
+	}
+	
+	public function commentsAction($page)
+	{
+
+		$limit = 100;
+		if($page<1) $page=1;
+		$start = ($page-1)*$limit;
+		
+		/* @var $dbh \Doctrine\DBAL\Driver\PDOConnection */
+		$dbh = $this->get('doctrine')->getConnection();
+		/* @var $stmt \Doctrine\DBAL\Driver\PDOStatement */
+		$maxcount = $dbh->executeQuery("SELECT
+				count(*)
+				from comment c", array())->fetch(\PDO::FETCH_NUM)[0];
+		
+		$comments = $dbh
+		->executeQuery(
+				"SELECT
+				c.id,
+				c.text,
+				c.creation,
+				d.id decklist_id,
+				d.name decklist_name,
+				d.prettyname decklist_prettyname,
+				u.id user_id,
+				u.username author
+				from comment c
+				join decklist d on c.decklist_id=d.id
+				join user u on c.user_id=u.id
+				order by creation desc
+				limit $start, $limit", array())->fetchAll(\PDO::FETCH_ASSOC);
+		
+		$count = count($comments);
+		
+		// pagination : calcul de nbpages // currpage // prevpage // nextpage
+		// à partir de $start, $limit, $count, $maxcount, $page
+		
+		$currpage = $page;
+		$prevpage = max(1, $currpage-1);
+		$nbpages = min(10, ceil($maxcount / $limit));
+		$nextpage = min($nbpages, $currpage+1);
+		
+		$route = $this->getRequest()->get('_route');
+		
+		$pages = array();
+		for($page=1; $page<=$nbpages; $page++) {
+			$pages[] = array(
+					"numero" => $page,
+					"url" => $this->generateUrl($route, array("page" => $page)),
+					"current" => $page == $currpage,
+			);
+		}
+		
+		return $this->render('NetrunnerdbBuilderBundle:Default:allcomments.html.twig', array(
+				'locales' => $this->renderView('NetrunnerdbCardsBundle:Default:langs.html.twig'),
+				'comments' => $comments,
+				'url' => $this->getRequest()->getRequestUri(),
+				'route' => $route,
+				'pages' => $pages,
+				'prevurl' => $currpage == 1 ? null : $this->generateUrl($route, array("page" => $prevpage)),
+				'nexturl' => $currpage == $nbpages ? null : $this->generateUrl($route, array("page" => $nextpage))
+		));
+		
 	}
 }

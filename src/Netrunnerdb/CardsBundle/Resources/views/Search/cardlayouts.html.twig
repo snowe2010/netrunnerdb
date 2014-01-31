@@ -48,7 +48,7 @@
 		{% for opinion in card.opinions %}
 		<tr><td>
 		<span class="opinion-date">{{ opinion.creation|date('M d, Y') }}</span>
-		<a href="{{ path('user_profile_view', {user_id:opinion.user_id,user_name:opinion.author}) }}" class="opinion-author username {{ opinion.authorcolor }}">{{ opinion.author }}</a>
+		<a href="{{ path('user_profile_view', {user_id:opinion.user_id,user_name:opinion.author|e('url')}) }}" class="opinion-author username {{ opinion.authorcolor }}">{{ opinion.author }}</a>
 		<div class="opinion-text">{{ opinion.text|raw }}</div>
 		</td></tr>
 		{% endfor %}

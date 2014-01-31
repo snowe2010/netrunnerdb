@@ -320,7 +320,7 @@ function getDisplayDescriptions(sort) {
 <!-- Right-side Column -->
 <div class="col-md-6">
 
-<h3 class="decklist-author"><a href="{{ path('user_profile_view', {user_id:decklist.user_id,user_name:decklist.username}) }}" class="{{ decklist.usercolor }}">{{ decklist.username }}</a> <small title="User Reputation">{{ decklist.reputation }}</small></h3>  
+<h3 class="decklist-author"><a href="{{ path('user_profile_view', {user_id:decklist.user_id,user_name:decklist.username|e('url')}) }}" class="{{ decklist.usercolor }}">{{ decklist.username }}</a> <small title="User Reputation">{{ decklist.reputation }}</small></h3>  
 <div id="deck-description">{{ decklist.description|raw }}</div>
 
 <table class="table">
@@ -332,7 +332,7 @@ function getDisplayDescriptions(sort) {
 <tr><td>
 <a name="{{ comment.id }}" ></a>
 <span class="comment-date">{{ comment.creation|date('M d, Y') }}</span>
-<a href="{{ path('user_profile_view', {user_id:comment.user_id,user_name:comment.author}) }}" class="comment-author username {{ comment.authorcolor }}">{{ comment.author }}</a>
+<a href="{{ path('user_profile_view', {user_id:comment.user_id,user_name:comment.author|e('url')}) }}" class="comment-author username {{ comment.authorcolor }}">{{ comment.author }}</a>
 <div class="comment-text">{{ comment.text|raw }}</div>
 </td></tr>
 {% endfor %}

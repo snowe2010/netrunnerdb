@@ -191,7 +191,7 @@ function getDisplayDescriptions(sort) {
               <a href="#" class="dropdown-toggle {{ app.user.faction }} loginname" data-toggle="dropdown">{{ app.user.username }} <b class="caret"></b></a>
               <ul class="dropdown-menu">
                 <li><a href="{{ path('user_profile') }}">Profile page</a></li>
-                <li><a href="{{ path('user_profile_view', {user_id:app.user.id,user_name:app.user.username}) }}">Decklists</a></li>
+                <li><a href="{{ path('user_profile_view', {user_id:app.user.id,user_name:app.user.username|e('url')}) }}">Decklists</a></li>
                 <li><a href="{{ path('user_comments') }}">Comments</a></li>
                 <li><a href="{{ path('fos_user_security_logout') }}">Jack out</a></li>
               </ul>

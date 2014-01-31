@@ -68,6 +68,11 @@ class User extends BaseUser
      * @var Comments[]
      */
     private $comments;
+
+    /**
+     * @var Opinions[]
+     */
+    private $opinions;
     
     /**
      * @var Decklist[]
@@ -338,6 +343,29 @@ class User extends BaseUser
     {
     	return $this->comments;
     }
+
+    /**
+     * Set opinions
+     *
+     * @param string $opinions
+     * @return Deck
+     */
+    public function setOpinions($opinions)
+    {
+    	$this->opinions = $opinions;
+    
+    	return $this;
+    }
+    
+    /**
+     * Get opinions
+     *
+     * @return string
+     */
+    public function getOpinions()
+    {
+    	return $this->opinions;
+    }
     
     /**
      * Add to favorites
@@ -459,6 +487,7 @@ class User extends BaseUser
     	$this->decks = new ArrayCollection();
     	$this->decklists = new ArrayCollection();
        	$this->comments = new ArrayCollection();
+       	$this->opinions = new ArrayCollection();
        	$this->favorites = new ArrayCollection();
        	$this->votes = new ArrayCollection();
        	$this->following = new ArrayCollection();

@@ -241,3 +241,12 @@ user_comments:
     requirements:
         _locale: en|fr|de|es|it|pl
 
+all_comments:
+    pattern: /{_locale}/deckcomments/{page}
+    defaults:
+        _controller: NetrunnerdbBuilderBundle:Social:comments
+        page: 1
+    requirements:
+        _locale: en|fr|de|es|it|pl
+
+    

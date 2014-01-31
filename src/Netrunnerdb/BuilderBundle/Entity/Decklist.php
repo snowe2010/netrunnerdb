@@ -31,6 +31,11 @@ class Decklist
     /**
      * @var string
      */
+    private $prettyname;
+    
+    /**
+     * @var string
+     */
     private $summary;
 
     /**
@@ -53,6 +58,21 @@ class Decklist
      */
     private $signature;
 
+    /**
+     * @var integer
+     */
+    private $nbvotes;
+
+    /**
+     * @var integer
+     */
+    private $nbfavorites;
+
+    /**
+     * @var integer
+     */
+    private $nbcomments;
+    
     /**
      * @var Netrunnerdb\UserBundle\Entity\User
      */
@@ -154,6 +174,29 @@ class Decklist
         return $this->name;
     }
 
+    /**
+     * Set prettyname
+     *
+     * @param string $prettyname
+     * @return List
+     */
+    public function setPrettyname($prettyname)
+    {
+    	$this->prettyname = $prettyname;
+    
+    	return $this;
+    }
+    
+    /**
+     * Get prettyname
+     *
+     * @return string
+     */
+    public function getPrettyname()
+    {
+    	return $this->prettyname;
+    }
+    
     /**
      * Set summary
      *
@@ -267,6 +310,75 @@ class Decklist
     public function getSignature()
     {
         return $this->signature;
+    }
+
+    /**
+     * Set nbvotes
+     *
+     * @param string $nbvotes
+     * @return Decklist
+     */
+    public function setNbvotes($nbvotes)
+    {
+    	$this->nbvotes = $nbvotes;
+    
+    	return $this;
+    }
+    
+    /**
+     * Get nbvotes
+     *
+     * @return string
+     */
+    public function getNbvotes()
+    {
+    	return $this->nbvotes;
+    }
+
+    /**
+     * Set nbfavorites
+     *
+     * @param string $nbfavorites
+     * @return Decklist
+     */
+    public function setNbfavorites($nbfavorites)
+    {
+    	$this->nbfavorites = $nbfavorites;
+    
+    	return $this;
+    }
+    
+    /**
+     * Get nbfavorites
+     *
+     * @return string
+     */
+    public function getNbfavorites()
+    {
+    	return $this->nbfavorites;
+    }
+
+    /**
+     * Set nbcomments
+     *
+     * @param string $nbcomments
+     * @return Decklist
+     */
+    public function setNbcomments($nbcomments)
+    {
+    	$this->nbcomments = $nbcomments;
+    
+    	return $this;
+    }
+    
+    /**
+     * Get nbcomments
+     *
+     * @return string
+     */
+    public function getNbcomments()
+    {
+    	return $this->nbcomments;
     }
     
     /**
@@ -509,12 +621,12 @@ class Decklist
     	ksort($arr);
     	return $arr;
     }
-    
+    /*
     public function getPrettyName()
     {
     	return preg_replace('/[^a-z0-9]+/', '-', mb_strtolower($this->name));
     }
-
+	*/
     /**
      * Add slots
      *

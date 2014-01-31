@@ -1175,7 +1175,7 @@ class SearchController extends Controller
 		/* @var $dbh \Doctrine\DBAL\Driver\PDOConnection */
 		$dbh = $this->get('doctrine')->getConnection();
 		/* @var $stmt \Doctrine\DBAL\Driver\PDOStatement */
-		$count = $dbh->executeQuery("SELECT
+		$maxcount = $dbh->executeQuery("SELECT
 				count(*)
 				from opinion o", array())->fetch(\PDO::FETCH_NUM)[0];
 	
@@ -1196,7 +1196,7 @@ class SearchController extends Controller
 				order by creation desc
 				limit $start, $limit", array())->fetchAll(\PDO::FETCH_ASSOC);
 	
-		$maxcount = count($opinions);
+		$count = count($opinions);
 	
 		// pagination : calcul de nbpages // currpage // prevpage // nextpage
 		// à partir de $start, $limit, $count, $maxcount, $page

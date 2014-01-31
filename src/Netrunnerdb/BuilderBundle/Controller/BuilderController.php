@@ -419,17 +419,13 @@ class BuilderController extends Controller
 				"SELECT
 					d.id,
 					d.name,
-					(select count(*) from vote where decklist_id=d.id) nbvotes,
-					(select count(*) from favorite where decklist_id=d.id) nbfavorites,
-					(select count(*) from comment where decklist_id=d.id) nbcomments
+					d.prettyname,
+					d.nbvotes,
+					d.nbfavorites,
+					d.nbcomments
 					from decklist d
 					where d.parent_deck_id=?
 					order by d.creation asc", array($deck_id))->fetchAll();
-		foreach($published_decklists as $i => $decklist) {
-			$published_decklists[$i]['prettyname'] = preg_replace('/[^a-z0-9]+/', '-',
-					mb_strtolower($decklist['name']));
-		}
-		
 
 		return $this
 			->render('NetrunnerdbBuilderBundle:Builder:deck.html.twig',
