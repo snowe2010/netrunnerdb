@@ -683,9 +683,7 @@ blockquote {
 }
 
 blockquote p {
-  font-size: 17.5px;
-  font-weight: 300;
-  line-height: 1.25;
+  font-style: italic;
 }
 
 blockquote p:last-child {
