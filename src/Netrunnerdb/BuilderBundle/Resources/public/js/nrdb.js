@@ -499,8 +499,8 @@ function make_graphs() {
 	
 	// costChart
 	var cost_series = Identity.side_code === 'runner' ?
-			[ { name: 'Program', data: [] }, { name: 'Hardware', data: [] }, { name: 'Resource', data: [] }, { name: 'Event', data: [] } ] 
-			: [ { name: 'ICE', data: [] }, { name: 'Asset', data: [] }, { name: 'Upgrade', data: [] }, { name: 'Operation', data: [] } ];
+			[ { name: 'Event', data: [] }, { name: 'Resource', data: [] }, { name: 'Hardware', data: [] }, { name: 'Program', data: [] } ] 
+			: [ { name: 'Operation', data: [] }, { name: 'Upgrade', data: [] }, { name: 'Asset', data: [] }, { name: 'ICE', data: [] } ];
 	var xAxis = [];
 	
 	for(var j=0; j<costs.length; j++) {
@@ -513,7 +513,7 @@ function make_graphs() {
 	}
 	
 	$('#costChart').highcharts({
-		colors: ['#058DC7', '#50B432', '#ED561B', '#DDDF00', '#24CBE5', '#64E572', '#FF9655', '#FFF263', '#6AF9C4'],
+		colors: ['#FFE66F', '#B22A95', '#FF55DA', '#30CCC8' ],
 		title: {
 			text: null,
 		},
@@ -524,12 +524,16 @@ function make_graphs() {
             type: 'column'
         },
         xAxis: {
-            categories: xAxis
+            categories: xAxis,
         },
         yAxis: {
             title: {
                 text: null
-            }
+            },
+            allowDecimals: false,
+            minTickInterval: 1,
+            minorTickInterval: 1,
+            endOnTick: false
         },
         plotOptions: {
             column: {
@@ -554,7 +558,7 @@ function make_graphs() {
 	}
 
 	$('#strengthChart').highcharts({
-		colors: ['#006400', '#dc143c', '#8a2be2', '#ff8c00'],
+		colors: ['#487BCC', '#B8EB59', '#FF6251', '#CCCCCC'],
 		title: {
 			text: null,
 		},
@@ -570,7 +574,11 @@ function make_graphs() {
         yAxis: {
             title: {
                 text: null
-            }
+            },
+            allowDecimals: false,
+            minTickInterval: 1,
+            minorTickInterval: 1,
+            endOnTick: false
         },
         plotOptions: {
             column: {
