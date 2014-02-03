@@ -513,7 +513,7 @@ function make_graphs() {
 	}
 	
 	$('#costChart').highcharts({
-		colors: ['#FFE66F', '#B22A95', '#FF55DA', '#30CCC8' ],
+		colors: Identity.side_code === 'runner' ? ['#FFE66F', '#316861', '#97BF63', '#5863CC' ] : ['#FFE66F', '#B22A95', '#FF55DA', '#30CCC8' ],
 		title: {
 			text: null,
 		},
