@@ -472,56 +472,112 @@ function export_plaintext() {
 }
 
 function make_graphs() {
-	var canvasWidth = Math.floor( $('#table-graph-costs').find('th').width() - 10 );
 	if(Identity.side_code === 'runner') $('#table-graph-strengths').hide();
 	
-	var costs = {}, xmaxcost = 10, ymaxcost = 0;
-	var strengths = {}, xmaxstrength = 10, ymaxstrength = 0;
+	var costs = [], strengths = [];
+	var ice_types = [ 'Barrier', 'Code Gate', 'Sentry', 'Other' ];
+	
 	CardDB({indeck:{'gt':0},type_code:{'!is':'identity'}}).each(function(record) {
 		if(record.cost != null) {
-			if(costs[record.cost] == null) costs[record.cost] = 0;
-			costs[record.cost] += record.indeck;
-			if(xmaxcost < record.cost) xmaxcost = record.cost;
-			if(ymaxcost < costs[record.cost]) ymaxcost = costs[record.cost];
+			if(costs[record.cost] == null) costs[record.cost] = [];
+			if(costs[record.cost][record.type] == null) costs[record.cost][record.type] = 0;
+			costs[record.cost][record.type] += record.indeck;
 		}
 		if(record.strength != null) {
-			if(strengths[record.strength] == null) strengths[record.strength] = 0;
-			strengths[record.strength] += record.indeck;
-			if(xmaxstrength < record.strength) xmaxstrength = record.strength;
-			if(ymaxstrength < strengths[record.strength]) ymaxstrength = strengths[record.strength];
+			if(strengths[record.strength] == null) strengths[record.strength] = [];
+			var ice_type = 'Other';
+			for(var i=0; i<ice_types.length; i++) {
+				if(record.subtype.indexOf(ice_types[i]) != -1) {
+					ice_type = ice_types[i];
+					break;
+				}
+			}
+			if(strengths[record.strength][ice_type] == null) strengths[record.strength][ice_type] = 0;
+			strengths[record.strength][ice_type] += record.indeck;
 		}
 	});
 	
 	// costChart
-	var data = {
-			labels: [],
-			datasets: [{
-				fillColor : Identity.side_code == "corp" ? "rgba(0,0,220,0.1)" : "rgba(220,0,0,0.1)",
-				strokeColor : Identity.side_code == "corp" ? "rgba(0,0,220,0.5)" : "rgba(220,0,0,0.5)",
-				data : []
-			}]
-	};
-	for(var cost=0; cost<=xmaxcost; cost++) {
-		data.labels.push(cost);
-		data.datasets[0].data.push(costs[cost]);
+	var cost_series = Identity.side_code === 'runner' ?
+			[ { name: 'Program', data: [] }, { name: 'Hardware', data: [] }, { name: 'Resource', data: [] }, { name: 'Event', data: [] } ] 
+			: [ { name: 'ICE', data: [] }, { name: 'Asset', data: [] }, { name: 'Upgrade', data: [] }, { name: 'Operation', data: [] } ];
+	var xAxis = [];
+	
+	for(var j=0; j<costs.length; j++) {
+		xAxis.push(j);
+		var data = costs[j];
+		for(var i=0; i<cost_series.length; i++) {
+			var type_name = cost_series[i].name;
+			cost_series[i].data.push(data && data[type_name] ? data[type_name] : 0);
+		}
 	}
-	var ctx = $('#costChart').attr('width', canvasWidth).attr('height', 200).get(0).getContext("2d");
-	var myNewChart = new Chart(ctx).Bar(data, {animation:false,scaleOverride:true,scaleSteps:ymaxcost,scaleStepWidth:1,scaleStartValue:0});
-
+	
+	$('#costChart').highcharts({
+		colors: ['#058DC7', '#50B432', '#ED561B', '#DDDF00', '#24CBE5', '#64E572', '#FF9655', '#FFF263', '#6AF9C4'],
+		title: {
+			text: null,
+		},
+		credits: {
+			enabled: false,
+		},
+		chart: {
+            type: 'column'
+        },
+        xAxis: {
+            categories: xAxis
+        },
+        yAxis: {
+            title: {
+                text: null
+            }
+        },
+        plotOptions: {
+            column: {
+                stacking: 'normal',
+            }
+        },
+        series: cost_series
+	});
+	
 	// strengthChart
-	var data = {
-			labels: [],
-			datasets: [{
-				fillColor : Identity.side_code == "corp" ? "rgba(0,0,220,0.1)" : "rgba(220,0,0,0.1)",
-				strokeColor : Identity.side_code == "corp" ? "rgba(0,0,220,0.5)" : "rgba(220,0,0,0.5)",
-				data : []
-			}]
-	};
-	for(var strength=0; strength<=xmaxstrength; strength++) {
-		data.labels.push(strength);
-		data.datasets[0].data.push(strengths[strength]);
+	var strength_series = [];
+	for(var i=0; i<ice_types.length; i++) strength_series.push({ name: ice_types[i], data: [] });
+	var xAxis = [];
+
+	for(var j=0; j<strengths.length; j++) {
+		xAxis.push(j);
+		var data = strengths[j];
+		for(var i=0; i<strength_series.length; i++) {
+			var type_name = strength_series[i].name;
+			strength_series[i].data.push(data && data[type_name] ? data[type_name] : 0);
+		}
 	}
-	var ctx = $('#strengthChart').attr('width', canvasWidth).attr('height', 200).get(0).getContext("2d");
-	var myNewChart = new Chart(ctx).Bar(data, {animation:false,scaleOverride:true,scaleSteps:ymaxstrength,scaleStepWidth:1,scaleStartValue:0});
+
+	$('#strengthChart').highcharts({
+		colors: ['#006400', '#dc143c', '#8a2be2', '#ff8c00'],
+		title: {
+			text: null,
+		},
+		credits: {
+			enabled: false,
+		},
+		chart: {
+            type: 'column'
+        },
+        xAxis: {
+            categories: xAxis
+        },
+        yAxis: {
+            title: {
+                text: null
+            }
+        },
+        plotOptions: {
+            column: {
+                stacking: 'normal',
+            }
+        },
+        series: strength_series
+	});
 	
 }
