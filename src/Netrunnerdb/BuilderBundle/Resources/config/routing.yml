@@ -249,4 +249,11 @@ all_comments:
     requirements:
         _locale: en|fr|de|es|it|pl
 
-    
+api_decklist:
+    pattern: /api/decklist/{decklist_id}.{_format}
+    defaults:
+        _controller: NetrunnerdbBuilderBundle:Social:apidecklist
+        _format: json
+    requirements:
+        _format: json
+        decklist_id: \d+

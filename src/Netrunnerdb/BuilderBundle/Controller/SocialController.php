@@ -1263,4 +1263,73 @@ class SocialController extends Controller {
 		));
 		
 	}
+	
+	public function apidecklistAction($decklist_id)
+	{
+		$response = new Response();
+		$response->setPublic();
+		$response->setMaxAge(600);
+		$response->headers->add(array('Access-Control-Allow-Origin' => '*'));
+		
+		$jsonp = $this->getRequest()->query->get('jsonp');
+		$locale = $this->getRequest()->query->get('_locale');
+		if(isset($locale)) $this->getRequest()->setLocale($locale);
+		
+		$dbh = $this->get('doctrine')->getConnection();
+		$rows = $dbh
+		->executeQuery(
+				"SELECT
+				d.id,
+				d.ts,
+				d.name,
+				d.creation,
+				d.description,
+				u.username
+				from decklist d
+				join user u on d.user_id=u.id
+				where d.id=?
+				", array($decklist_id))->fetchAll();
+		
+		if(empty($rows)) {
+			throw new AccessDeniedException('Wrong id');
+		}
+		
+		$decklist = $rows[0];
+		$decklist['id'] = intval($decklist['id']);
+		
+		$lastModified = new DateTime($decklist['ts']);
+		$response->setLastModified($lastModified);
+		if ($response->isNotModified($this->getRequest())) {
+			return $response;
+		}
+		unset($decklist['ts']);
+		
+		$cards = $dbh
+		->executeQuery(
+				"SELECT
+				c.code card_code,
+				s.quantity qty
+				from decklistslot s
+				join card c on s.card_id=c.id
+				where s.decklist_id=?
+				order by c.code asc", array($decklist_id))->fetchAll();
+		
+		$decklist['cards'] = array();
+		foreach($cards as $card) {
+			$decklist['cards'][$card['card_code']] = intval($card['qty']);
+		}
+		
+		$content = json_encode($decklist);
+		if(isset($jsonp))
+		{
+			$content = "$jsonp($content)";
+			$response->headers->set('Content-Type', 'application/javascript');
+		} else 
+		{
+			$response->headers->set('Content-Type', 'application/json');
+		}
+	
+		$response->setContent($content);
+		return $response;
+	}
 }
