@@ -137,7 +137,7 @@ function getDisplayDescriptions(sort) {
 
 <div class="row">
 <div class="col-xs-12">
-<h1>{% if is_author %}<a href="#" title="Edit decklist name / description" id="decklist-edit"><span class="glyphicon glyphicon-pencil pull-right"></span></a> {% endif %}<img src="{{ asset('/web/bundles/netrunnerdbbuilder/images/factions/38px/' ~ decklist.faction_code ~ '.png') }}">{{ decklist.name }}</h1>
+<h1>{% if is_author %}<a href="#" title="Edit decklist name / description" id="decklist-edit"><span class="glyphicon glyphicon-pencil pull-right"></span></a> {% endif %}<img src="/web/bundles/netrunnerdbbuilder/images/factions/38px/{{ decklist.faction_code }}.png">{{ decklist.name }}</h1>
 <div class="decklist-social">
 <div class="pull-right" id="decklist-social-icons">
 <span>published {{ decklist.creation|date('M d, Y') }}</span>
