@@ -549,6 +549,13 @@ class SearchController extends Controller
 					}
 					$qb->andWhere(implode(" or ", $or));
 					break;
+				case 'u': // unique
+					switch($operator) {
+						case ':': $qb->andWhere("(c.uniqueness = 1)"); break;
+						case '!': $qb->andWhere("(c.uniqueness = 0)"); break;
+					}
+					$i++;
+					break;
 			}
 		}
 		
