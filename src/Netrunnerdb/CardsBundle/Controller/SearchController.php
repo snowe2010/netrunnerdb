@@ -194,7 +194,7 @@ class SearchController extends Controller
 		if($request->query->get('q') != "") {
 			$params[] = $request->query->get('q');
 		}
-		$keys = array("e","t","f","s","x","p","o","n","d","r","i","l","y","a");
+		$keys = array("e","t","f","s","x","p","o","n","d","r","i","l","y","a","u");
 		foreach($keys as $key) {
 			$val = $request->query->get($key);
 			if(isset($val) && $val != "") {
@@ -550,9 +550,10 @@ class SearchController extends Controller
 					$qb->andWhere(implode(" or ", $or));
 					break;
 				case 'u': // unique
-					switch($operator) {
-						case ':': $qb->andWhere("(c.uniqueness = 1)"); break;
-						case '!': $qb->andWhere("(c.uniqueness = 0)"); break;
+					if(($operator == ':' && $condition[0]) || ($operator == '!' && !$condition[0])) {
+						$qb->andWhere("(c.uniqueness = 1)");
+					} else {
+						$qb->andWhere("(c.uniqueness = 0)");
 					}
 					$i++;
 					break;
