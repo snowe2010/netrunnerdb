@@ -1,3 +1,115 @@
+function getDisplayDescriptions(sort) {
+        var dd = {
+            'type': [
+                [ // first column
+
+                    {
+                        id: 'event',
+                        label: 'Event',
+                        image: '/web/bundles/netrunnerdbbuilder/images/types/event.png'
+                    }, {
+                        id: 'hardware',
+                        label: 'Hardware',
+                        image: '/web/bundles/netrunnerdbbuilder/images/types/hardware.png'
+                    }, {
+                        id: 'resource',
+                        label: 'Resource',
+                        image: '/web/bundles/netrunnerdbbuilder/images/types/resource.png'
+                    }, {
+                        id: 'agenda',
+                        label: 'Agenda',
+                        image: '/web/bundles/netrunnerdbbuilder/images/types/agenda.png'
+                    }, {
+                        id: 'asset',
+                        label: 'Asset',
+                        image: '/web/bundles/netrunnerdbbuilder/images/types/asset.png'
+                    }, {
+                        id: 'upgrade',
+                        label: 'Upgrade',
+                        image: '/web/bundles/netrunnerdbbuilder/images/types/upgrade.png'
+                    }, {
+                        id: 'operation',
+                        label: 'Operation',
+                        image: '/web/bundles/netrunnerdbbuilder/images/types/operation.png'
+                    },
+
+                ],
+                [ // second column
+                    {
+                        id: 'icebreaker',
+                        label: 'Icebreaker',
+                        image: '/web/bundles/netrunnerdbbuilder/images/types/program.png'
+                    }, {
+                        id: 'program',
+                        label: 'Program',
+                        image: '/web/bundles/netrunnerdbbuilder/images/types/program.png'
+                    }, {
+                        id: 'barrier',
+                        label: 'Barrier',
+                        image: '/web/bundles/netrunnerdbbuilder/images/types/ice.png'
+                    }, {
+                        id: 'code-gate',
+                        label: 'Code Gate',
+                        image: '/web/bundles/netrunnerdbbuilder/images/types/ice.png'
+                    }, {
+                        id: 'sentry',
+                        label: 'Sentry',
+                        image: '/web/bundles/netrunnerdbbuilder/images/types/ice.png'
+                    }, {
+                        id: 'ice',
+                        label: 'ICE',
+                        image: '/web/bundles/netrunnerdbbuilder/images/types/ice.png'
+                    }
+                ]
+            ],
+            'faction': [
+                [],
+                [{
+                    id: 'anarch',
+                    label: 'Anarch',
+                    image: '/web/bundles/netrunnerdbbuilder/images/factions/16px/anarch.png'
+                }, {
+                    id: 'criminal',
+                    label: 'Criminal',
+                    image: '/web/bundles/netrunnerdbbuilder/images/factions/16px/criminal.png'
+                }, {
+                    id: 'haas-bioroid',
+                    label: 'Haas-Bioroid',
+                    image: '/web/bundles/netrunnerdbbuilder/images/factions/16px/haas-bioroid.png'
+                }, {
+                    id: 'jinteki',
+                    label: 'Jinteki',
+                    image: '/web/bundles/netrunnerdbbuilder/images/factions/16px/jinteki.png'
+                }, {
+                    id: 'nbn',
+                    label: 'NBN',
+                    image: '/web/bundles/netrunnerdbbuilder/images/factions/16px/nbn.png'
+                }, {
+                    id: 'shaper',
+                    label: 'Shaper',
+                    image: '/web/bundles/netrunnerdbbuilder/images/factions/16px/shaper.png'
+                }, {
+                    id: 'weyland-consortium',
+                    label: 'Weyland Consortium',
+                    image: '/web/bundles/netrunnerdbbuilder/images/factions/16px/weyland-consortium.png'
+                }, {
+                    id: 'neutral',
+                    label: 'Neutral',
+                    image: '/web/bundles/netrunnerdbbuilder/images/factions/16px/neutral.png'
+                }, ]
+            ],
+            'number': [],
+            'title': [
+                [{
+                    id: 'cards',
+                    label: 'Cards'
+                }]
+            ]
+        };
+        return dd[sort];
+}
+
+
 function process_deck_by_type() {
 	
 	var bytype = {};
@@ -206,6 +318,7 @@ $(function () {
 			$('#opinion-form-preview').html(converter.makeHtml($('#opinion-form-text').val()));
 		});
 	}
+	display_notification();
 });
 
 function display_modal(event) {
@@ -592,4 +705,20 @@ function make_graphs() {
         series: strength_series
 	});
 	
+}
+
+function display_notification()
+{
+	if(!localStorage) return;
+	var Notification = {
+		version: '1.4.6',
+		message: "<strong>New!</strong> Option to display card thumbnails in 2 or 3 columns in the deckbuilder."	
+	};
+	var localStorageNotification = localStorage.getItem('notification');
+	if(localStorageNotification === Notification.version) return;
+	var alert = $('<div class="alert alert-info"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>'+Notification.message+'</div>');
+	alert.bind('closed.bs.alert', function () {
+		localStorage.setItem('notification', Notification.version);  
+	})
+	$('#wrapper>div.container').prepend(alert);
 }
