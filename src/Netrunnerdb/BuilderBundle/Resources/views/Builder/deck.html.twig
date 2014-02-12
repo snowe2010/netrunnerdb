@@ -12,7 +12,7 @@ var CardDB = null,
 	FilterQuery = {},
 	SmartFilterQuery = {}, 
 	AdditionalFilters = [],
-	CardDivs = {}, 
+	CardDivs = [null, {}, {}, {}], 
 	Sort = "type", 
 	Order = 1,
 	Identity = null,
@@ -174,7 +174,10 @@ var CardDB = null,
 				<ul class="dropdown-menu pull-right">
 					<li><a href="#"><label><input type="checkbox" name="show-disabled"> Show unusable cards</label></a></li>
 					<li><a href="#"><label><input type="checkbox" name="only-deck"> Show only used cards</label></a></li>
-				</ul>
+					<li><a href="#"><label><input type="checkbox" name="display-column-1"> Display on 1 column</label></a></li>
+					<li><a href="#"><label><input type="checkbox" name="display-column-2"> Display on 2 columns</label></a></li>
+					<li><a href="#"><label><input type="checkbox" name="display-column-3"> Display on 3 columns</label></a></li>
+					</ul>
 			</div><!-- /.btn-group -->
 		</div><!-- /.pull-right -->
 	</div><!-- /.col-sm-7 -->
@@ -197,9 +200,9 @@ var CardDB = null,
 </div>
 
 <!-- Collection Table -->
-<div class="row">
+<div class="row" id="collection">
 	<div class="col-sm-12">
-		<table class="table table-condensed table-hover">
+		<table class="table table-condensed table-hover" style="margin-bottom:10px">
 			<thead>
 				<tr>
 					<th><a href="#" data-sort="indeck">Quantity</a></th>
@@ -209,9 +212,10 @@ var CardDB = null,
 					<th class="faction"><a href="#" data-sort="faction">Faction</a></th>
 				</tr>
 			</thead>
-			<tbody id="collection" class="hide-disabled"></tbody>
+			<tbody id="collection-table" class="collection hide-disabled"></tbody>
 		</table>
 	</div><!-- /.col-sm-12 -->
+	<div id="collection-grid" class="col-sm-12"></div>
 </div><!-- /.row -->
 <!-- Collection Table -->
 	

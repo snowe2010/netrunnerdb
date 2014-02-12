@@ -189,3 +189,10 @@ tbody .btn-group{white-space:nowrap}
 .card-info .opinion-date{color:lightgray;float:right}
 .card-info .opinion-text{clear:right;font-size:93%}
 .card-info .username{font-family:'exolight',sans-serif}
+#collection-grid .col-sm-6 .media {margin-bottom:10px;padding-bottom:10px;border-bottom:1px dashed lightgray}
+#collection-grid .col-sm-6 .media-object {height:100px}
+#collection-grid .col-sm-6 .media-heading {line-height:50px;overflow:hidden;white-space:nowrap;font-family:Arial}
+#collection-grid .col-sm-4 .media {margin-bottom:10px;padding-bottom:10px;border-bottom:1px dotted lightgray}
+#collection-grid .col-sm-4 .media-object {height:70px}
+#collection-grid .col-sm-4 .media-heading {line-height:30px;overflow:hidden;white-space:nowrap;font-family:Arial}
+

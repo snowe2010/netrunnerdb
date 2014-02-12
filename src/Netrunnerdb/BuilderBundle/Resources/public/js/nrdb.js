@@ -210,7 +210,7 @@ $(function () {
 
 function display_modal(event) {
 	$(this).qtip('hide');
-	var code = $(this).data('index') || $(this).closest('tr').data('index');
+	var code = $(this).data('index') || $(this).closest('.card-container').data('index');
 	fill_modal(code);
 }
 
@@ -277,7 +277,7 @@ function get_type_line(card) {
 }
 
 function display_qtip(event) {
-	var code = $(this).data('index') || $(this).closest('tr').data('index');
+	var code = $(this).data('index') || $(this).closest('.card-container').data('index');
 	var card = CardDB({code:code}).first();
 	var type = '<p class="card-info">'+get_type_line(card)+'</p>';
 	var influence = '';
@@ -473,6 +473,7 @@ function export_plaintext() {
 
 function make_graphs() {
 	if(Identity.side_code === 'runner') $('#table-graph-strengths').hide();
+	else $('#table-graph-strengths').show();
 	
 	var costs = [], strengths = [];
 	var ice_types = [ 'Barrier', 'Code Gate', 'Sentry', 'Other' ];

@@ -1,4 +1,5 @@
 var InputByTitle = false;
+var DisplayColumns = 1;
 
 function when_all_parsed() {
 	if(CardDB && IsModified === false) return;
@@ -66,9 +67,12 @@ function when_all_parsed() {
 			FilterQuery[k] = Filters[k];
 		}
 	});
-	CardDB().each(function(record) {
-		CardDivs[record.code] = build_div(record);
-	});
+	
+	var localStorageDisplayColumns;
+	if(localStorage && ( localStorageDisplayColumns = parseInt(localStorage.getItem( 'display_columns' ), 10) ) !== null && [1,2,3].indexOf(localStorageDisplayColumns) > -1) {
+		DisplayColumns = localStorageDisplayColumns;
+	}
+	$('input[name=display-column-'+DisplayColumns+']').prop('checked', true);
 	
 	if(!Update_Incoming) {
 		Update_Incoming = true;
@@ -142,7 +146,7 @@ $(function() {
 	$('#btn-save-as-copy').on('click', function (event) {
 	  $('#deck-save-as-copy').val(1);
 	});
-	$('#collection').on({
+	$('#collection,#collection2').on({
 		change: function (event) {
 			InputByTitle = false;
 			handle_quantity_change.call(this, event);
@@ -152,10 +156,46 @@ $(function() {
 		change: handle_quantity_change
 	}, 'input[type=radio]');
 	$('input[name=show-disabled]').on({
-		change: function (event) { $('#collection')[$(this).prop('checked') ? 'removeClass' : 'addClass']('hide-disabled'); }
+		change: function (event) { $('#collection,#collection2')[$(this).prop('checked') ? 'removeClass' : 'addClass']('hide-disabled'); }
 	});
 	$('input[name=only-deck]').on({
-		change: function (event) { $('#collection')[$(this).prop('checked') ? 'addClass' : 'removeClass']('only-deck'); }
+		change: function (event) { $('#collection,#collection2')[$(this).prop('checked') ? 'addClass' : 'removeClass']('only-deck'); }
+	});	
+	$('input[name=display-column-1]').on({
+		change: function (event) { 
+			$('input[name=display-column-2]').prop('checked', false);
+			$('input[name=display-column-3]').prop('checked', false);
+			DisplayColumns = 1;
+			if(localStorage) localStorage.setItem( 'display_columns', DisplayColumns );
+			if(!Update_Incoming) {
+				Update_Incoming = true;
+				setTimeout(update_filtered, 100);
+			}
+		}
+	});	
+	$('input[name=display-column-2]').on({
+		change: function (event) { 
+			$('input[name=display-column-1]').prop('checked', false);
+			$('input[name=display-column-3]').prop('checked', false);
+			DisplayColumns = 2;
+			if(localStorage) localStorage.setItem( 'display_columns', DisplayColumns );
+			if(!Update_Incoming) {
+				Update_Incoming = true;
+				setTimeout(update_filtered, 100);
+			}
+		}
+	});	
+	$('input[name=display-column-3]').on({
+		change: function (event) { 
+			$('input[name=display-column-1]').prop('checked', false);
+			$('input[name=display-column-2]').prop('checked', false);
+			DisplayColumns = 3;
+			if(localStorage) localStorage.setItem( 'display_columns', DisplayColumns );
+			if(!Update_Incoming) {
+				Update_Incoming = true;
+				setTimeout(update_filtered, 100);
+			}
+		}
 	});	
 	$('thead').on({
 		click: handle_header_click
@@ -346,9 +386,9 @@ function handle_submit(event) {
 }
 
 function handle_quantity_change(event) {
-	var index = $(this).closest('tr').data('index') || $(this).closest('div.modal').data('index');
+	var index = $(this).closest('.card-container').data('index') || $(this).closest('div.modal').data('index');
 	var quantity = parseInt($(this).val(), 10);
-	$(this).closest('tr')[quantity ? "addClass" : "removeClass"]('in-deck');
+	$(this).closest('.card-container')[quantity ? "addClass" : "removeClass"]('in-deck');
 	var card = CardDB({code:index}).first();
 	CardDB({code:index}).update({indeck:quantity});
 	if(card.type_code == "identity") {
@@ -359,17 +399,21 @@ function handle_quantity_change(event) {
 	}
 	update_deck();
 	if(card.type_code == "identity") {
-		$.each(CardDivs, function (index, row) {
-			row.removeClass("disabled").find('label').removeClass("disabled").find('input[type=radio]').attr("disabled", false);
+		$.each(CardDivs, function (nbcols, rows) {
+			$.each(rows, function (index, row) {
+				row.removeClass("disabled").find('label').removeClass("disabled").find('input[type=radio]').attr("disabled", false);
+			});
 		});
 		if(!Update_Incoming) {
 			Update_Incoming = true;
 			setTimeout(update_filtered, 100);
 		}
 	} else {
-		CardDivs[index].find('input[name="qty-'+index+'"]').each(function (i, element) {
-			if($(element).val() == quantity) $(element).prop('checked', true).closest('label').addClass('active');
-			else $(element).prop('checked', false).closest('label').removeClass('active');
+		$.each(CardDivs, function (nbcols, rows) {
+			rows[index].find('input[name="qty-'+index+'"]').each(function (i, element) {
+				if($(element).val() == quantity) $(element).prop('checked', true).closest('label').addClass('active');
+				else $(element).prop('checked', false).closest('label').removeClass('active');
+			});
 		});
 	}
 	$('div.modal').modal('hide');
@@ -385,28 +429,70 @@ function build_div(record) {
 	for(var i=0; i<=record.maxqty; i++) {
 		radios += '<label class="btn btn-xs btn-default'+(i == record.indeck ? ' active' : '')+'"><input type="radio" name="qty-'+record.code+'" value="'+i+'">'+i+'</label>';
 	}
-	var imgsrc = record.faction_code == "neutral" ? "" : '<img src="'+Url_FactionImage.replace('xxx', record.faction_code)+'.png">';
-	var div = $('<tr><td><div class="btn-group" data-toggle="buttons">'
-		+radios
-		+'</div></td><td><a class="card" href="#cardModal" data-toggle="modal">'
-		+record.title
-		+'</a></td><td class="influence-'+faction+'">'
-		+influ
-		+'</td><td class="type" title="'+record.type+'"><img src="/web/bundles/netrunnerdbbuilder/images/types/'+record.type_code+'.png">'
-		+'</td><td class="faction" title="'+record.faction+'">'
-		+imgsrc
-		+'</td></tr>');
+	
+	var div;
+	switch(DisplayColumns) {
+	case 1:
 		
+		var imgsrc = record.faction_code == "neutral" ? "" : '<img src="'+Url_FactionImage.replace('xxx', record.faction_code)+'.png">';
+		div = $('<tr class="card-container"><td><div class="btn-group" data-toggle="buttons">'
+			+radios
+			+'</div></td><td><a class="card" href="#cardModal" data-toggle="modal">'
+			+record.title
+			+'</a></td><td class="influence-'+faction+'">'
+			+influ
+			+'</td><td class="type" title="'+record.type+'"><img src="/web/bundles/netrunnerdbbuilder/images/types/'+record.type_code+'.png">'
+			+'</td><td class="faction" title="'+record.faction+'">'
+			+imgsrc
+			+'</td></tr>');
+		break;
+
+	case 2:
+
+		div = $('<div class="col-sm-6 card-container">'
+		           +'<div class="media">'
+		           +'<a class="pull-left" href="#">'
+		           +'    <img class="media-object" src="/web/bundles/netrunnerdbcards/images/cards/en/'+record.code+'.png">'
+		           +'</a>'
+		           +'<div class="media-body">'
+		           +'    <h4 class="media-heading"><a class="card" href="#cardModal" data-toggle="modal">'+record.title+'</a></h4>'
+		           +'    <div class="btn-group" data-toggle="buttons">'+radios+'</div>'
+		           +'    <span class="influence-'+faction+'">'+influ+'</span>'
+		           +'</div>'
+		           +'</div>'
+		           +'</div>');
+		break;
+
+	case 3:
+
+		div = $('<div class="col-sm-4 card-container">'
+		           +'<div class="media">'
+		           +'<a class="pull-left" href="#">'
+		           +'    <img class="media-object" src="/web/bundles/netrunnerdbcards/images/cards/en/'+record.code+'.png">'
+		           +'</a>'
+		           +'<div class="media-body">'
+		           +'    <h5 class="media-heading"><a class="card" href="#cardModal" data-toggle="modal">'+record.title+'</a></h5>'
+		           +'    <div class="btn-group" data-toggle="buttons">'+radios+'</div>'
+		           +'    <span class="influence-'+faction+'">'+influ+'</span>'
+		           +'</div>'
+		           +'</div>'
+		           +'</div>');
+		break;
+		
+	}
+	
 	return div;
 }
 
 function update_filtered(){
 	Update_Incoming = false;
-	$('#collection').empty();
+	$('#collection-table').empty();
+	$('#collection-grid').empty();
 	$.extend(SmartFilterQuery, FilterQuery);
+	var counter = 0, container = $('#collection-table');
 	CardDB(SmartFilterQuery).order(Sort+(Order>0 ? " intl" : " intldesc")+',title').each(function (record) {
 		var index = record.code;
-		var row = (CardDivs[index] || (CardDivs[index] = build_div(record))).data("index", record.code);
+		var row = (CardDivs[DisplayColumns][index] || (CardDivs[DisplayColumns][index] = build_div(record))).data("index", record.code);
 		row[record.indeck ? "addClass" : "removeClass"]('in-deck');
 		row.find('input[name="qty-'+record.code+'"]').each(function (i, element) {
 			if($(element).val() == record.indeck) $(element).prop('checked', true).closest('label').addClass('active');
@@ -419,6 +505,10 @@ function update_filtered(){
 		if(record.type_code == "agenda" && record.faction_code != "neutral" && record.faction != Identity.faction) {
 			row.addClass("disabled").find('label').addClass("disabled").find('input[type=radio]').attr("disabled", true);
 		}
-		$('#collection').append(row);
+		if(DisplayColumns > 1 && counter % DisplayColumns === 0) {
+			container = $('<div class="row"></div>').appendTo($('#collection-grid'));
+		}
+		container.append(row);
+		counter++;
 	});
 }
