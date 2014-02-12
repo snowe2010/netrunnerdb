@@ -451,7 +451,7 @@ function build_div(record) {
 
 		div = $('<div class="col-sm-6 card-container">'
 		           +'<div class="media">'
-		           +'<a class="pull-left" href="#">'
+		           +'<a class="pull-left card" href="#cardModal" data-toggle="modal">'
 		           +'    <img class="media-object" src="/web/bundles/netrunnerdbcards/images/cards/en/'+record.code+'.png">'
 		           +'</a>'
 		           +'<div class="media-body">'
@@ -467,7 +467,7 @@ function build_div(record) {
 
 		div = $('<div class="col-sm-4 card-container">'
 		           +'<div class="media">'
-		           +'<a class="pull-left" href="#">'
+		           +'<a class="pull-left card" href="#cardModal" data-toggle="modal">'
 		           +'    <img class="media-object" src="/web/bundles/netrunnerdbcards/images/cards/en/'+record.code+'.png">'
 		           +'</a>'
 		           +'<div class="media-body">'
