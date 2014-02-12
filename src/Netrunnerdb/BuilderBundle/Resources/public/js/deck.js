@@ -400,7 +400,7 @@ function handle_quantity_change(event) {
 	update_deck();
 	if(card.type_code == "identity") {
 		$.each(CardDivs, function (nbcols, rows) {
-			$.each(rows, function (index, row) {
+			if(rows) $.each(rows, function (index, row) {
 				row.removeClass("disabled").find('label').removeClass("disabled").find('input[type=radio]').attr("disabled", false);
 			});
 		});
@@ -410,7 +410,7 @@ function handle_quantity_change(event) {
 		}
 	} else {
 		$.each(CardDivs, function (nbcols, rows) {
-			rows[index].find('input[name="qty-'+index+'"]').each(function (i, element) {
+			if(rows && rows[index]) rows[index].find('input[name="qty-'+index+'"]').each(function (i, element) {
 				if($(element).val() == quantity) $(element).prop('checked', true).closest('label').addClass('active');
 				else $(element).prop('checked', false).closest('label').removeClass('active');
 			});
