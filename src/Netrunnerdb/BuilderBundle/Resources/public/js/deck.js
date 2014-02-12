@@ -156,10 +156,22 @@ $(function() {
 		change: handle_quantity_change
 	}, 'input[type=radio]');
 	$('input[name=show-disabled]').on({
-		change: function (event) { $('#collection,#collection2')[$(this).prop('checked') ? 'removeClass' : 'addClass']('hide-disabled'); }
+		change: function (event) {
+			HideDisabled = !$(this).prop('checked');
+			if(!Update_Incoming) {
+				Update_Incoming = true;
+				setTimeout(update_filtered, 100);
+			}
+		}
 	});
 	$('input[name=only-deck]').on({
-		change: function (event) { $('#collection,#collection2')[$(this).prop('checked') ? 'addClass' : 'removeClass']('only-deck'); }
+		change: function (event) {
+			ShowOnlyDeck = $(this).prop('checked');
+			if(!Update_Incoming) {
+				Update_Incoming = true;
+				setTimeout(update_filtered, 100);
+			}
+		}
 	});	
 	$('input[name=display-column-1]').on({
 		change: function (event) { 
@@ -491,20 +503,24 @@ function update_filtered(){
 	$.extend(SmartFilterQuery, FilterQuery);
 	var counter = 0, container = $('#collection-table');
 	CardDB(SmartFilterQuery).order(Sort+(Order>0 ? " intl" : " intldesc")+',title').each(function (record) {
+
+		if(ShowOnlyDeck && !record.indeck) return;
+
+		var unusable = false;
+		if(Identity.code == "03002" && record.faction_code == "jinteki") unusable = true;
+		if(record.type_code == "agenda" && record.faction_code != "neutral" && record.faction != Identity.faction) unusable = true;
+		
+		if(HideDisabled && unusable) return;
+		
 		var index = record.code;
 		var row = (CardDivs[DisplayColumns][index] || (CardDivs[DisplayColumns][index] = build_div(record))).data("index", record.code);
-		row[record.indeck ? "addClass" : "removeClass"]('in-deck');
 		row.find('input[name="qty-'+record.code+'"]').each(function (i, element) {
 			if($(element).val() == record.indeck) $(element).prop('checked', true).closest('label').addClass('active');
 			else $(element).prop('checked', false).closest('label').removeClass('active');
 		});
-
-		if(Identity.code == "03002" && record.faction_code == "jinteki") {
-			row.addClass("disabled").find('label').addClass("disabled").find('input[type=radio]').attr("disabled", true);
-		}
-		if(record.type_code == "agenda" && record.faction_code != "neutral" && record.faction != Identity.faction) {
-			row.addClass("disabled").find('label').addClass("disabled").find('input[type=radio]').attr("disabled", true);
-		}
+		
+		if(unusable) row.find('label').addClass("disabled").find('input[type=radio]').attr("disabled", true);
+		
 		if(DisplayColumns > 1 && counter % DisplayColumns === 0) {
 			container = $('<div class="row"></div>').appendTo($('#collection-grid'));
 		}

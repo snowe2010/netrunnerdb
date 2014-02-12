@@ -25,7 +25,9 @@ var CardDB = null,
 	Url_FactionImage = '{{  asset('/web/bundles/netrunnerdbbuilder/images/factions/16px/xxx.png') }}',
 	Url_TypeImage = '{{ asset('/web/bundles/netrunnerdbbuilder/images/types/xxx.png') }}',
 	Update_Incoming = false,
-	DisplaySort = 'type';
+	DisplaySort = 'type',
+	HideDisabled = true,
+	ShowOnlyDeck = false;
 	
 </script>
 
@@ -212,7 +214,7 @@ var CardDB = null,
 					<th class="faction"><a href="#" data-sort="faction">Faction</a></th>
 				</tr>
 			</thead>
-			<tbody id="collection-table" class="collection hide-disabled"></tbody>
+			<tbody id="collection-table" class="collection"></tbody>
 		</table>
 	</div><!-- /.col-sm-12 -->
 	<div id="collection-grid" class="col-sm-12"></div>

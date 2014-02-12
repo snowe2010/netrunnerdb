@@ -158,9 +158,6 @@ tbody .btn-group{white-space:nowrap}
 .btn-group>.btn,.btn-group-vertical>.btn{float:none;display:inline-block}
 .dropdown-menu input{margin:-4px 8px 0 -6px}
 .dropdown-menu label{margin:0}
-.hide-disabled .disabled{display:none}
-.only-deck tr{display:none}
-.only-deck tr.in-deck{display:table-row}
 #collection td{vertical-align:middle}
 .decklist .decklist-author{font-family:'exoregular',sans-serif}
 .decklist .reputation{font-family:'exodemibold',sans-serif}
