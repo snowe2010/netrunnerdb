@@ -311,7 +311,8 @@ $(function () {
 	if(Modernizr.touch) $('#svg').remove();
 		
 	$('body').on({click: display_modal}, '.card');
-
+	$('#table-draw-simulator').on({click: draw_simulator}, 'a.btn');
+	
 	if($('#opinion-form-text').size()) {
 		var converter = new Markdown.Converter();
 		$('#opinion-form-text').on('keyup', function () {
@@ -320,7 +321,7 @@ $(function () {
 	}
 	display_notification();
 	
-	$.each([ 'table-graph-costs', 'table-graph-strengths', 'table-predecessor', 'table-successor' ], function (i, table_id) {
+	$.each([ 'table-graph-costs', 'table-graph-strengths', 'table-predecessor', 'table-successor', 'table-draw-simulator' ], function (i, table_id) {
 		var table = $('#'+table_id);
 		if(!table.size()) return;
 		var head = table.find('thead tr th');
@@ -329,6 +330,42 @@ $(function () {
 		head.prepend(toggle);
 	});
 });
+
+var DeckForSimulation = null;
+function draw_simulator(event) {
+	event.preventDefault();
+	var id = $(this).attr('id');
+	var command = id.substr(15);
+	var container = $('#table-draw-simulator-content');
+	if(command === 'clear') {
+		container.empty();
+		DeckForSimulation = null;
+		$('#draw-simulator-clear').attr('disabled', true);
+		return;
+	}
+	if(DeckForSimulation === null) {
+		DeckForSimulation = [];
+		CardDB({indeck:{'gt':0},type_code:{'!is':'identity'}}).each(function (record) {
+			for(var ex = 0; ex < record.indeck; ex++) {
+				DeckForSimulation.push(record);
+			}
+		});
+	}
+	var draw;
+	if(command === 'all') {
+		draw = DeckForSimulation.length;
+	} else {
+		draw = parseInt(command, 10);
+	}
+	if(isNaN(draw)) return;
+	for(var pick = 0; pick < draw && DeckForSimulation.length > 0; pick++) {
+		var rand = Math.floor(Math.random() * DeckForSimulation.length);
+		var spliced = DeckForSimulation.splice(rand, 1);
+		var card = spliced[0];
+		container.append('<img src="'+card.imagesrc+'" style="width:99px;float:left;margin:5px" class="card" data-index="'+card.code+'">');
+		$('#draw-simulator-clear').attr('disabled', false);
+	}
+}
 
 function toggle_table(event) {
 	event.preventDefault();
@@ -728,8 +765,8 @@ function display_notification()
 {
 	if(!localStorage) return;
 	var Notification = {
-		version: '1.4.6',
-		message: "<strong>New!</strong> Option to display card thumbnails in 2 or 3 columns in the deckbuilder."	
+		version: '1.4.8',
+		message: "<strong>New!</strong> Card draw simulator on every deck and decklist page!"	
 	};
 	var localStorageNotification = localStorage.getItem('notification');
 	if(localStorageNotification === Notification.version) return;
