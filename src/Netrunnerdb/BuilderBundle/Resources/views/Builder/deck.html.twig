@@ -101,32 +101,6 @@ var CardDB = null,
 </tbody>
 </table>
 
-<!-- Name and Notes Form -->
-<div class="row">
-	<div class="col-sm-12">
-		<div class="panel panel-default">
-			<div class="panel-body">
-				<form method="POST" action="{{ path('deck_save') }}" id="save_form" role="form">
-					<input type="hidden" id="deck-save-id" name="id" value="{{ deck.id }}">
-					<input type="hidden" id="deck-save-as-copy" name="copy" value="0">
-					<input type="hidden" name="content">
-					<div class="form-group">
-						<label for="name">Name</label>
-						<input type="text" class="form-control" name="name" value="{{ deck.name }}"></input>
-					</div>
-					<div class="form-group">
-						<label for="name">Notes</label>
-						<textarea class="form-control" rows="3" name="description">{{ deck.description }}</textarea>
-					</div>
-					<button type="submit" class="btn btn-warning">Save</button>
-					<button type="submit" id="btn-save-as-copy" class="btn btn-primary">Save as Copy</button>
-				</form>
-			</div><!-- /.panel-body -->
-		</div><!-- /.panel -->
-	</div><!-- /.col-sm-12 -->
-</div><!-- /.row -->
-<!-- Name and Notes Form -->
-
 <!-- Published decklists Table -->
 <div class="row">
 	<div class="col-sm-12">
@@ -152,6 +126,28 @@ var CardDB = null,
 	</div><!-- /.col-sm-12 -->
 </div>
 <!-- Published decklists Table -->
+
+<!-- Name and Notes Form -->
+<div class="row">
+	<div class="col-sm-12">
+				<form method="POST" action="{{ path('deck_save') }}" id="save_form" role="form">
+					<input type="hidden" id="deck-save-id" name="id" value="{{ deck.id }}">
+					<input type="hidden" id="deck-save-as-copy" name="copy" value="0">
+					<input type="hidden" name="content">
+					<div class="form-group">
+						<label for="name">Name</label>
+						<input type="text" class="form-control" name="name" value="{{ deck.name }}"></input>
+					</div>
+					<div class="form-group">
+						<label for="name">Notes</label>
+						<textarea class="form-control" rows="3" name="description">{{ deck.description }}</textarea>
+					</div>
+					<button type="submit" class="btn btn-warning">Save</button>
+					<button type="submit" id="btn-save-as-copy" class="btn btn-primary">Save as Copy</button>
+				</form>
+	</div><!-- /.col-sm-12 -->
+</div><!-- /.row -->
+<!-- Name and Notes Form -->
 
 </div><!-- /#deck -->
 <!-- Left-side Column -->

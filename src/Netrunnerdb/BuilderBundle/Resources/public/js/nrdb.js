@@ -319,7 +319,24 @@ $(function () {
 		});
 	}
 	display_notification();
+	
+	$.each([ 'table-graph-costs', 'table-graph-strengths', 'table-predecessor', 'table-successor' ], function (i, table_id) {
+		var table = $('#'+table_id);
+		if(!table.size()) return;
+		var head = table.find('thead tr th');
+		var toggle = $('<a href="#" class="pull-right small">hide</a>');
+		toggle.on({click: toggle_table});
+		head.prepend(toggle);
+	});
 });
+
+function toggle_table(event) {
+	event.preventDefault();
+	var toggle = $(this);
+	var table = toggle.closest('table');
+	var tbody = table.find('tbody');
+	tbody.toggle(400, function() { toggle.text(tbody.is(':visible') ? 'hide': 'show'); });
+}
 
 function display_modal(event) {
 	$(this).qtip('hide');
