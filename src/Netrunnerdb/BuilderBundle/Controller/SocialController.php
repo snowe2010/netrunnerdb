@@ -89,12 +89,14 @@ class SocialController extends Controller {
 		}
 
 		$name = filter_var($request->request->get('name'), FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
+		$name = substr($name, 0, 60);
+		if(empty($name)) $name = "Untitled";
 		$rawdescription = filter_var($request->request->get('description'), FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
 		$description = Markdown::defaultTransform($rawdescription);
 
 		$decklist = new Decklist;
-		$decklist->setName(substr($name, 0, 60));
-		$decklist->setPrettyname(preg_replace('/[^a-z0-9]+/', '-', mb_strtolower(substr($name, 0, 60))));
+		$decklist->setName($name);
+		$decklist->setPrettyname(preg_replace('/[^a-z0-9]+/', '-', mb_strtolower($name)));
 		$decklist->setRawdescription($rawdescription);
 		$decklist->setDescription($description);
 		$decklist->setUser($this->getUser());
@@ -1059,11 +1061,13 @@ class SocialController extends Controller {
 		
 		$request = $this->get('request');
 		$name = trim(filter_var($request->request->get('name'), FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES));
+		$name = substr($name, 0, 60);
+		if(empty($name)) $name = "Untitled";
 		$rawdescription = trim(filter_var($request->request->get('description'), FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES));
 		$description = Markdown::defaultTransform($rawdescription);
 		
-		$decklist->setName(substr($name, 0, 60));
-		$decklist->setPrettyname(preg_replace('/[^a-z0-9]+/', '-', mb_strtolower(substr($name, 0, 60))));
+		$decklist->setName($name);
+		$decklist->setPrettyname(preg_replace('/[^a-z0-9]+/', '-', mb_strtolower($name)));
 		$decklist->setRawdescription($rawdescription);
 		$decklist->setDescription($description);
 		$decklist->setTs(new \DateTime());
