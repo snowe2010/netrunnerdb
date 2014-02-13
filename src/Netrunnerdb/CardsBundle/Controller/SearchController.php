@@ -881,48 +881,6 @@ class SearchController extends Controller
 		}
 	}
 	
-	public function apisearchAction($query)
-	{
-		$response = new Response();
-		$response->setPublic();
-		$response->setMaxAge(600);
-		
-		$jsonp = $this->getRequest()->query->get('jsonp');
-		$locale = $this->getRequest()->query->get('_locale');
-		if(isset($locale)) $this->getRequest()->setLocale($locale);
-		
-		$conditions = $this->syntax($query);
-		$this->validateConditions($conditions);
-		$query = $this->buildQueryFromConditions($conditions);
-	
-		$cards = array();
-		$last_modified = null;
-		if($query && $rows = $this->get_search_rows($conditions, "set"))
-		{
-			for($rowindex = 0; $rowindex < count($rows); $rowindex++) {
-				if(empty($last_modified) || $last_modified < $rows[$rowindex]->getTs()) $last_modified = $rows[$rowindex]->getTs();
-			}
-			$response->setLastModified($last_modified);
-			if ($response->isNotModified($this->getRequest())) {
-				return $response;
-			}
-			for($rowindex = 0; $rowindex < count($rows); $rowindex++) {
-				$card = $this->getCardInfo($rows[$rowindex], true, "en");
-				$cards[] = $card;
-			}
-		}
-
-		$content = json_encode($cards);
-		if(isset($jsonp))
-		{
-			$content = "$jsonp($content)";
-		}
-	
-		$response->headers->set('Content-Type', 'application/javascript');
-		$response->setContent($content);
-		return $response;
-	}
-	
 	public function apicardAction($card_code)
 	{
 

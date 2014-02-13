@@ -99,11 +99,6 @@ api_card:
         _format: json
         card_code: \d+
 
-api_search:
-    pattern: /api/search/{query}
-    defaults:
-        _controller: NetrunnerdbCardsBundle:Search:apisearch
-
 api_sets:
     pattern: /api/sets/
     defaults:
