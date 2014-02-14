@@ -329,19 +329,25 @@ $(function () {
 		toggle.on({click: toggle_table});
 		head.prepend(toggle);
 	});
+	
+	$('#oddsModal').on({change: oddsModalCalculator}, 'input');
 });
 
-var DeckForSimulation = null;
+var DeckForSimulation = null, DeckForSimulationInitialSize = 0, DrawnCardsCount = 0;
 function draw_simulator(event) {
 	event.preventDefault();
 	var id = $(this).attr('id');
 	var command = id.substr(15);
 	var container = $('#table-draw-simulator-content');
-	if(command === 'clear') {
+	if(command === 'clear' || event.shiftKey) {
 		container.empty();
 		DeckForSimulation = null;
-		$('#draw-simulator-clear').attr('disabled', true);
-		return;
+		DeckForSimulationInitialSize = DrawnCardsCount = 0;
+		update_odds();
+		if(command === 'clear') {
+			$('#draw-simulator-clear').attr('disabled', true);
+			return;
+		}
 	}
 	if(DeckForSimulation === null) {
 		DeckForSimulation = [];
@@ -350,6 +356,7 @@ function draw_simulator(event) {
 				DeckForSimulation.push(record);
 			}
 		});
+		DeckForSimulationInitialSize = DeckForSimulation.length;
 	}
 	var draw;
 	if(command === 'all') {
@@ -364,7 +371,24 @@ function draw_simulator(event) {
 		var card = spliced[0];
 		container.append('<img src="'+card.imagesrc+'" style="width:99px;float:left;margin:5px" class="card" data-index="'+card.code+'">');
 		$('#draw-simulator-clear').attr('disabled', false);
+		DrawnCardsCount++;
 	}
+	update_odds();
+}
+
+function update_odds() {
+	for(var i=1; i<=3; i++) {
+		var odd = hypergeometric.get_cumul(1, DeckForSimulationInitialSize, i, DrawnCardsCount);
+		$('#draw-simulator-odds-'+i).text(Math.round(100*odd));
+	}
+}
+
+function oddsModalCalculator(event) {
+	var inputs = {};
+	$.each(['N','K','n','k'], function (i, key) {
+		inputs[key] = parseInt($('#odds-calculator-'+key).val(), 10) || 0;
+	});
+	$('#odds-calculator-p').text( Math.round( 100 * hypergeometric.get_cumul(inputs.k, inputs.N, inputs.K, inputs.n) ) );
 }
 
 function toggle_table(event) {
@@ -779,8 +803,8 @@ function display_notification()
 {
 	if(!localStorage) return;
 	var Notification = {
-		version: '1.4.8',
-		message: "<strong>New!</strong> Card draw simulator on every deck and decklist page!"	
+		version: '1.4.10',
+		message: "<strong>New!</strong> Odds calculator in the card draw simulator. See the odds of having a specific card as you draw from your deck, depending on the number of copies included."	
 	};
 	var localStorageNotification = localStorage.getItem('notification');
 	if(localStorageNotification === Notification.version) return;
@@ -790,3 +814,102 @@ function display_notification()
 	})
 	$('#wrapper>div.container').prepend(alert);
 }
+
+//binomial coefficient module, shamelessly ripped from https://github.com/pboyer/binomial.js
+var binomial = {};
+(function( binomial ) {
+	var memo = [];
+	binomial.get = function(n, k) {
+		if (k === 0) {
+			return 1;
+		}
+		if (n === 0 || k > n) {
+			return 0;
+		}
+		if (k > n - k) {
+        	k = n - k
+        }
+		if ( memo_exists(n,k) ) {
+			return get_memo(n,k);
+		}
+	    var r = 1,
+	    	n_o = n;
+	    for (var d=1; d <= k; d++) {
+	    	if ( memo_exists(n_o, d) ) {
+	    		n--;
+	    		r = get_memo(n_o, d);
+	    		continue;
+	    	}
+			r *= n--;
+	  		r /= d;
+	  		memoize(n_o, d, r);
+	    }
+	    return r;
+	};
+	function memo_exists(n, k) {
+		return ( memo[n] != undefined && memo[n][k] != undefined );
+	};
+	function get_memo(n, k) {
+		return memo[n][k];
+	};
+	function memoize(n, k, val) {
+		if ( memo[n] === undefined ) {
+			memo[n] = [];
+		}
+		memo[n][k] = val;
+	};
+})(binomial);
+
+// hypergeometric distribution module, homemade
+var hypergeometric = {};
+(function( hypergeometric ) {
+	var memo = [];
+	hypergeometric.get = function(k, N, K, n) {
+		if ( !k || !N || !K || !n ) return 0;
+		if ( memo_exists(k, N, K, n) ) {
+			return get_memo(k, N, K, n);
+		}
+		if ( memo_exists(n - k, N, N - K, n) ) {
+			return get_memo(n - k, N, N - K, n);
+		}
+		if ( memo_exists(K - k, N, K, N - n) ) {
+			return get_memo(K - k, N, K, N - n);
+		}
+		if ( memo_exists(k, N, n, K) ) {
+			return get_memo(k, N, n, K);
+		}
+		var d = binomial.get(N, n);
+		if(d === 0) return 0;
+		var r = binomial.get(K, k) * binomial.get(N - K, n - k) / d;
+		memoize(k, N, K, n, r);
+		return r;
+	};
+	hypergeometric.get_cumul = function(k, N, K, n) {
+		var r = 0;
+		for(; k < n; k++) {
+			r += hypergeometric.get(k, N, K, n);
+		}
+		return r;
+	};
+	function memo_exists(k, N, K, n) {
+		return ( memo[k] != undefined && memo[k][N] != undefined && memo[k][N][K] != undefined && memo[k][N][K][n] != undefined );
+	};
+	function get_memo(k, N, K, n) {
+		return memo[k][N][K][n];
+	};
+	function memoize(k, N, K, n, val) {
+		if ( memo[k] === undefined ) {
+			memo[k] = [];
+		}
+		if ( memo[k][N] === undefined ) {
+			memo[k][N] = [];
+		}
+		if ( memo[k][N][K] === undefined ) {
+			memo[k][N][K] = [];
+		}
+		memo[k][N][K][n] = val;
+	};
+})(hypergeometric);
+
+
+
