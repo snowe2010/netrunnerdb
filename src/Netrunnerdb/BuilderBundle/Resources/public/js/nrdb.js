@@ -383,11 +383,10 @@ function display_modal(event) {
 
 function fill_modal(code) {
 	var card = CardDB({code:code}).first();
-	var imagesrc = card.largeimagesrc ? card.largeimagesrc : card.imagesrc;
 	var modal = $('div#cardModal');
 	modal.data('index', code);
 	modal.find('h3.modal-title').html((card.uniqueness ? "&diams; " : "")+card.title);
-	modal.find('.modal-image').html('<img class="img-responsive" src="'+imagesrc+'">');
+	modal.find('.modal-image').html('<img class="img-responsive" src="'+card.imagesrc+'">');
 	modal.find('.modal-info').html(
 	  '<div class="card-info">'+get_type_line(card)+'</div>'
 	  +'<div><small>' + card.faction + ' &bull; '+ card.setname + '</small></div>'
