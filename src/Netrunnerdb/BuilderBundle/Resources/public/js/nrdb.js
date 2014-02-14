@@ -528,6 +528,11 @@ function export_bbcode() {
 			}
 		}
 	});
+	lines.push($('#influence').text().replace(/•/g,''));
+	lines.push($('#agendapoints').text());
+	lines.push($('#cardcount').text());
+	lines.push($('#latestpack').text());
+	lines.push("");
 	if(typeof Decklist != "undefined" && Decklist != null) {
 		lines.push("Decklist [url="+location.href+"]published on NetrunnerDB[/url].");
 	} else {
@@ -583,6 +588,11 @@ function export_markdown() {
 		}
 	});
 	lines.push("");
+	lines.push($('#influence').text().replace(/•/g,'') + "  ");
+	lines.push($('#agendapoints').text() + "  ");
+	lines.push($('#cardcount').text() + "  ");
+	lines.push($('#latestpack').text() + "  ");
+	lines.push("");
 	if(typeof Decklist != "undefined" && Decklist != null) {
 		lines.push("Decklist [published on NetrunnerDB]("+location.href+").");
 	} else {
@@ -630,6 +640,11 @@ function export_plaintext() {
 			}
 		}
 	});
+	lines.push("");
+	lines.push($('#influence').text().replace(/•/g,''));
+	lines.push($('#agendapoints').text());
+	lines.push($('#cardcount').text());
+	lines.push($('#latestpack').text());
 	lines.push("");
 	if(typeof Decklist != "undefined" && Decklist != null) {
 		lines.push("Decklist published on http://netrunnerdb.com.");
