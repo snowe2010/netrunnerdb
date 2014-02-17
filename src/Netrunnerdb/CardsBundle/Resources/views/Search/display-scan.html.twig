@@ -7,8 +7,10 @@
 
 {% for row in 0..(cards|length-1)//4 %}
 <div class="row" style="margin-bottom: 30px">
-{% for col in 0..3 %}
-{{ cardlayouts.scan_only(cards[row*4+col]) }}
+{% for col in 0..3 %}{% set index = row*4+col %}
+{% if index in cards|keys %}
+{{ cardlayouts.scan_only(cards[index]) }}
+{% endif %}
 {% endfor %}
 </div>
 {% endfor %}
