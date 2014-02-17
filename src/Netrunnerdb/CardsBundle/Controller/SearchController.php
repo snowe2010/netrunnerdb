@@ -135,7 +135,7 @@ class SearchController extends Controller
 		);
 	}
 	
-	public function listAction($pack_code)
+	public function listAction($pack_code, $view, $sort)
 	{
 		$request  = $this->getRequest();
 		$mode = $request->query->get('mode');
@@ -148,8 +148,8 @@ class SearchController extends Controller
 			'NetrunnerdbCardsBundle:Search:display', 
 			array(
 				'q' => 'e:'.$pack_code,
-				'view' => 'list',
-				'sort' => 'set',
+				'view' => $view,
+				'sort' => $sort,
 				'title' => $pack->getName($this->getRequest()->getLocale()),
 				'mode' => $mode,
 				'meta' => $meta,
@@ -159,7 +159,7 @@ class SearchController extends Controller
 		);
 	}
 
-	public function cycleAction($cycle_code)
+	public function cycleAction($cycle_code, $view, $sort)
 	{
 		$request  = $this->getRequest();
 		$mode = $request->query->get('mode');
@@ -170,9 +170,9 @@ class SearchController extends Controller
 			'NetrunnerdbCardsBundle:Search:display',
 			array(
 				'q' => 'c:'.$cycle->getNumber(),
-				'view' => 'list',
-				'sort' => 'faction',
-				'title' => $cycle->getName($this->getRequest()->getLocale()),
+				'view' => $view,
+				'sort' => $sort,
+			    'title' => $cycle->getName($this->getRequest()->getLocale()),
 				'mode' => $mode,
 				'meta' => $meta,
 				'locale' => $this->getRequest()->getLocale(),

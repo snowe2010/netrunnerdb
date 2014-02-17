@@ -11,10 +11,12 @@ NetrunnerdbCardsBundle_admin_card:
     prefix:   /admin/card
 
 netrunnerdb_netrunner_cards_list:
-    pattern:  /{_locale}/set/{pack_code}
+    pattern:  /{_locale}/set/{pack_code}/{view}/{sort}
     defaults:
         _controller: NetrunnerdbCardsBundle:Search:list
         _locale: en
+        view: list
+        sort: set
     requirements:
         _locale: en|fr|de|es|it|pl
 
@@ -28,10 +30,12 @@ netrunnerdb_netrunner_cards_zoom:
         card_code: \d+
 
 netrunnerdb_netrunner_cards_cycle:
-    pattern:  /{_locale}/cycle/{cycle_code}
+    pattern:  /{_locale}/cycle/{cycle_code}/{view}/{sort}
     defaults:
         _controller: NetrunnerdbCardsBundle:Search:cycle
         _locale: en
+        view: list
+        sort: faction
     requirements:
         _locale: en|fr|de|es|it|pl
 
