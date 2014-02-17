@@ -16,6 +16,5 @@
 	<option value="scan"    {% if view|default('list') == "scan"    %}selected{% endif %}>{% trans %}View as Scans only{% endtrans %}</option>
 	<option value="short"   {% if view|default('list') == "short"   %}selected{% endif %}>{% trans %}View as Simple List{% endtrans %}</option>
 </select>
-<input name="mode" type="hidden" value="full">
 <input name="_locale" type="hidden" value="{{ app.request.locale }}">
 </div>
