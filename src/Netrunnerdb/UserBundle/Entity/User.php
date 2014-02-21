@@ -54,6 +54,11 @@ class User extends BaseUser
      */
     private $avatar;
 
+    /*
+     * @var integer
+     */
+    private $donation;
+    
     /**
      * @var Deck[]
      */
@@ -275,6 +280,29 @@ class User extends BaseUser
         return $this->avatar;
     }
 
+    /**
+     * Set donation
+     *
+     * @param integer $donation
+     * @return User
+     */
+    public function setDonation($donation)
+    {
+        $this->donation = $donation;
+    
+        return $this;
+    }
+    
+    /**
+     * Get donation
+     *
+     * @return integer
+     */
+    public function getDonation()
+    {
+        return $this->donation;
+    }
+    
     /**
      * Set deck
      *

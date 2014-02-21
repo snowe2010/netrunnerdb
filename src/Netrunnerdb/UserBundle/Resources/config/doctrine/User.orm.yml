@@ -70,4 +70,7 @@ Netrunnerdb\UserBundle\Entity\User:
             type: string
             length: 255
             nullable: true
+        donation:
+            type: integer
+            nullable: false
     lifecycleCallbacks: {  }
