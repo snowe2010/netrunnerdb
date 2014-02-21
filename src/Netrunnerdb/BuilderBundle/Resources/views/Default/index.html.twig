@@ -43,7 +43,7 @@ $(function() { $('#version-popover').popover({html:true}); });
 
 <div class="row">
 <div class="col-md-6">
-<h3>Popular decklists</h3>
+<h3>Popular decklists <a href="{{ path('decklists_list', {type:'popular'}) }}" class="small">more</a></h3>
 {% for decklist in popular %}
 <div class="panel panel-default">
 <div class="panel-body">
@@ -73,7 +73,7 @@ $(function() { $('#version-popover').popover({html:true}); });
 {% endfor %}
 </div>
 <div class="col-md-6">
-<h3>Recent decklists</h3>
+<h3>Recent decklists <a href="{{ path('decklists_list', {type:'recent'}) }}" class="small">more</a></h3>
 {% for decklist in recent %}
 <div class="panel panel-default">
 <div class="panel-body">
