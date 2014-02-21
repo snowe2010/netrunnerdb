@@ -227,7 +227,9 @@ class SocialController extends Controller {
 		/* @var $stmt \Doctrine\DBAL\Driver\PDOStatement */ 
 		$stmt = $dbh->prepare("SELECT
 				count(*)
-				from decklist d");
+				from decklist d
+		        where d.creation > DATE_SUB(CURRENT_DATE, INTERVAL 1 MONTH)
+		        ");
 		$stmt->execute();
 		$count = $stmt->fetch(\PDO::FETCH_NUM);
 		
@@ -250,7 +252,8 @@ class SocialController extends Controller {
 					from decklist d
 					join user u on d.user_id=u.id
 					join card c on d.identity_id=c.id
-					order by nbvotes/(1+nbjours*nbjours) DESC, nbvotes desc, nbcomments desc
+				    where d.creation > DATE_SUB(CURRENT_DATE, INTERVAL 1 MONTH) 
+				    order by 2*nbvotes/(1+nbjours*nbjours) DESC, nbvotes desc, nbcomments desc
 					limit $start, $limit")->fetchAll(\PDO::FETCH_ASSOC);
 		
 		return array("count" => $count[0], "decklists" => $rows);
@@ -267,7 +270,9 @@ class SocialController extends Controller {
 		/* @var $stmt \Doctrine\DBAL\Driver\PDOStatement */
 		$stmt = $dbh->prepare("SELECT
 				count(*)
-				from decklist d");
+				from decklist d
+		        where nbvotes > 10 
+		        ");
 		$stmt->execute();
 		$count = $stmt->fetch(\PDO::FETCH_NUM);
 	
@@ -289,7 +294,8 @@ class SocialController extends Controller {
 				from decklist d
 				join user u on d.user_id=u.id
 				join card c on d.identity_id=c.id
-				order by nbvotes desc, creation desc
+				where nbvotes > 10 
+		        order by nbvotes desc, creation desc
 				limit $start, $limit")->fetchAll(\PDO::FETCH_ASSOC);
 	
 		return array("count" => $count[0], "decklists" => $rows);
@@ -306,7 +312,9 @@ class SocialController extends Controller {
 		/* @var $stmt \Doctrine\DBAL\Driver\PDOStatement */ 
 		$stmt = $dbh->prepare("SELECT
 				count(*)
-				from decklist d");
+				from decklist d
+		        where d.nbcomments > 1
+		        ");
 		$stmt->execute();
 		$count = $stmt->fetch(\PDO::FETCH_NUM);
 		
@@ -329,6 +337,7 @@ class SocialController extends Controller {
 				from decklist d
 				join user u on d.user_id=u.id
 				join card c on d.identity_id=c.id
+				where d.nbcomments > 1
 				order by nbrecentcomments desc, creation desc
 				limit $start, $limit")->fetchAll(\PDO::FETCH_ASSOC);
 		
@@ -432,7 +441,9 @@ class SocialController extends Controller {
 		/* @var $stmt \Doctrine\DBAL\Driver\PDOStatement */ 
 		$stmt = $dbh->prepare("SELECT
 				count(*)
-				from decklist d");
+				from decklist d
+		        where d.creation > DATE_SUB(CURRENT_DATE, INTERVAL 1 MONTH)
+		        ");
 		$stmt->execute();
 		$count = $stmt->fetch(\PDO::FETCH_NUM);
 		
@@ -452,6 +463,7 @@ class SocialController extends Controller {
 				from decklist d
 				join user u on d.user_id=u.id
 				join card c on d.identity_id=c.id
+		        where d.creation > DATE_SUB(CURRENT_DATE, INTERVAL 1 MONTH)
 				order by creation desc
 				limit $start, $limit")->fetchAll(\PDO::FETCH_ASSOC);
 		
