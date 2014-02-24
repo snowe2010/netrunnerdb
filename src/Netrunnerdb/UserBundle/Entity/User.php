@@ -523,6 +523,7 @@ class User extends BaseUser
        	$this->reputation = 1;
        	$this->faction = 'neutral';
        	$this->creation = new \DateTime();
+       	$this->donation = 0;
        	
        	parent::__construct();
     }
