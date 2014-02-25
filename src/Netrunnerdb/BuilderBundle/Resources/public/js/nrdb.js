@@ -312,6 +312,7 @@ $(function () {
 		
 	$('body').on({click: display_modal}, '.card');
 	$('#table-draw-simulator').on({click: draw_simulator}, 'a.btn');
+	$('#table-draw-simulator').on({click: draw_sim_toggle_opacity}, 'img.card');
 	
 	if($('#opinion-form-text').size()) {
 		var converter = new Markdown.Converter();
@@ -369,7 +370,7 @@ function draw_simulator(event) {
 		var rand = Math.floor(Math.random() * DeckForSimulation.length);
 		var spliced = DeckForSimulation.splice(rand, 1);
 		var card = spliced[0];
-		container.append('<img src="'+card.imagesrc+'" style="width:99px;float:left;margin:5px" class="card" data-index="'+card.code+'">');
+		container.append('<img src="'+card.imagesrc+'" class="card" data-index="'+card.code+'">');
 		$('#draw-simulator-clear').attr('disabled', false);
 		DrawnCardsCount++;
 	}
@@ -389,6 +390,11 @@ function oddsModalCalculator(event) {
 		inputs[key] = parseInt($('#odds-calculator-'+key).val(), 10) || 0;
 	});
 	$('#odds-calculator-p').text( Math.round( 100 * hypergeometric.get_cumul(inputs.k, inputs.N, inputs.K, inputs.n) ) );
+}
+
+function draw_sim_toggle_opacity(event) {
+	$(this).css('opacity', 1.5 - parseFloat($(this).css('opacity')));
+	
 }
 
 function toggle_table(event) {
@@ -799,22 +805,6 @@ function make_graphs() {
 	
 }
 
-function display_notification()
-{
-	if(!localStorage) return;
-	var Notification = {
-		version: '1.4.10',
-		message: "<strong>New!</strong> Odds calculator in the card draw simulator. See the odds of having a specific card as you draw from your deck, depending on the number of copies included."	
-	};
-	var localStorageNotification = localStorage.getItem('notification');
-	if(localStorageNotification === Notification.version) return;
-	var alert = $('<div class="alert alert-info"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>'+Notification.message+'</div>');
-	alert.bind('closed.bs.alert', function () {
-		localStorage.setItem('notification', Notification.version);  
-	})
-	$('#wrapper>div.container').prepend(alert);
-}
-
 //binomial coefficient module, shamelessly ripped from https://github.com/pboyer/binomial.js
 var binomial = {};
 (function( binomial ) {
@@ -913,3 +903,19 @@ var hypergeometric = {};
 
 
 
+
+function display_notification()
+{
+	if(!localStorage) return;
+	var Notification = {
+		version: '1.4.11',
+		message: "<strong>New!</strong> Simulate plays by clicking cards in the Card draw simulator."	
+	};
+	var localStorageNotification = localStorage.getItem('notification');
+	if(localStorageNotification === Notification.version) return;
+	var alert = $('<div class="alert alert-info"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>'+Notification.message+'</div>');
+	alert.bind('closed.bs.alert', function () {
+		localStorage.setItem('notification', Notification.version);  
+	})
+	$('#wrapper>div.container').prepend(alert);
+}
