@@ -202,7 +202,7 @@ function update_deck() {
 	InfluenceLimit = 0;
 	var cabinet = {};
 	var parts = Identity.title.split(/: /);
-	$('#identity').html('<a href="#cardModal" class="card" data-toggle="modal" data-index="'+Identity.code+'">'+parts[0]+' <small>'+parts[1]+'</small></a>');
+	$('#identity').html('<a href="'+Url_CardPage.replace('00000', Identity.code)+'" data-target="#cardModal" data-remote="false" class="card" data-toggle="modal" data-index="'+Identity.code+'">'+parts[0]+' <small>'+parts[1]+'</small></a>');
 	$('#img_identity').prop('src', Identity.imagesrc);
 	InfluenceLimit = Identity.influencelimit;
 	MinimumDeckSize = Identity.minimumdecksize;
@@ -223,8 +223,8 @@ function update_deck() {
 			influence = ' <span class="influence-'+faction+'">'+influence+'</span>';
 		}
 
-		var item = null;
 		var criteria = null;
+		var additional_info = influence;
 		
 		if(DisplaySort === 'type') {
 			criteria = record.type_code, subtypes = record.subtype_code ? record.subtype_code.split(" - ") : [];
@@ -242,12 +242,12 @@ function update_deck() {
 			criteria = record.set_code;
 			var number_of_sets = Math.ceil(record.indeck / record.quantity);
 			var alert_number_of_sets = number_of_sets > 1 ? '<small class="text-warning">'+number_of_sets+' sets needed</small> ' : '';
-			item = $('<div>'+record.indeck+'x <a href="#cardModal" class="card" data-toggle="modal" data-index="'+record.code+'">'+record.title+'</a> (#'+record.number+') '+alert_number_of_sets+influence+'</div>');
+			additional_info = '(#' + record.number + ') ' + alert_number_of_sets + influence;
 		} else if(DisplaySort === 'title') {
 			criteria = 'cards';
 		}
 
-		if(item === null) item = $('<div>'+record.indeck+'x <a href="#cardModal" class="card" data-toggle="modal" data-index="'+record.code+'">'+record.title+'</a>'+influence+'</div>');
+		var item = $('<div>'+record.indeck+'x <a href="'+Url_CardPage.replace('00000', record.code)+'" class="card" data-toggle="modal" data-remote="false" data-target="#cardModal" data-index="'+record.code+'">'+record.title+'</a> '+additional_info+'</div>');
 		item.appendTo($('#deck-content .deck-'+criteria));
 		
 		cabinet[criteria] |= 0;
@@ -406,6 +406,7 @@ function toggle_table(event) {
 }
 
 function display_modal(event) {
+	event.preventDefault();
 	$(this).qtip('hide');
 	var code = $(this).data('index') || $(this).closest('.card-container').data('index');
 	fill_modal(code);

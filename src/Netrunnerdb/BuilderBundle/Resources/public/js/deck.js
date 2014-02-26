@@ -447,9 +447,9 @@ function build_div(record) {
 	case 1:
 		
 		var imgsrc = record.faction_code == "neutral" ? "" : '<img src="'+Url_FactionImage.replace('xxx', record.faction_code)+'.png">';
-		div = $('<tr class="card-container"><td><div class="btn-group" data-toggle="buttons">'
+		div = $('<tr class="card-container" data-index="'+record.code+'"><td><div class="btn-group" data-toggle="buttons">'
 			+radios
-			+'</div></td><td><a class="card" href="#cardModal" data-toggle="modal">'
+			+'</div></td><td><a class="card" href="'+Url_CardPage.replace('00000', record.code)+'" data-target="#cardModal" data-remote="false" data-toggle="modal">'
 			+record.title
 			+'</a></td><td class="influence-'+faction+'">'
 			+influ
@@ -461,13 +461,13 @@ function build_div(record) {
 
 	case 2:
 
-		div = $('<div class="col-sm-6 card-container">'
+		div = $('<div class="col-sm-6 card-container" data-index="'+record.code+'">'
 		           +'<div class="media">'
-		           +'<a class="pull-left card" href="#cardModal" data-toggle="modal">'
+		           +'<a class="pull-left card" href="'+Url_CardPage.replace('00000', record.code)+'" data-target="#cardModal" data-remote="false" data-toggle="modal">'
 		           +'    <img class="media-object" src="/web/bundles/netrunnerdbcards/images/cards/en/'+record.code+'.png">'
 		           +'</a>'
 		           +'<div class="media-body">'
-		           +'    <h4 class="media-heading"><a class="card" href="#cardModal" data-toggle="modal">'+record.title+'</a></h4>'
+		           +'    <h4 class="media-heading"><a class="card" href="'+Url_CardPage.replace('00000', record.code)+'" data-target="#cardModal" data-remote="false" data-toggle="modal">'+record.title+'</a></h4>'
 		           +'    <div class="btn-group" data-toggle="buttons">'+radios+'</div>'
 		           +'    <span class="influence-'+faction+'">'+influ+'</span>'
 		           +'</div>'
@@ -477,13 +477,13 @@ function build_div(record) {
 
 	case 3:
 
-		div = $('<div class="col-sm-4 card-container">'
+		div = $('<div class="col-sm-4 card-container" data-index="'+record.code+'">'
 		           +'<div class="media">'
-		           +'<a class="pull-left card" href="#cardModal" data-toggle="modal">'
+		           +'<a class="pull-left card" href="'+Url_CardPage.replace('00000', record.code)+'" data-target="#cardModal" data-remote="false" data-toggle="modal">'
 		           +'    <img class="media-object" src="/web/bundles/netrunnerdbcards/images/cards/en/'+record.code+'.png">'
 		           +'</a>'
 		           +'<div class="media-body">'
-		           +'    <h5 class="media-heading"><a class="card" href="#cardModal" data-toggle="modal">'+record.title+'</a></h5>'
+		           +'    <h5 class="media-heading"><a class="card" href="'+Url_CardPage.replace('00000', record.code)+'" data-target="#cardModal" data-remote="false" data-toggle="modal">'+record.title+'</a></h5>'
 		           +'    <div class="btn-group" data-toggle="buttons">'+radios+'</div>'
 		           +'    <span class="influence-'+faction+'">'+influ+'</span>'
 		           +'</div>'

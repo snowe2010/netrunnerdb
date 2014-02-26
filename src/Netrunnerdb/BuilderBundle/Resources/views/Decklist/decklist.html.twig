@@ -17,6 +17,7 @@ var CardDB = null,
 	Url_Copy = "{{ path('deck_copy', {decklist_id:decklist.id}) }}",
 	Url_OctgnExport = "{{ path('decklist_export_octgn', {decklist_id:decklist.id}) }}",
 	Url_TextExport = "{{ path('decklist_export_text', {decklist_id:decklist.id}) }}",
+	Url_CardPage = '{{ path('netrunnerdb_netrunner_cards_zoom', {card_code:'00000'}) }}',
 	DisplaySort = 'type';
 
 function getDisplayDescriptions(sort) {
