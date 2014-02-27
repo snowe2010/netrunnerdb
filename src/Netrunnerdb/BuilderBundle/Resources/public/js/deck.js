@@ -1,8 +1,22 @@
 var InputByTitle = false;
 var DisplayColumns = 1;
+var CoreSets = 3;
 
 function when_all_parsed() {
 	if(CardDB && IsModified === false) return;
+
+	var localStorageDisplayColumns;
+	if(localStorage && ( localStorageDisplayColumns = parseInt(localStorage.getItem( 'display_columns' ), 10) ) !== null && [1,2,3].indexOf(localStorageDisplayColumns) > -1) {
+		DisplayColumns = localStorageDisplayColumns;
+	}
+	$('input[name=display-column-'+DisplayColumns+']').prop('checked', true);
+	
+	var localStorageCoreSets;
+	if(localStorage && ( localStorageCoreSets = parseInt(localStorage.getItem( 'core_sets' ), 10) ) !== null && [1,2,3].indexOf(localStorageCoreSets) > -1) {
+		CoreSets = localStorageCoreSets;
+	}
+	$('input[name=core-set-'+CoreSets+']').prop('checked', true);
+
 	var sets_data = SetsData || JSON.parse(localStorage.getItem('sets_data_'+Locale));
 	if(!sets_data) return;
 	SetDB = TAFFY(sets_data);
@@ -16,6 +30,7 @@ function when_all_parsed() {
 	var sets_in_deck = {};
 	CardDB().each(function (record) {
 		var max_qty = 3, indeck = 0;
+		if(record.set_code == 'core') max_qty = Math.min(record.quantity * CoreSets, 3);
 		if(record.type_code == "identity" || record.code == "03004") max_qty = 1;
 		if(Deck[record.code]) {
 			indeck = parseInt(Deck[record.code], 10);
@@ -67,12 +82,6 @@ function when_all_parsed() {
 			FilterQuery[k] = Filters[k];
 		}
 	});
-	
-	var localStorageDisplayColumns;
-	if(localStorage && ( localStorageDisplayColumns = parseInt(localStorage.getItem( 'display_columns' ), 10) ) !== null && [1,2,3].indexOf(localStorageDisplayColumns) > -1) {
-		DisplayColumns = localStorageDisplayColumns;
-	}
-	$('input[name=display-column-'+DisplayColumns+']').prop('checked', true);
 	
 	if(!Update_Incoming) {
 		Update_Incoming = true;
@@ -203,6 +212,45 @@ $(function() {
 			$('input[name=display-column-2]').prop('checked', false);
 			DisplayColumns = 3;
 			if(localStorage) localStorage.setItem( 'display_columns', DisplayColumns );
+			if(!Update_Incoming) {
+				Update_Incoming = true;
+				setTimeout(update_filtered, 100);
+			}
+		}
+	});	
+	$('input[name=core-set-1]').on({
+		change: function (event) { 
+			$('input[name=core-set-2]').prop('checked', false);
+			$('input[name=core-set-3]').prop('checked', false);
+			CoreSets = 1;
+			if(localStorage) localStorage.setItem( 'core_sets', CoreSets );
+			update_core_sets();
+			if(!Update_Incoming) {
+				Update_Incoming = true;
+				setTimeout(update_filtered, 100);
+			}
+		}
+	});	
+	$('input[name=core-set-2]').on({
+		change: function (event) { 
+			$('input[name=core-set-1]').prop('checked', false);
+			$('input[name=core-set-3]').prop('checked', false);
+			CoreSets = 2;
+			if(localStorage) localStorage.setItem( 'core_sets', CoreSets );
+			update_core_sets();
+			if(!Update_Incoming) {
+				Update_Incoming = true;
+				setTimeout(update_filtered, 100);
+			}
+		}
+	});	
+	$('input[name=core-set-3]').on({
+		change: function (event) { 
+			$('input[name=core-set-1]').prop('checked', false);
+			$('input[name=core-set-2]').prop('checked', false);
+			CoreSets = 3;
+			if(localStorage) localStorage.setItem( 'core_sets', CoreSets );
+			update_core_sets();
 			if(!Update_Incoming) {
 				Update_Incoming = true;
 				setTimeout(update_filtered, 100);
@@ -430,6 +478,15 @@ function handle_quantity_change(event) {
 	}
 	$('div.modal').modal('hide');
 	if(InputByTitle) $('input[name=title]').typeahead('setQuery', '').focus().blur();
+}
+
+function update_core_sets() {
+	CardDivs = [null, {}, {}, {}];
+	CardDB({set_code:'core'}).each(function (record) {
+		var max_qty = Math.min(record.quantity * CoreSets, 3);
+		if(record.type_code == "identity" || record.code == "03004") max_qty = 1;
+		CardDB(record.___id).update({maxqty:max_qty});
+	});
 }
 
 function build_div(record) {

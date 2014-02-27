@@ -909,8 +909,8 @@ function display_notification()
 {
 	if(!localStorage) return;
 	var Notification = {
-		version: '1.4.11',
-		message: "<strong>New!</strong> Simulate plays by clicking cards in the Card draw simulator."	
+		version: '1.4.12',
+		message: "<strong>New!</strong> Select the number of Core Sets you want to use in the deckbuilder options."	
 	};
 	var localStorageNotification = localStorage.getItem('notification');
 	if(localStorageNotification === Notification.version) return;
