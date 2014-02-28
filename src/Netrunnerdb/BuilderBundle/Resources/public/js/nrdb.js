@@ -1,3 +1,5 @@
+var NRDB = {};
+
 function getDisplayDescriptions(sort) {
         var dd = {
             'type': [
@@ -311,8 +313,6 @@ $(function () {
 	if(Modernizr.touch) $('#svg').remove();
 		
 	$('body').on({click: display_modal}, '.card');
-	$('#table-draw-simulator').on({click: draw_simulator}, 'a.btn');
-	$('#table-draw-simulator').on({click: draw_sim_toggle_opacity}, 'img.card');
 	
 	if($('#opinion-form-text').size()) {
 		var converter = new Markdown.Converter();
@@ -334,67 +334,12 @@ $(function () {
 	$('#oddsModal').on({change: oddsModalCalculator}, 'input');
 });
 
-var DeckForSimulation = null, DeckForSimulationInitialSize = 0, DrawnCardsCount = 0;
-function draw_simulator(event) {
-	event.preventDefault();
-	var id = $(this).attr('id');
-	var command = id.substr(15);
-	var container = $('#table-draw-simulator-content');
-	if(command === 'clear' || event.shiftKey) {
-		container.empty();
-		DeckForSimulation = null;
-		DeckForSimulationInitialSize = DrawnCardsCount = 0;
-		update_odds();
-		if(command === 'clear') {
-			$('#draw-simulator-clear').attr('disabled', true);
-			return;
-		}
-	}
-	if(DeckForSimulation === null) {
-		DeckForSimulation = [];
-		CardDB({indeck:{'gt':0},type_code:{'!is':'identity'}}).each(function (record) {
-			for(var ex = 0; ex < record.indeck; ex++) {
-				DeckForSimulation.push(record);
-			}
-		});
-		DeckForSimulationInitialSize = DeckForSimulation.length;
-	}
-	var draw;
-	if(command === 'all') {
-		draw = DeckForSimulation.length;
-	} else {
-		draw = parseInt(command, 10);
-	}
-	if(isNaN(draw)) return;
-	for(var pick = 0; pick < draw && DeckForSimulation.length > 0; pick++) {
-		var rand = Math.floor(Math.random() * DeckForSimulation.length);
-		var spliced = DeckForSimulation.splice(rand, 1);
-		var card = spliced[0];
-		container.append('<img src="'+card.imagesrc+'" class="card" data-index="'+card.code+'">');
-		$('#draw-simulator-clear').attr('disabled', false);
-		DrawnCardsCount++;
-	}
-	update_odds();
-}
-
-function update_odds() {
-	for(var i=1; i<=3; i++) {
-		var odd = hypergeometric.get_cumul(1, DeckForSimulationInitialSize, i, DrawnCardsCount);
-		$('#draw-simulator-odds-'+i).text(Math.round(100*odd));
-	}
-}
-
 function oddsModalCalculator(event) {
 	var inputs = {};
 	$.each(['N','K','n','k'], function (i, key) {
 		inputs[key] = parseInt($('#odds-calculator-'+key).val(), 10) || 0;
 	});
 	$('#odds-calculator-p').text( Math.round( 100 * hypergeometric.get_cumul(inputs.k, inputs.N, inputs.K, inputs.n) ) );
-}
-
-function draw_sim_toggle_opacity(event) {
-	$(this).css('opacity', 1.5 - parseFloat($(this).css('opacity')));
-	
 }
 
 function toggle_table(event) {

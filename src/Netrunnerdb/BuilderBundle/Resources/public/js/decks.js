@@ -95,6 +95,7 @@ function confirm_delete() {
 }
 
 function display_deck(event) {
+	NRDB.draw_simulator.reset();
 	$('#no-deck-selected').hide();
 	CardDB().update({indeck:0});
 	var deck = DeckDB({id:$(this).data('id').toString()}).first();
