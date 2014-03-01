@@ -1,6 +1,9 @@
 Netrunnerdb\CardsBundle\Entity\Pack:
     type: entity
     table: pack
+    indexes:
+        released_index:
+            columns: [ released ]
     manyToOne:
         cycle:
             targetEntity: Cycle
