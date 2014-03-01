@@ -143,16 +143,10 @@ class SocialController extends Controller {
 		
 		/* @var $dbh \Doctrine\DBAL\Driver\PDOConnection */
 		$dbh = $this->get('doctrine')->getConnection();
-		/* @var $stmt \Doctrine\DBAL\Driver\PDOStatement */ 
-		$count = $dbh->executeQuery("SELECT
-				count(*)
-				from decklist d
-				join favorite f on f.decklist_id=d.id
-				where f.user_id=?", array($this->getUser()->getId()))->fetch(\PDO::FETCH_NUM)[0];
 
 		$rows = $dbh
 				->executeQuery(
-						"SELECT
+						"SELECT SQL_CALC_FOUND_ROWS
 					d.id,
 					d.name,
 					d.prettyname,
@@ -172,6 +166,8 @@ class SocialController extends Controller {
 					where f.user_id=? 
 					order by creation desc
 					limit $start, $limit", array($this->getUser()->getId()))->fetchAll(\PDO::FETCH_ASSOC);
+
+		$count = $dbh->executeQuery("SELECT FOUND_ROWS()")->fetch(\PDO::FETCH_NUM)[0];
 		
 		return array("count" => $count, "decklists" => $rows);
 	}
@@ -185,15 +181,10 @@ class SocialController extends Controller {
 		
 		/* @var $dbh \Doctrine\DBAL\Driver\PDOConnection */
 		$dbh = $this->get('doctrine')->getConnection();
-		/* @var $stmt \Doctrine\DBAL\Driver\PDOStatement */ 
-		$count = $dbh->executeQuery("SELECT
-				count(*)
-				from decklist d
-				where d.user_id=?", array($user_id))->fetch(\PDO::FETCH_NUM)[0];
 		
 		$rows = $dbh
 				->executeQuery(
-						"SELECT
+						"SELECT SQL_CALC_FOUND_ROWS
 					d.id,
 					d.name,
 					d.prettyname,
@@ -212,6 +203,8 @@ class SocialController extends Controller {
 					where d.user_id=? 
 					order by creation desc
 					limit $start, $limit", array($user_id))->fetchAll(\PDO::FETCH_ASSOC);
+
+		$count = $dbh->executeQuery("SELECT FOUND_ROWS()")->fetch(\PDO::FETCH_NUM)[0];
 		
 		return array("count" => $count, "decklists" => $rows);
 	}
@@ -224,18 +217,10 @@ class SocialController extends Controller {
 	public function popular($start = 0, $limit = 30) {
 		/* @var $dbh \Doctrine\DBAL\Driver\PDOConnection */
 		$dbh = $this->get('doctrine')->getConnection();
-		/* @var $stmt \Doctrine\DBAL\Driver\PDOStatement */ 
-		$stmt = $dbh->prepare("SELECT
-				count(*)
-				from decklist d
-		        where d.creation > DATE_SUB(CURRENT_DATE, INTERVAL 1 MONTH)
-		        ");
-		$stmt->execute();
-		$count = $stmt->fetch(\PDO::FETCH_NUM);
-		
+
 		$rows = $dbh
 				->executeQuery(
-						"SELECT
+						"SELECT SQL_CALC_FOUND_ROWS
 					d.id,
 					d.name,
 					d.prettyname,
@@ -256,7 +241,9 @@ class SocialController extends Controller {
 				    order by 2*nbvotes/(1+nbjours*nbjours) DESC, nbvotes desc, nbcomments desc
 					limit $start, $limit")->fetchAll(\PDO::FETCH_ASSOC);
 		
-		return array("count" => $count[0], "decklists" => $rows);
+		$count = $dbh->executeQuery("SELECT FOUND_ROWS()")->fetch(\PDO::FETCH_NUM)[0];
+		
+		return array("count" => $count, "decklists" => $rows);
 	}
 
 	/**
@@ -267,18 +254,10 @@ class SocialController extends Controller {
 	public function halloffame($start = 0, $limit = 30) {
 		/* @var $dbh \Doctrine\DBAL\Driver\PDOConnection */
 		$dbh = $this->get('doctrine')->getConnection();
-		/* @var $stmt \Doctrine\DBAL\Driver\PDOStatement */
-		$stmt = $dbh->prepare("SELECT
-				count(*)
-				from decklist d
-		        where nbvotes > 10 
-		        ");
-		$stmt->execute();
-		$count = $stmt->fetch(\PDO::FETCH_NUM);
 	
 		$rows = $dbh
 		->executeQuery(
-				"SELECT
+				"SELECT SQL_CALC_FOUND_ROWS
 				d.id,
 				d.name,
 				d.prettyname,
@@ -297,8 +276,10 @@ class SocialController extends Controller {
 				where nbvotes > 10 
 		        order by nbvotes desc, creation desc
 				limit $start, $limit")->fetchAll(\PDO::FETCH_ASSOC);
+
+		$count = $dbh->executeQuery("SELECT FOUND_ROWS()")->fetch(\PDO::FETCH_NUM)[0];
 	
-		return array("count" => $count[0], "decklists" => $rows);
+		return array("count" => $count, "decklists" => $rows);
 	}
 	
 	/**
@@ -309,18 +290,10 @@ class SocialController extends Controller {
 	public function hottopics($start = 0, $limit = 30) {
 		/* @var $dbh \Doctrine\DBAL\Driver\PDOConnection */
 		$dbh = $this->get('doctrine')->getConnection();
-		/* @var $stmt \Doctrine\DBAL\Driver\PDOStatement */ 
-		$stmt = $dbh->prepare("SELECT
-				count(*)
-				from decklist d
-		        where d.nbcomments > 1
-		        ");
-		$stmt->execute();
-		$count = $stmt->fetch(\PDO::FETCH_NUM);
 		
 		$rows = $dbh
 				->executeQuery(
-						"SELECT
+						"SELECT SQL_CALC_FOUND_ROWS
 				d.id,
 				d.name,
 				d.prettyname,
@@ -340,8 +313,10 @@ class SocialController extends Controller {
 				where d.nbcomments > 1
 				order by nbrecentcomments desc, creation desc
 				limit $start, $limit")->fetchAll(\PDO::FETCH_ASSOC);
+
+		$count = $dbh->executeQuery("SELECT FOUND_ROWS()")->fetch(\PDO::FETCH_NUM)[0];
 		
-		return array("count" => $count[0], "decklists" => $rows);
+		return array("count" => $count, "decklists" => $rows);
 	}
 
 	/**
@@ -352,18 +327,10 @@ class SocialController extends Controller {
 	public function faction($faction_code, $start = 0, $limit = 30) {
 		/* @var $dbh \Doctrine\DBAL\Driver\PDOConnection */
 		$dbh = $this->get('doctrine')->getConnection();
-		/* @var $stmt \Doctrine\DBAL\Driver\PDOStatement */ 
-		$stmt = $dbh->prepare("SELECT
-				count(*)
-				from decklist d
-				join faction f on d.faction_id=f.id
-				where f.code=?");
-		$stmt->execute(array($faction_code));
-		$count = $stmt->fetch(\PDO::FETCH_NUM);
 
 		$rows = $dbh
 				->executeQuery(
-						"SELECT
+						"SELECT SQL_CALC_FOUND_ROWS
 				d.id,
 				d.name,
 				d.prettyname,
@@ -383,8 +350,10 @@ class SocialController extends Controller {
 				where f.code=?
 				order by creation desc
 				limit $start, $limit", array($faction_code))->fetchAll(\PDO::FETCH_ASSOC);
+
+		$count = $dbh->executeQuery("SELECT FOUND_ROWS()")->fetch(\PDO::FETCH_NUM)[0];
 		
-		return array("count" => $count[0], "decklists" => $rows);
+		return array("count" => $count, "decklists" => $rows);
 	}
 
 	/**
@@ -395,18 +364,10 @@ class SocialController extends Controller {
 	public function lastpack($pack_code, $start = 0, $limit = 30) {
 		/* @var $dbh \Doctrine\DBAL\Driver\PDOConnection */
 		$dbh = $this->get('doctrine')->getConnection();
-		/* @var $stmt \Doctrine\DBAL\Driver\PDOStatement */ 
-		$stmt = $dbh->prepare("SELECT
-				count(*)
-				from decklist d
-				join pack p on d.last_pack_id=p.id
-				where p.code=?");
-		$stmt->execute(array($pack_code));
-		$count = $stmt->fetch(\PDO::FETCH_NUM);
 
 		$rows = $dbh
 				->executeQuery(
-						"SELECT
+						"SELECT SQL_CALC_FOUND_ROWS
 				d.id,
 				d.name,
 				d.prettyname,
@@ -427,7 +388,9 @@ class SocialController extends Controller {
 				order by creation desc
 				limit $start, $limit", array($pack_code))->fetchAll(\PDO::FETCH_ASSOC);
 
-		return array("count" => $count[0], "decklists" => $rows);
+		$count = $dbh->executeQuery("SELECT FOUND_ROWS()")->fetch(\PDO::FETCH_NUM)[0];
+
+		return array("count" => $count, "decklists" => $rows);
 	}
 	
 	/**
@@ -438,16 +401,8 @@ class SocialController extends Controller {
 	public function recent($start = 0, $limit = 30) {
 		/* @var $dbh \Doctrine\DBAL\Driver\PDOConnection */
 		$dbh = $this->get('doctrine')->getConnection();
-		/* @var $stmt \Doctrine\DBAL\Driver\PDOStatement */ 
-		$stmt = $dbh->prepare("SELECT
-				count(*)
-				from decklist d
-		        where d.creation > DATE_SUB(CURRENT_DATE, INTERVAL 1 MONTH)
-		        ");
-		$stmt->execute();
-		$count = $stmt->fetch(\PDO::FETCH_NUM);
 		
-		$rows = $dbh->executeQuery("SELECT
+		$rows = $dbh->executeQuery("SELECT SQL_CALC_FOUND_ROWS
 				d.id,
 				d.name,
 				d.prettyname,
@@ -466,8 +421,10 @@ class SocialController extends Controller {
 		        where d.creation > DATE_SUB(CURRENT_DATE, INTERVAL 1 MONTH)
 				order by creation desc
 				limit $start, $limit")->fetchAll(\PDO::FETCH_ASSOC);
+
+		$count = $dbh->executeQuery("SELECT FOUND_ROWS()")->fetch(\PDO::FETCH_NUM)[0];
 		
-		return array("count" => $count[0], "decklists" => $rows);
+		return array("count" => $count, "decklists" => $rows);
 	}
 	
 	/*
@@ -1162,15 +1119,10 @@ class SocialController extends Controller {
 		
 		/* @var $dbh \Doctrine\DBAL\Driver\PDOConnection */
 		$dbh = $this->get('doctrine')->getConnection();
-		/* @var $stmt \Doctrine\DBAL\Driver\PDOStatement */
-		$count = $dbh->executeQuery("SELECT
-				count(*)
-				from comment c
-				where c.user_id=?", array($user->getId()))->fetch(\PDO::FETCH_NUM)[0];
 		
 		$comments = $dbh
 		->executeQuery(
-				"SELECT
+				"SELECT SQL_CALC_FOUND_ROWS
 				c.id,
 				c.text,
 				c.creation,
@@ -1182,8 +1134,10 @@ class SocialController extends Controller {
 				where c.user_id=?
 				order by creation desc
 				limit $start, $limit", array($user->getId()))->fetchAll(\PDO::FETCH_ASSOC);
+
+		$maxcount = $dbh->executeQuery("SELECT FOUND_ROWS()")->fetch(\PDO::FETCH_NUM)[0];
 		
-		$maxcount = count($comments);
+		$count = count($comments);
 		
 		// pagination : calcul de nbpages // currpage // prevpage // nextpage
 		// à partir de $start, $limit, $count, $maxcount, $page
@@ -1225,14 +1179,10 @@ class SocialController extends Controller {
 		
 		/* @var $dbh \Doctrine\DBAL\Driver\PDOConnection */
 		$dbh = $this->get('doctrine')->getConnection();
-		/* @var $stmt \Doctrine\DBAL\Driver\PDOStatement */
-		$maxcount = $dbh->executeQuery("SELECT
-				count(*)
-				from comment c", array())->fetch(\PDO::FETCH_NUM)[0];
 		
 		$comments = $dbh
 		->executeQuery(
-				"SELECT
+				"SELECT SQL_CALC_FOUND_ROWS
 				c.id,
 				c.text,
 				c.creation,
@@ -1246,6 +1196,8 @@ class SocialController extends Controller {
 				join user u on c.user_id=u.id
 				order by creation desc
 				limit $start, $limit", array())->fetchAll(\PDO::FETCH_ASSOC);
+
+		$maxcount = $dbh->executeQuery("SELECT FOUND_ROWS()")->fetch(\PDO::FETCH_NUM)[0];
 		
 		$count = count($comments);
 		
