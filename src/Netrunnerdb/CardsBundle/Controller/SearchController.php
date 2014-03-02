@@ -622,6 +622,12 @@ class SearchController extends Controller
 		$this->getRequest()->setLocale($locale);
 		
 		$response = new Response();
+		if($this->get('kernel')->getEnvironment() === 'optim') {
+			$response->setPublic();
+			$response->setMaxAge(600);
+		} else {
+			$response->setPrivate();
+		}
 
 		$cards = array();
 		$first = 0;

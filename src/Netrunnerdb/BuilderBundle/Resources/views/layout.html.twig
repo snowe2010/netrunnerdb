@@ -42,7 +42,7 @@ function parseCards(cards_data) {
 var promise1 = $.ajax("{{ path('api_sets') }}?jsonp=parseSets&_locale="+Locale);
 var promise2 = $.ajax("{{ path('api_cards') }}?jsonp=parseCards&_locale="+Locale);
 
-{% if app.environment == 'prod' %}
+{% if app.environment == 'prod' or app.environment == 'optim' %}
   var _gaq = _gaq || [];
   _gaq.push(['_setAccount', 'UA-44413511-1']);
   _gaq.push(['_trackPageview']);
@@ -54,11 +54,13 @@ var promise2 = $.ajax("{{ path('api_cards') }}?jsonp=parseCards&_locale="+Locale
   })();
 {% endif %}
     </script>
+{% set route = app.request.attributes.get('_route') %}
+{% set optim = (app.environment == 'optim' and route != 'decks_list' and route != 'deck_buildform' and route != 'deck_initbuild' and route != 'deck_edit' and route != 'deck_import') %}
 {% block head %}{% endblock %}
   </head>
   <body>
   <div id="wrapper">
-      <nav class="navbar navbar-inverse navbar-static-top" role="navigation">
+      <nav class="navbar navbar-{% if optim %}default{% else %}inverse{% endif %} navbar-static-top" role="navigation">
       <div class="container">
         <div class="navbar-header">
           <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
@@ -76,7 +78,9 @@ var promise2 = $.ajax("{{ path('api_cards') }}?jsonp=parseCards&_locale="+Locale
 			<li><a href="{{ path('netrunnerdb_netrunner_cards_rulings') }}">Rules</a></li>
           </ul>
           <ul class="nav navbar-nav navbar-right">
-          {% if app.user %}
+		  {% if optim %}
+		  <li class="disabled"><a href="#" class="text-danger">Heavy traffic mode</a></li>
+          {% elseif app.user %}
             <li class="dropdown">
               <a href="#" class="dropdown-toggle {{ app.user.faction }} loginname" data-toggle="dropdown">{{ app.user.username }} <b class="caret"></b></a>
               <ul class="dropdown-menu">
@@ -89,7 +93,7 @@ var promise2 = $.ajax("{{ path('api_cards') }}?jsonp=parseCards&_locale="+Locale
           {% else %}
             <li><a href="{{ path('fos_user_security_login') }}">Login</a></li>
           {% endif %}
-          </ul>
+	  </ul>
           <form class="navbar-form navbar-right" action="{{ path('netrunnerdb_netrunner_cards_find') }}">
             <div class="form-group">
               <input type="text" placeholder="Card Search" class="form-control" name="q">

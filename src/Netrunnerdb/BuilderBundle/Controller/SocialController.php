@@ -431,6 +431,16 @@ class SocialController extends Controller {
 	 * displays the lists of decklists
 	 */
 	public function listAction($type, $code = null, $page = 1) {
+		$response = new Response();
+
+		$optim = $this->get('kernel')->getEnvironment() === 'optim';
+		if($optim) {
+			$response->setPublic();
+			$response->setMaxAge(600);
+		} else {
+			$response->setPrivate();
+		}
+		
 		$limit = 30;
 		if($page<1) $page=1;
 		$start = ($page-1)*$limit;
@@ -455,7 +465,7 @@ class SocialController extends Controller {
 			$result = $this->favorites($start, $limit);
 			break;
 		case 'mine':
-			if (!$this->getUser())
+			if ($optim || !$this->getUser())
 				$result = array();
 			else
 				$result = $this->by_author($this->getUser()->getId(), $start, $limit);
@@ -469,9 +479,6 @@ class SocialController extends Controller {
 		$decklists = $result['decklists'];
 		$maxcount = $result['count'];
 		$count = count($decklists);
-		
-		/* @var $user \Netrunnerdb\UserBundle\Entity\User */
-		$user = $this->getUser();
 
 		$dbh = $this->get('doctrine')->getConnection();
 		$factions = $dbh
@@ -534,7 +541,7 @@ class SocialController extends Controller {
 					'pages' => $pages,
 					'prevurl' => $currpage == 1 ? null : $this->generateUrl($route, array("type" => $type, "code" => $code, "page" => $prevpage)),
 					'nexturl' => $currpage == $nbpages ? null : $this->generateUrl($route, array("type" => $type, "code" => $code, "page" => $nextpage))
-			));
+			), $response);
 
 	}
 
@@ -543,6 +550,8 @@ class SocialController extends Controller {
 	 */
 	public function viewAction($decklist_id, $decklist_name) {
 		$response = new Response();
+		
+		$optim = $this->get('kernel')->getEnvironment() === 'optim';
 		
 		$dbh = $this->get('doctrine')->getConnection();
 		$rows = $dbh
@@ -577,11 +586,18 @@ class SocialController extends Controller {
 		}
 		
 		$decklist = $rows[0];
-		$user = $this->getUser();
-		$lastModified = new DateTime($decklist['ts']);
-		$response->setLastModified($user && $user->getLastLogin() > $lastModified ? $user->getLastLogin() : $lastModified);
-		if ($response->isNotModified($this->getRequest())) {
-			return $response;
+		
+		if($optim) {
+			$response->setPublic();
+			$response->setMaxAge(600);
+		} else {
+			$response->setPrivate();
+			$user = $this->getUser();
+			$lastModified = new DateTime($decklist['ts']);
+			$response->setLastModified($user && $user->getLastLogin() > $lastModified ? $user->getLastLogin() : $lastModified);
+			if ($response->isNotModified($this->getRequest())) {
+				return $response;
+			}
 		}
 		
 		$comments = $dbh
@@ -611,25 +627,29 @@ class SocialController extends Controller {
 		$decklist['comments'] = $comments;
 		$decklist['cards'] = $cards;
 
-		$is_liked = $this->getUser() ? (boolean) $dbh
-		->executeQuery(
+		$is_liked = false;
+		if(!$optim && $this->getUser()) 
+			$is_liked = (boolean) $dbh->executeQuery(
 				"SELECT
 				count(*)
 				from decklist d
 				join vote v on v.decklist_id=d.id
 				where v.user_id=?
-				and d.id=?", array($this->getUser()->getId(), $decklist_id))->fetch(\PDO::FETCH_NUM)[0] : false;
+				and d.id=?", array($this->getUser()->getId(), $decklist_id))->fetch(\PDO::FETCH_NUM)[0];
 		
-		$is_favorite = $this->getUser() ? (boolean) $dbh
-				->executeQuery(
+		$is_favorite = false;
+		if(!$optim && $this->getUser())
+			$is_favorite = (boolean) $dbh->executeQuery(
 						"SELECT
 				count(*)
 				from decklist d
 				join favorite f on f.decklist_id=d.id
 				where f.user_id=?
-				and d.id=?", array($this->getUser()->getId(), $decklist_id))->fetch(\PDO::FETCH_NUM)[0] : false;
+				and d.id=?", array($this->getUser()->getId(), $decklist_id))->fetch(\PDO::FETCH_NUM)[0];
 		
-		$is_author = $this->getUser() ? $this->getUser()->getId() == $decklist['user_id'] : false;
+		$is_author = false;
+		if(!$optim && $this->getUser())
+			$is_author = $this->getUser()->getId() == $decklist['user_id'];
 		
 		$similar_decklists = array();//$this->findSimilarDecklists($decklist_id, 5);
 
@@ -997,6 +1017,15 @@ class SocialController extends Controller {
 	 * displays the main page
 	 */
 	public function indexAction() {
+		$response = new Response();
+
+		$optim = $this->get('kernel')->getEnvironment() === 'optim';
+		if($optim) {
+			$response->setPublic();
+			$response->setMaxAge(600);
+		} else {
+			$response->setPrivate();
+		}
 
 		$decklists_popular = $this->popular(0, 5)['decklists'];
 		$decklists_recent = $this->recent(0, 5)['decklists'];
@@ -1009,7 +1038,7 @@ class SocialController extends Controller {
 												'NetrunnerdbCardsBundle:Default:langs.html.twig'),
 								'popular' => $decklists_popular,
 								'recent' => $decklists_recent,
-								'url' => $this->getRequest()->getRequestUri()));
+								'url' => $this->getRequest()->getRequestUri()), $response);
 	}
 
 	/*
