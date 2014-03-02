@@ -79,7 +79,7 @@ var promise2 = $.ajax("{{ path('api_cards') }}?jsonp=parseCards&_locale="+Locale
           </ul>
           <ul class="nav navbar-nav navbar-right">
 		  {% if optim %}
-		  <li class="disabled"><a href="#" class="text-danger">Heavy traffic mode</a></li>
+		  <li class="disabled"><a href="#" style="color:red">Heavy traffic mode</a></li>
           {% elseif app.user %}
             <li class="dropdown">
               <a href="#" class="dropdown-toggle {{ app.user.faction }} loginname" data-toggle="dropdown">{{ app.user.username }} <b class="caret"></b></a>
