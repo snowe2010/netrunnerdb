@@ -424,6 +424,7 @@ function get_type_line(card) {
 function display_qtip(event) {
 	var code = $(this).data('index') || $(this).closest('.card-container').data('index');
 	var card = CardDB({code:code}).first();
+	if(!card) return;
 	var type = '<p class="card-info">'+get_type_line(card)+'</p>';
 	var influence = '';
 	for(var i=0; i<card.factioncost; i++) influence += "&bull;";
