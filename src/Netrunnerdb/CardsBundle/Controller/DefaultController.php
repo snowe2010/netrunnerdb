@@ -12,34 +12,6 @@ use Netrunnerdb\CardsBundle\Entity\Changelog;
 
 class DefaultController extends Controller
 {
-	
-	private function getChangeInfo($change)
-	{
-		return array(
-			"date" => $change->getDate(),
-			"text" => $change->getChange(),
-		);
-	}
-	
-    public function indexAction()
-    {
-		$response = new Response();
-		$response->setPublic();
-		$response->setMaxAge(600);
-		return $this->render('NetrunnerdbCardsBundle:Default:index.html.twig', array(
-        	"sitemap" => $this->allsets(),
-		), $response);
-    }
-
-	function sitemapAction()
-	{
-		$response = new Response();
-		$response->setPublic();
-		$response->setMaxAge(600);
-		return $this->render('NetrunnerdbCardsBundle:Default:sitemap.html.twig', array(
-		), $response);
-	}
-	
 	public function searchAction()
 	{
 		$dbh = $this->get('doctrine')->getConnection();
@@ -84,8 +56,13 @@ class DefaultController extends Controller
 		}, $list_illustrators);
 	
 		$response = new Response();
-		$response->setPublic();
-		$response->setMaxAge(600);
+		if($this->get('kernel')->getEnvironment() === 'optim') {
+			$response->setPublic();
+			$response->setMaxAge(600);
+		} else {
+			$response->setPrivate();
+		}
+	
 		return $this->render('NetrunnerdbCardsBundle:Search:searchform.html.twig', array(
 				"packs" => $packs,
 				"cycles" => $cycles,
@@ -115,8 +92,12 @@ class DefaultController extends Controller
 		if(!$sources) $sources = array(1 => "Latest FAQ", 2 => "Direct answer");
 		
 		$response = new Response();
-		$response->setPublic();
-		$response->setMaxAge(600);
+		if($this->get('kernel')->getEnvironment() === 'optim') {
+			$response->setPublic();
+			$response->setMaxAge(600);
+		} else {
+			$response->setPrivate();
+		}
 		
 //		$list_rulings = $this->getDoctrine()->getRepository('NetrunnerdbCardsBundle:Rulings')->findBy(array(), array("created" => "ASC"));
 		$rulings_faq = array();
@@ -144,38 +125,34 @@ class DefaultController extends Controller
 	
 	function aboutAction()
 	{
+		
 		$response = new Response();
-		$response->setPublic();
-		$response->setMaxAge(600);
+		if($this->get('kernel')->getEnvironment() === 'optim') {
+			$response->setPublic();
+			$response->setMaxAge(600);
+		} else {
+			$response->setPrivate();
+		}
+		
 		return $this->render('NetrunnerdbCardsBundle:Default:about.html.twig', array(
 		), $response);
 	}
 
 	function apidocAction()
 	{
+		
 		$response = new Response();
-		$response->setPublic();
-		$response->setMaxAge(600);
+		if($this->get('kernel')->getEnvironment() === 'optim') {
+			$response->setPublic();
+			$response->setMaxAge(600);
+		} else {
+			$response->setPrivate();
+		}
+		
 		return $this->render('NetrunnerdbCardsBundle:Default:apidoc.html.twig', array(
 		), $response);
 	}
 
-	function changelogAction()
-	{
-		$list = $this->getDoctrine()->getRepository('NetrunnerdbCardsBundle:Changelog')->findBy(array(), array("date" => "DESC"));
-		$changes = array();
-		foreach($list as $change) {
-			$changes[] = $this->getChangeInfo($change);
-		}
-
-		$response = new Response();
-		$response->setPublic();
-		$response->setMaxAge(600);
-		return $this->render('NetrunnerdbCardsBundle:Default:changelog.html.twig', array(
-			"changes" => $changes,
-		), $response);
-	}
-	
 	private function allsetsdata()
 	{
 		$list_cycles = $this->getDoctrine()->getRepository('NetrunnerdbCardsBundle:Cycle')->findBy(array(), array("number" => "ASC"));
@@ -248,11 +225,6 @@ class DefaultController extends Controller
 		));
 	}
 	
-	public function headerAction()
-	{
-		return $this->render('NetrunnerdbCardsBundle::header.html.twig');
-	}
-
 	public function apisetsAction()
 	{
 		$response = new Response();

@@ -143,7 +143,7 @@ function getDisplayDescriptions(sort) {
 <div class="decklist-social">
 <div class="pull-right" id="decklist-social-icons">
 <span>published {{ decklist.creation|date('M d, Y') }}</span>
-{% if app.user and not is_author and not is_liked %}
+{% if app.environment != 'optim' and app.user and not is_author and not is_liked %}
 | <a id="decklist-social-icon-like" href="#" class="social-icon-like" data-toggle="tooltip" data-placement="bottom" title="Like">
 	<span class="glyphicon glyphicon-heart"></span> <span class="num">{{ decklist.nbvotes }}</span>
 </a>
@@ -152,7 +152,7 @@ function getDisplayDescriptions(sort) {
 	<span class="glyphicon glyphicon-heart"></span> <span class="num">{{ decklist.nbvotes }}</span>
 </span>
 {% endif %}
-{% if app.user %}
+{% if app.environment != 'optim' and app.user %}
 | <a id="decklist-social-icon-favorite" href="#" class="social-icon-favorite" data-toggle="tooltip" data-placement="bottom" {% if is_favorite %}title="Remove from favorites"{% else %}title="Add to favorites"{% endif %}>
 	<span class="glyphicon glyphicon-star"></span> <span class="num">{{ decklist.nbfavorites }}</span>
 </a>
@@ -354,7 +354,7 @@ function getDisplayDescriptions(sort) {
 {% endfor %}
 </tbody>
 </table>
-{% if app.user %} 
+{% if app.environment != 'optim' and app.user %} 
 <a name="comment-form"></a>
 <form method="POST" action="{{ path('decklist_comment') }}">
 	<input type="hidden" name="id" value="{{ decklist.id }}">
@@ -364,6 +364,8 @@ function getDisplayDescriptions(sort) {
 	<div class="well text-muted" id="comment-form-preview"><small>Preview</small></div>
 	<button type="submit" class="btn btn-success">Submit comment</button> 
 	</form>
+{% elseif app.environment == 'optim' %}
+<p>Commenting is unavailable for now. Come back later.</p>
 {% else %}
 <p>You must be logged in to post comments.</p>
 {% endif %}
