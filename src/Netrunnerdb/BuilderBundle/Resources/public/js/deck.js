@@ -91,12 +91,7 @@ function when_all_parsed() {
 	$('input[name=title]').typeahead({
 		name: 'cardnames',
 		local: CardDB().select('title')
-	}).on('typeahead:selected typeahead:autocompleted', function (event, data) {
-		var card = CardDB({title:data.value}).first();
-		fill_modal(card.code);
-		$('#cardModal').modal('show');
-		InputByTitle = true;
-	});
+	}).on('typeahead:selected typeahead:autocompleted', NRDB.card_modal.typeahead);
 	$('html,body').css('height', 'auto');
 	$('#spinner').remove();
 	Spinners.removeDetached();
