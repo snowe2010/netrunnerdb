@@ -5,14 +5,28 @@ NRDB.card_modal = {};
 	card_modal.create_element = function() {
 		modal = $('<div class="modal" id="cardModal" tabindex="-1" role="dialog" aria-labelledby="cardModalLabel" aria-hidden="true"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button><h3 class="modal-title">Modal title</h3><div class="row"><div class="col-sm-12 text-center"><div class="btn-group modal-qty" data-toggle="buttons"></div></div></div></div><div class="modal-body"><div class="row"><div class="col-sm-6 modal-image"></div><div class="col-sm-6 modal-info"></div></div></div></div></div></div>');
 		modal.appendTo('body');
-	}
+	};
 	
 	card_modal.display_modal = function(event) {
 		event.preventDefault();
 		$(this).qtip('hide');
 		var code = $(this).data('index') || $(this).closest('.card-container').data('index');
 		fill_modal(code);
-	}
+	};
+
+	card_modal.display_modal = function(event) {
+		event.preventDefault();
+		$(this).qtip('hide');
+		var code = $(this).data('index') || $(this).closest('.card-container').data('index');
+		fill_modal(code);
+	};
+
+	card_modal.typeahead = function (event, data) {
+		var card = CardDB({title:data.value}).first();
+		fill_modal(card.code);
+		$('#cardModal').modal('show');
+		InputByTitle = true;
+	};
 
 	function fill_modal (code) {
 		var card = CardDB({code:code}).first();
