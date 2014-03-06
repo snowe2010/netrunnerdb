@@ -106,8 +106,6 @@ h1,h2,h3,h4,h5,h6{font-family:exoregular,sans-serif}
 .background-jinteki{background-color:#f8d0d8}
 .background-nbn{background-color:#ffe8cc}
 .background-weyland-consortium{background-color:#cce0cc}
-.qtip-card{background-color:#fff;border-color:#888;-moz-border-radius:15px;-webkit-border-radius:15px;border-radius:15px}
-.qtip-card .qtip-content{padding:5px}
 .qtip-bootstrap{max-width:310px;font-size:85.7%}
 div.card-text{font-size:14px;font-family:"Palatino Linotype",Palatino,"URW Palladio L",serif;border-left:1px solid #888}
 div.card-text sup{line-height:0;font-size:x-small}
@@ -192,3 +190,77 @@ tbody .btn-group{white-space:nowrap}
 #collection-grid .col-sm-4 .media-object {height:70px}
 #collection-grid .col-sm-4 .media-heading {line-height:30px;overflow:hidden;white-space:nowrap;font-family:Arial}
 #table-draw-simulator-content img.card {width:99px;float:left;margin:5px;box-shadow: black 0px 0px 5px;}
+
+.twitter-typeahead .tt-hint {
+	display: none;
+}
+.twitter-typeahead .tt-query {
+  margin-bottom: 0;
+}
+
+.tt-dropdown-menu {
+  min-width: 160px;
+  margin-top: 2px;
+  padding: 5px 0;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border: 1px solid rgba(0,0,0,.2);
+  *border-right-width: 2px;
+  *border-bottom-width: 2px;
+  -webkit-border-radius: 6px;
+     -moz-border-radius: 6px;
+          border-radius: 6px;
+  -webkit-box-shadow: 0 5px 10px rgba(0,0,0,.2);
+     -moz-box-shadow: 0 5px 10px rgba(0,0,0,.2);
+          box-shadow: 0 5px 10px rgba(0,0,0,.2);
+  -webkit-background-clip: padding-box;
+     -moz-background-clip: padding;
+          background-clip: padding-box;
+}
+
+.tt-suggestion {
+  display: block;
+  padding: 3px 20px;
+}
+
+.tt-suggestion.tt-is-under-cursor {
+  color: #fff;
+  background-color: #0081c2;
+  background-image: -moz-linear-gradient(top, #0088cc, #0077b3);
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#0088cc), to(#0077b3));
+  background-image: -webkit-linear-gradient(top, #0088cc, #0077b3);
+  background-image: -o-linear-gradient(top, #0088cc, #0077b3);
+  background-image: linear-gradient(to bottom, #0088cc, #0077b3);
+  background-repeat: repeat-x;
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff0088cc', endColorstr='#ff0077b3', GradientType=0)
+}
+
+.tt-suggestion.tt-is-under-cursor a {
+  color: #fff;
+}
+
+.tt-suggestion p {
+  margin: 0;
+}
+
+
+.flag {
+	width: 16px;
+	height: 11px;
+	background:url('../images/flags.png') no-repeat;
+	display: inline-block;
+	margin: 5px;
+}
+
+.flag.flag-br {background-position: -16px 0}
+.flag.flag-cn {background-position: -32px 0}
+.flag.flag-de {background-position: -48px 0}
+.flag.flag-es {background-position: 0 -11px}
+.flag.flag-fr {background-position: -16px -11px}
+.flag.flag-it {background-position: -32px -11px}
+.flag.flag-jp {background-position: -48px -11px}
+.flag.flag-kr {background-position: 0 -22px}
+.flag.flag-pl {background-position: -16px -22px}
+.flag.flag-pt {background-position: -32px -22px}
+.flag.flag-tw {background-position: -48px -22px}
+.flag.flag-us {background-position: 0 -33px}

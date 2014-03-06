@@ -5,28 +5,24 @@
 	<link rel="icon" sizes="16x16" href="/favicon.png" />
 	<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Bootstrap -->
-    <link href="{{ asset('/web/bundles/netrunnerdbbuilder/css/bootstrap.css') }}" rel="stylesheet" media="screen">
 
-    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.0.1/css/bootstrap.min.css" rel="stylesheet" media="screen">
     <!--[if lt IE 9]>
-      <script src="../../assets/js/html5shiv.js"></script>
-      <script src="../../assets/js/respond.min.js"></script>
+      <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7/html5shiv.js"></script>
+      <script src="//cdnjs.cloudflare.com/ajax/libs/respond.js/1.4.2/respond.js"></script>
     <![endif]-->
-
-    <link rel="stylesheet" href="{{ asset('/web/bundles/netrunnerdbbuilder/css/jquery.qtip.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('/web/bundles/netrunnerdbbuilder/css/typeahead.js-bootstrap.css') }}">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/qtip2/2.1.1/jquery.qtip.css">
     <link rel="stylesheet" href="{{ asset('/web/bundles/netrunnerdbbuilder/css/style.css') }}">
-    <link rel="stylesheet" href="{{ asset('/web/bundles/netrunnerdbcards/css/flags.css') }}">
-    <script src="{{ asset('/web/bundles/netrunnerdbbuilder/js/modernizr.custom.min.js') }}"></script>
-    <script src="{{ asset('/web/bundles/netrunnerdbbuilder/js/jquery-2.1.0.min.js') }}"></script>
+    
+    <script src="//cdnjs.cloudflare.com/ajax/libs/modernizr/2.7.1/modernizr.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/qtip2/2.1.1/jquery.qtip.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.0.1/js/bootstrap.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/typeahead.js/0.9.3/typeahead.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highcharts/3.0.9/highcharts.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/pagedown/1.0/Markdown.Converter.min.js"></script>
     <script src="{{ asset('/web/bundles/netrunnerdbbuilder/js/taffy.js') }}"></script>
-    <script src="{{ asset('/web/bundles/netrunnerdbbuilder/js/jquery.qtip.min.js') }}"></script>
-    <script src="{{ asset('/web/bundles/netrunnerdbbuilder/js/bootstrap.js') }}"></script>
-    <script src="{{ asset('/web/bundles/netrunnerdbbuilder/js/typeahead.min.js') }}"></script>
-    <script src="{{ asset('/web/bundles/netrunnerdbbuilder/js/spinners.min.js') }}"></script>
-    <script src="{{ asset('/web/bundles/netrunnerdbbuilder/js/highcharts.js') }}"></script>
-    <script src="{{ asset('/web/bundles/netrunnerdbbuilder/js/Markdown.Converter.js') }}"></script>
+    
     <script type="text/javascript">
 var Locale = "{{ app.request.locale }}", SetsData, CardsData, IsModified = null;
 function parseSets(sets_data) {

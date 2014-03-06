@@ -93,23 +93,10 @@ function when_all_parsed() {
 		local: CardDB().select('title')
 	}).on('typeahead:selected typeahead:autocompleted', NRDB.card_modal.typeahead);
 	$('html,body').css('height', 'auto');
-	$('#spinner').remove();
-	Spinners.removeDetached();
 	$('.container').show();
 }
 $(function() {
 	$('html,body').css('height', '100%');
-	Spinners.create('#spinner', {
-	  radius: 30,
-	  height: 10,
-	  width: 2.5,
-	  dashes: 30,
-	  opacity: 1,
-	  padding: 3,
-	  rotation: 700,
-	  color: '#000000'
-	}).play().center();
-		
 	
 	$('#search,#search2').on({
 		change: handle_input_change,
