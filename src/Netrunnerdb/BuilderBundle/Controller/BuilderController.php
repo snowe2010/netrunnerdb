@@ -194,6 +194,14 @@ class BuilderController extends Controller
 				}
 			}
 		}
+		$lines[] = "";
+		$lines[] = $deck->getInfluenceSpent()." influence spent (maximum ".(is_numeric($deck->getIdentity()->getInfluenceLimit()) ? $deck->getIdentity()->getInfluenceLimit() : "infinite").")";
+		if($deck->getSide()->getName() == "Corp") {
+		    $minAgendaPoints = floor($deck->getDeckSize() / 5) * 2 + 2;
+		    $lines[] = $deck->getAgendaPoints()." agenda points (between ".$minAgendaPoints." and ".($minAgendaPoints + 1).")";
+		}
+		$lines[] = $deck->getDeckSize()." cards (min ".$deck->getIdentity()->getMinimumDeckSize().")";
+		$lines[] = "Cards up to ".$deck->getLastPack()->getName();
 		$content = implode("\r\n", $lines);
 		
 		$name = mb_strtolower($deck->getName());

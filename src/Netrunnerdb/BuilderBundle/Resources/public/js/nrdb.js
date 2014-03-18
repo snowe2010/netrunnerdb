@@ -463,7 +463,9 @@ function export_bbcode() {
 		}
 	});
 	lines.push($('#influence').text().replace(/•/g,''));
-	lines.push($('#agendapoints').text());
+	if(Identity.side_code == 'corp') {
+		lines.push($('#agendapoints').text());
+	}
 	lines.push($('#cardcount').text());
 	lines.push($('#latestpack').text());
 	lines.push("");
@@ -523,7 +525,9 @@ function export_markdown() {
 	});
 	lines.push("");
 	lines.push($('#influence').text().replace(/•/g,'') + "  ");
-	lines.push($('#agendapoints').text() + "  ");
+	if(Identity.side_code == 'corp') {
+		lines.push($('#agendapoints').text() + "  ");
+	}
 	lines.push($('#cardcount').text() + "  ");
 	lines.push($('#latestpack').text() + "  ");
 	lines.push("");
@@ -576,7 +580,9 @@ function export_plaintext() {
 	});
 	lines.push("");
 	lines.push($('#influence').text().replace(/•/g,''));
-	lines.push($('#agendapoints').text());
+	if(Identity.side_code == 'corp') {
+		lines.push($('#agendapoints').text());
+	}
 	lines.push($('#cardcount').text());
 	lines.push($('#latestpack').text());
 	lines.push("");
