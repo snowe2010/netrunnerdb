@@ -189,7 +189,7 @@ tbody .btn-group{white-space:nowrap}
 #collection-grid .col-sm-4 .media {margin-bottom:10px;padding-bottom:10px;border-bottom:1px dotted lightgray}
 #collection-grid .col-sm-4 .media-object {height:70px}
 #collection-grid .col-sm-4 .media-heading {line-height:30px;overflow:hidden;white-space:nowrap;font-family:Arial}
-#table-draw-simulator-content img.card {width:99px;float:left;margin:5px;box-shadow: black 0px 0px 5px;}
+#table-draw-simulator-content img.card {width:99px;float:left;margin:5px;box-shadow: black 0px 0px 5px;border-radius: 5px;}
 
 .twitter-typeahead .tt-hint {
 	display: none;

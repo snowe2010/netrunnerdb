@@ -102,28 +102,26 @@ $(function() {
 		change: handle_input_change,
 		click: function(event) {
 			var dropdown = $(this).closest('ul').hasClass('dropdown-menu');
-			if(event.shiftKey) {
-				if(!event.altKey) {
-					if(dropdown) {
+			if(dropdown) {
+				if(event.shiftKey) {
+					if(!event.altKey) {
 						$(this).closest(".filter").find("input[type=checkbox]").prop("checked", false);
 						$(this).children('input[type=checkbox]').prop("checked", true).trigger('change');
 					} else {
-						$(this).closest(".filter").find("label").button('off', false);
-						$(this).button('on', true);
-					}
-				} else {
-					if(dropdown) {
 						$(this).closest(".filter").find("input[type=checkbox]").prop("checked", true);
 						$(this).children('input[type=checkbox]').prop("checked", false);
-					} else {
-						$(this).closest(".filter").find("label").button('on', false);
-						$(this).button('off', true);
 					}
 				}
-			} else if(!dropdown) {
-				$(this).button('toggle', true);
+				event.stopPropagation();
+			} else {
+				if(event.shiftKey) {
+					if(!event.altKey) {
+						$(this).closest(".filter").find("label.active").button('toggle');
+					} else {
+						$(this).closest(".filter").find("label:not(.active)").button('toggle');
+					}
+				}
 			}
-			if(dropdown) event.stopPropagation();
 		}
 	}, 'label');
 
@@ -547,7 +545,7 @@ function update_filtered(){
 
 		var unusable = false;
 		if(Identity.code == "03002" && record.faction_code == "jinteki") unusable = true;
-		if(record.type_code == "agenda" && record.faction_code != "neutral" && record.faction != Identity.faction) unusable = true;
+		if(record.type_code == "agenda" && record.faction_code != "neutral" && record.faction_code != Identity.faction_code && Identity.faction_code != "neutral") unusable = true;
 		
 		if(HideDisabled && unusable) return;
 		

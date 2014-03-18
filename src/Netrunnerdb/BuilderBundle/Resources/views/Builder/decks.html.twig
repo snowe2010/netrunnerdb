@@ -17,6 +17,7 @@ var CardDB = null,
 	Url_CanPublish = "{{ path('deck_publish', {deck_id:'xxx'}) }}",
 	Url_DecklistView = "{{ path('decklist_detail', {decklist_id:'xxx',decklist_name:'xxx'}) }}",
 	Url_CardPage = '{{ path('netrunnerdb_netrunner_cards_zoom', {card_code:'00000'}) }}',
+	Url_FactionImage = '{{  asset('/web/bundles/netrunnerdbbuilder/images/factions/16px/xxx.png') }}',
 	DisplaySort = 'type';
 	
 </script>
@@ -174,20 +175,14 @@ var CardDB = null,
 <div class="col-md-7">
 
 <div class="row">
-<div class="col-md-8">
-	<a href="{{ path('deck_buildform', {side_text:'corp'}) }}" class="btn btn-default"><span class="glyphicon glyphicon-plus color-corp"></span> Corp</a>
-	<a href="{{ path('deck_buildform', {side_text:'runner'}) }}" class="btn btn-default"><span class="glyphicon glyphicon-plus color-runner"></span> Runner</a>
-	<a href="{{ path('deck_import') }}" class="btn btn-default"><span class="glyphicon glyphicon-import"></span> Import</a>
-	<button type="button" class="btn btn-default" onclick="$('#fileModal').modal('show')"><span class="glyphicon glyphicon-upload"></span> File</button>
+<div class="col-md-12">
+	<a href="{{ path('deck_buildform', {side_text:'corp'}) }}" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-plus color-corp"></span> Corp</a>
+	<a href="{{ path('deck_buildform', {side_text:'runner'}) }}" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-plus color-runner"></span> Runner</a>
+	<a href="{{ path('deck_import') }}" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-import"></span> Import</a>
+	<button type="button" class="btn btn-default btn-sm" onclick="$('#fileModal').modal('show')"><span class="glyphicon glyphicon-upload"></span> File</button>
+    <div class="btn-group filter" data-toggle="buttons" id="faction_filter">
 </div>
-<div class="col-md-4">
-	<div class="btn-group pull-right" data-toggle="buttons" id="decks-filter">
-	  <label class="btn btn-default active">
-	    <input type="checkbox" name="display-corp" value="Corp" checked="checked"> Corp
-	  </label><label class="btn btn-default active">
-	    <input type="checkbox" name="display-runner" value="Runner" checked="checked"> Runner
-	  </label>
-	</div>
+
 </div>
 </div>
 <div class="row">
@@ -202,7 +197,7 @@ var CardDB = null,
 </thead>
 <tbody id="decks">
 {% for deck in decks %}
-<tr data-id="{{ deck.id }}" data-problem="{{ deck.problem }}" data-side="{{ deck.side }}">
+<tr data-id="{{ deck.id }}" data-problem="{{ deck.problem }}" data-faction="{{ deck.faction_code }}">
 	<td>{{ deck.name }}{% if deck.message %} <span class="glyphicon glyphicon-exclamation-sign text-danger" title="{{ deck.message }}"></span>{% endif %}</td>
 	<td class="text-center">{% if deck.faction_code %}<img class="faction-icon" src="{{ asset('/web/bundles/netrunnerdbbuilder/images/factions/38px/' ~ deck.faction_code ~ '.png') }}">{% endif %}</td>
 	<td class="hidden-xs">{% if deck.identity_title %}{{ deck.identity_title|replace({': ':'<br>'})|raw }}{% else %}No Identity{% endif %}</td>

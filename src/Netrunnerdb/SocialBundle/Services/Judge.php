@@ -102,7 +102,7 @@ class Judge
 				return 'forbidden';
 			}
 			if($card->getType()->getName() == "Agenda") {
-				if($card->getFaction()->getName() != "Neutral" && $card->getFaction() != $identity->getFaction()) {
+				if($card->getFaction()->getName() != "Neutral" && $card->getFaction() != $identity->getFaction() && $identity->getFaction()->getName() != "Neutral") {
 					return 'agendas';
 				}
 				$agendaPoints += $card->getAgendaPoints() * $qty;
@@ -116,7 +116,7 @@ class Judge
 			}
 		}
 		
-		if($influenceSpent > $identity->getInfluenceLimit()) return 'influence';
+		if($identity->getInfluenceLimit() !== null && $influenceSpent > $identity->getInfluenceLimit()) return 'influence';
 		if($identity->getSide()->getName() == "Corp") {
 			$minAgendaPoints = floor($deckSize / 5) * 2 + 2;
 			if($agendaPoints < $minAgendaPoints || $agendaPoints > $minAgendaPoints + 1) return 'agendapoints';

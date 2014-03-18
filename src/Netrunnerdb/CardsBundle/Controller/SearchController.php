@@ -76,8 +76,7 @@ class SearchController extends Controller
 		if(file_exists(__DIR__."/../Resources/public/images/cards/$locale/".$card->getCode() . ".png")) {
 			$cardinfo['imagesrc'] = "/web/bundles/netrunnerdbcards/images/cards/$locale/". $card->getCode() . ".png";
 		} else {
-			if($locale != "en") $cardinfo['imagesrc'] = "/web/bundles/netrunnerdbcards/images/cards/en/". $card->getCode() . ".png";
-			else $cardinfo['imagesrc'] = "";
+			$cardinfo['imagesrc'] = "/web/bundles/netrunnerdbcards/images/cards/en/". $card->getCode() . ".png";
 		}
 		if(file_exists(__DIR__."/../Resources/public/images/cards/$locale-large/".$card->getCode() . ".png")) {
 			$cardinfo['largeimagesrc'] = "/web/bundles/netrunnerdbcards/images/cards/$locale-large/". $card->getCode() . ".png";

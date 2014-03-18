@@ -12,6 +12,17 @@ function when_all_parsed() {
 	var cards_data = CardsData || JSON.parse(localStorage.getItem('cards_data_'+Locale));
 	CardDB = TAFFY(cards_data);
 	CardDB({set_code:"alt"}).remove();
+	
+
+	$('#faction_filter').empty();
+	$.each(CardDB().distinct("faction_code").sort(function (a, b) { return b === "neutral" ? -1 : a === "neutral" ? 1 : a < b ? -1 : a > b ? 1 : 0; }), function (index, record) {
+		$('#faction_filter').append('<label class="btn btn-default btn-sm" data-code="'+record+'"><input type="checkbox" name="'+record+'" value="'+record+'"><img src="'+Url_FactionImage.replace('xxx', record)+'"></label>')
+	});
+	$('#faction_filter').button();
+	$('#faction_filter').children('label').each(function (index, elt) {
+		$(elt).button('toggle');
+	});
+	
 }
 
 $(function() {
@@ -21,7 +32,7 @@ $(function() {
 	$('#btn-group-deck').on({
 		click: do_action_deck
 	}, 'button[id],a[id]');
-	$('#decks-filter').on({
+	$('#faction_filter').on({
 		change: filter_decks
 	}, 'input[type=checkbox]');
 	$('#menu-sort').on({
@@ -32,7 +43,7 @@ $(function() {
 			}
 		}
 	}, 'a');
-
+	
 	when_all_parsed();
 	$.when(promise1, promise2).done(when_all_parsed);
 	
@@ -40,11 +51,11 @@ $(function() {
 
 function filter_decks(event) {
 	var display = {};
-	$('#decks-filter input[type=checkbox').each(function (n, elt) {
+	$('#faction_filter input[type=checkbox').each(function (n, elt) {
 		display[$(elt).val()] = $(elt).prop("checked");
 	})
 	$('#decks tr').each(function (n, row) {
-		$(row)[display[$(row).data('side')] ? "show" : "hide"]();
+		$(row)[display[$(row).data('faction')] ? "show" : "hide"]();
 	});
 }
 
