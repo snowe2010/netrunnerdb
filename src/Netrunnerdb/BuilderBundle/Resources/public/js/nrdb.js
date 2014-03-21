@@ -818,8 +818,8 @@ function display_notification()
 {
 	if(!localStorage) return;
 	var Notification = {
-		version: '1.4.12',
-		message: "<strong>New!</strong> Select the number of Core Sets you want to use in the deckbuilder options."	
+		version: '1.5.1',
+		message: "<strong>New!</strong> Decklist search page. Finally."	
 	};
 	var localStorageNotification = localStorage.getItem('notification');
 	if(localStorageNotification === Notification.version) return;
