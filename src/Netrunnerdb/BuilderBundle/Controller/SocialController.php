@@ -436,10 +436,10 @@ class SocialController extends Controller {
 	{
 	    $request  = $this->getRequest();
 	    $cards_code = $request->query->get('cards');
-	    $faction_code = $request->query->get('faction');
-	    $lastpack_code = $request->query->get('lastpack');
-	    $author_name = $request->query->get('author');
-	    $decklist_title = $request->query->get('title');
+	    $faction_code = filter_var($request->query->get('faction'), FILTER_SANITIZE_STRING);
+	    $lastpack_code = filter_var($request->query->get('lastpack'), FILTER_SANITIZE_STRING);
+	    $author_name = filter_var($request->query->get('author'), FILTER_SANITIZE_STRING);
+	    $decklist_title = filter_var($request->query->get('title'), FILTER_SANITIZE_STRING);
 	    $sort = $request->query->get('sort');
 	     
 	    if($faction_code === "Corp" || $faction_code === "Runner") {
@@ -469,10 +469,10 @@ class SocialController extends Controller {
 	        $wheres[] = 'd.name like ?';
 	        $bindings[] = '%'.$decklist_title.'%';
 	    }
-	    if(!empty($cards_code)) {
+	    if(!empty($cards_code) && is_array($cards_code)) {
 	        foreach($cards_code as $card_code) {
 	            $wheres[] = 'exists(select * from decklistslot where decklistslot.decklist_id=d.id and decklistslot.card_id=(select id from card where code=?))';
-	            $bindings[] = $card_code;
+	            $bindings[] = filter_var($card_code, FILTER_SANITIZE_STRING);
 	        }
 	    }
 	    
