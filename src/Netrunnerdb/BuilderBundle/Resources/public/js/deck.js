@@ -579,12 +579,10 @@ function handle_quantity_change(event) {
 			if (rows && rows[index])
 				rows[index].find('input[name="qty-' + index + '"]').each(
 						function(i, element) {
-							if ($(element).val() == quantity)
-								$(element).prop('checked', true).closest(
-										'label').addClass('active');
-							else
+							if ($(element).val() != quantity) {
 								$(element).prop('checked', false).closest(
-										'label').removeClass('active');
+								'label').removeClass('active');
+							}
 						});
 		});
 	}
