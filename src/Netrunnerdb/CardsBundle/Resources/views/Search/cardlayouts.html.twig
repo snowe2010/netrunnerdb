@@ -54,7 +54,7 @@
 		{% endfor %}
 		</tbody>
 		</table>
-		{% if app.environment != 'optim' and app.user %} 
+		{% if app.user %} 
 		<a name="opinion-form"></a>
 		<form method="POST" action="{{ path('card_opinion') }}">
 			<input type="hidden" name="id" value="{{ card.id }}">
@@ -64,8 +64,6 @@
 			<div class="well text-muted" id="opinion-form-preview"><small>Preview</small></div>
 			<button type="submit" class="btn btn-success">Submit comment</button> 
 			</form>
-		{% elseif app.environment == 'optim' %}
-		<p>Commenting is unavailable for now. Come back later.</p>
 		{% else %}
 		<p>You must be logged in to post comments.</p>
 		{% endif %}

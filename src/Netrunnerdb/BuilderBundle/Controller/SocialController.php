@@ -433,13 +433,7 @@ class SocialController extends Controller {
 	public function listAction($type, $code = null, $page = 1) {
 		$response = new Response();
 
-		$optim = $this->get('kernel')->getEnvironment() === 'optim';
-		if($optim) {
-			$response->setPublic();
-			$response->setMaxAge(600);
-		} else {
-			$response->setPrivate();
-		}
+		$response->setPrivate();
 		
 		$limit = 30;
 		if($page<1) $page=1;
@@ -465,7 +459,7 @@ class SocialController extends Controller {
 			$result = $this->favorites($start, $limit);
 			break;
 		case 'mine':
-			if ($optim || !$this->getUser())
+			if (!$this->getUser())
 				$result = array();
 			else
 				$result = $this->by_author($this->getUser()->getId(), $start, $limit);
@@ -551,8 +545,6 @@ class SocialController extends Controller {
 	public function viewAction($decklist_id, $decklist_name) {
 		$response = new Response();
 		
-		$optim = $this->get('kernel')->getEnvironment() === 'optim';
-		
 		$dbh = $this->get('doctrine')->getConnection();
 		$rows = $dbh
 				->executeQuery(
@@ -587,17 +579,12 @@ class SocialController extends Controller {
 		
 		$decklist = $rows[0];
 		
-		if($optim) {
-			$response->setPublic();
-			$response->setMaxAge(600);
-		} else {
-			$response->setPrivate();
-			$user = $this->getUser();
-			$lastModified = new DateTime($decklist['ts']);
-			$response->setLastModified($user && $user->getLastLogin() > $lastModified ? $user->getLastLogin() : $lastModified);
-			if ($response->isNotModified($this->getRequest())) {
-				return $response;
-			}
+		$response->setPrivate();
+		$user = $this->getUser();
+		$lastModified = new DateTime($decklist['ts']);
+		$response->setLastModified($user && $user->getLastLogin() > $lastModified ? $user->getLastLogin() : $lastModified);
+		if ($response->isNotModified($this->getRequest())) {
+			return $response;
 		}
 		
 		$comments = $dbh
@@ -628,7 +615,7 @@ class SocialController extends Controller {
 		$decklist['cards'] = $cards;
 
 		$is_liked = false;
-		if(!$optim && $this->getUser()) 
+		if($this->getUser()) 
 			$is_liked = (boolean) $dbh->executeQuery(
 				"SELECT
 				count(*)
@@ -638,7 +625,7 @@ class SocialController extends Controller {
 				and d.id=?", array($this->getUser()->getId(), $decklist_id))->fetch(\PDO::FETCH_NUM)[0];
 		
 		$is_favorite = false;
-		if(!$optim && $this->getUser())
+		if($this->getUser())
 			$is_favorite = (boolean) $dbh->executeQuery(
 						"SELECT
 				count(*)
@@ -648,7 +635,7 @@ class SocialController extends Controller {
 				and d.id=?", array($this->getUser()->getId(), $decklist_id))->fetch(\PDO::FETCH_NUM)[0];
 		
 		$is_author = false;
-		if(!$optim && $this->getUser())
+		if($this->getUser())
 			$is_author = $this->getUser()->getId() == $decklist['user_id'];
 		
 		$similar_decklists = array();//$this->findSimilarDecklists($decklist_id, 5);
@@ -1019,13 +1006,7 @@ class SocialController extends Controller {
 	public function indexAction() {
 		$response = new Response();
 
-		$optim = $this->get('kernel')->getEnvironment() === 'optim';
-		if($optim) {
-			$response->setPublic();
-			$response->setMaxAge(600);
-		} else {
-			$response->setPrivate();
-		}
+		$response->setPrivate();
 
 		$decklists_popular = $this->popular(0, 5)['decklists'];
 		$decklists_recent = $this->recent(0, 5)['decklists'];

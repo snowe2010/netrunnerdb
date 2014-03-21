@@ -56,12 +56,7 @@ class DefaultController extends Controller
 		}, $list_illustrators);
 	
 		$response = new Response();
-		if($this->get('kernel')->getEnvironment() === 'optim') {
-			$response->setPublic();
-			$response->setMaxAge(600);
-		} else {
-			$response->setPrivate();
-		}
+		$response->setPrivate();
 	
 		return $this->render('NetrunnerdbCardsBundle:Search:searchform.html.twig', array(
 				"packs" => $packs,
@@ -92,12 +87,7 @@ class DefaultController extends Controller
 		if(!$sources) $sources = array(1 => "Latest FAQ", 2 => "Direct answer");
 		
 		$response = new Response();
-		if($this->get('kernel')->getEnvironment() === 'optim') {
-			$response->setPublic();
-			$response->setMaxAge(600);
-		} else {
-			$response->setPrivate();
-		}
+		$response->setPrivate();
 		
 //		$list_rulings = $this->getDoctrine()->getRepository('NetrunnerdbCardsBundle:Rulings')->findBy(array(), array("created" => "ASC"));
 		$rulings_faq = array();
@@ -127,12 +117,7 @@ class DefaultController extends Controller
 	{
 		
 		$response = new Response();
-		if($this->get('kernel')->getEnvironment() === 'optim') {
-			$response->setPublic();
-			$response->setMaxAge(600);
-		} else {
-			$response->setPrivate();
-		}
+		$response->setPrivate();
 		
 		return $this->render('NetrunnerdbCardsBundle:Default:about.html.twig', array(
 		), $response);
@@ -142,12 +127,7 @@ class DefaultController extends Controller
 	{
 		
 		$response = new Response();
-		if($this->get('kernel')->getEnvironment() === 'optim') {
-			$response->setPublic();
-			$response->setMaxAge(600);
-		} else {
-			$response->setPrivate();
-		}
+		$response->setPrivate();
 		
 		return $this->render('NetrunnerdbCardsBundle:Default:apidoc.html.twig', array(
 		), $response);
