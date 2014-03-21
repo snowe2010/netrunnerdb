@@ -1,144 +1,187 @@
 {% extends 'NetrunnerdbCardsBundle::main.html.twig' %}
 
-{% block title %}{% trans %}Advanced Card Search{% endtrans %}{% endblock %}
+{% block title %}{% trans %}Card Search{% endtrans %}{% endblock %}
 
 {% block content %}
 
 <script type="text/javascript" src="{{ asset('/web/bundles/netrunnerdbcards/js/save-settings.js') }}"></script>
 
 <div class="row">
-<div class="col-lg-6">
+
+<div class="col-sm-3">
+
+	{{ allsets|raw }}
+
+</div>
+
+<div class="col-sm-9">
 
 <h1>{{ block('title') }}</h1>
+<form method="GET" action="{{ path('netrunnerdb_netrunner_cards_processSearchForm') }}" role="form">
+
+<div class="row">
+
+<div class="col-sm-4">
 
 
-<form method="GET" action="{{ path('netrunnerdb_netrunner_cards_processSearchForm') }}" class="form-horizontal">
+		<div class="form-group">
+			<label for="q">{% trans %}Title{% endtrans %}</label>
+			<div>
+				<input class="form-control" size="30" id="q" name="q" value="">
+			</div>
+		</div>
+		
+		<div class="form-group">
+			<label for="x">{% trans %}Text{% endtrans %}</label>
+			<div>
+				<input class="form-control" size="40" id="x" name="x" value="">
+			</div>
+		</div>
+		
+		<div class="form-group">
+			<label for="a">{% trans %}Flavor Text{% endtrans %}</label>
+			<div>
+				<input class="form-control" size="30" id="a" name="a" value="">
+			</div>
+		</div>
+		
+		<div class="form-group">
+			<label for="d">{% trans %}Side{% endtrans %}</label>
+			<div>
+				<label class="radio-inline"><input type="radio" name="d" checked value="">{% trans %}Either{% endtrans %}</label>
+				<label class="radio-inline"><input type="radio" name="d" value="c">{% trans %}Corp{% endtrans %}</label>
+				<label class="radio-inline"><input type="radio" name="d" value="r">{% trans %}Runner{% endtrans %}</label>
+			</div>
+		</div>
+		
+		<div class="form-group">
+			<label for="f">{% trans %}Faction{% endtrans %}</label>
+			<div>
+				<label class="checkbox-inline"><input type="checkbox" name="f[]" checked value="a">{% trans %}Anarch{% endtrans %}</label>
+				<label class="checkbox-inline"><input type="checkbox" name="f[]" checked value="c">{% trans %}Criminal{% endtrans %}</label>
+				<label class="checkbox-inline"><input type="checkbox" name="f[]" checked value="s">{% trans %}Shaper{% endtrans %}</label>
+				<label class="checkbox-inline"><input type="checkbox" name="f[]" checked value="h">{% trans %}Haas-Bioroid{% endtrans %}</label>
+				<label class="checkbox-inline"><input type="checkbox" name="f[]" checked value="j">{% trans %}Jinteki{% endtrans %}</label>
+				<label class="checkbox-inline"><input type="checkbox" name="f[]" checked value="n">{% trans %}NBN{% endtrans %}</label>
+				<label class="checkbox-inline"><input type="checkbox" name="f[]" checked value="w">{% trans %}Weyland{% endtrans %}</label>
+				<label class="checkbox-inline"><input type="checkbox" name="f[]" checked value="-">{% trans %}Neutral{% endtrans %}</label>
+			</div>
+		</div>
+		
+		
+		<div class="form-group">
+			<label for="d">{% trans %}Previews{% endtrans %}</label>
+			<div>
+				<label class="radio-inline"><input type="radio" name="r" checked value="">{% trans %}Yes{% endtrans %}</label>
+				<label class="radio-inline"><input type="radio" name="r" value="<now">{% trans %}No{% endtrans %}</label>
+				<label class="radio-inline"><input type="radio" name="r" value=">now">{% trans %}Only{% endtrans %}</label>
+			</div>
+		</div>
+		
+</div>
+<div class="col-sm-4">
 
-<div class="form-group">
-	<label class="col-lg-2 control-label" for="q">{% trans %}Title{% endtrans %}</label>
-	<div class="col-lg-10">
-		<input class="form-control" size="30" id="q" name="q" value="">
-	</div>
+		
+		
+		<div class="form-group">
+			<label for="e">{% trans %}Set{% endtrans %}</label>
+			<div>
+				<select class="form-control" name="e" id="e"><option value="">{% trans %}any{% endtrans %}</option>{% for pack in packs %}<option value="{{ pack.code }}">{{ pack.name }}</option>{% endfor %}</select>
+			</div>
+		</div>
+		
+		<div class="form-group">
+			<label for="t">{% trans %}Type{% endtrans %}</label>
+			<div>
+				<select class="form-control" name="t" id="t"><option value="">{% trans %}any{% endtrans %}</option>{% for type in types %}<option value="{{ type }}">{{ type }}</option>{% endfor %}</select>
+			</div>
+		</div>
+		
+		<div class="form-group">
+			<label for="s">{% trans %}Subtype{% endtrans %}</label>
+			<div>
+				<select class="form-control" name="s" id="s"><option value="">{% trans %}any{% endtrans %}</option>{% for keyword in keywords %}<option value="{{ keyword }}">{{ keyword }}</option>{% endfor %}</select>
+			</div>
+		</div>
+		
+		<div class="form-group">
+			<label for="u">{% trans %}Unique{% endtrans %}</label>
+			<div>
+				<select class="form-control" name="u" id="u">
+					<option value="">{% trans %}any{% endtrans %}</option>
+					<option value="0">{% trans %}No{% endtrans %}</option>
+					<option value="1">{% trans %}Yes{% endtrans %}</option>
+				</select>
+			</div>
+		</div>
+		
+		<div class="form-group">
+			<label for="i">{% trans %}Illustrator{% endtrans %}</label>
+			<div>
+				<select class="form-control" name="i" id="i"><option value="">{% trans %}any{% endtrans %}</option>{% for illustrator in illustrators %}<option value="{{ illustrator }}">{{ illustrator }}</option>{% endfor %}</select>
+			</div>
+		</div>
+		
+
+</div>
+<div class="col-sm-4">
+
+		
+		
+		<div class="form-group">
+			<label for="o">{% trans %}Cost{% endtrans %}</label>
+			<div class="row">
+			     <div class="col-sm-4">
+			 	<select name="oo" id="oo" class="form-control"><option value=":">=</option><option value="<">&lt;</option><option value=">">&gt;</option></select>
+			     </div>
+			     <div class="col-sm-8">
+				<input id="o" name="o" value="" class="form-control">
+				</div>
+			</div>
+		</div>
+		
+		<div class="form-group">
+			<label for="n">{% trans %}Influence{% endtrans %}</label>
+			<div class="row">
+			     <div class="col-sm-4">
+				<select name="no" id="no" class="form-control"><option value=":">=</option><option value="<">&lt;</option><option value=">">&gt;</option></select>
+			     </div>
+			     <div class="col-sm-8">
+				<input id="n" name="n" value="" class="form-control">
+				</div>
+			</div>
+		</div>
+		
+		<div class="form-group">
+			<label for="p">{% trans %}Strength{% endtrans %}</label>
+			<div class="row">
+			     <div class="col-sm-4">
+				<select name="po" id="po" class="form-control"><option value=":">=</option><option value="<">&lt;</option><option value=">">&gt;</option></select>
+			     </div>
+			     <div class="col-sm-8">
+				<input id="p" name="p" value="" class="form-control">
+				</div>
+			</div>
+		</div>
+		
+		<div class="form-group">
+			<label for="y">{% trans %}Quantity{% endtrans %}</label>
+			<div class="row">
+			     <div class="col-sm-4">
+				<select name="yo" id="yo" class="form-control"><option value=":">=</option><option value="<">&lt;</option><option value=">">&gt;</option></select>
+			     </div>
+			     <div class="col-sm-8">
+				<input id="y" name="y" value="" class="form-control">
+				</div>
+			</div>
+		</div>
+		
+
 </div>
 
-<div class="form-group">
-	<label class="col-lg-2 control-label" for="x">{% trans %}Text{% endtrans %}</label>
-	<div class="col-lg-10">
-		<input class="form-control" size="40" id="x" name="x" value="">
-	</div>
 </div>
-	
-<div class="form-group">
-	<label class="col-lg-2 control-label" for="d">{% trans %}Side{% endtrans %}</label>
-	<div class="col-lg-10">
-		<label class="radio-inline"><input type="radio" name="d" checked value="">{% trans %}Either{% endtrans %}</label>
-		<label class="radio-inline"><input type="radio" name="d" value="c">{% trans %}Corp{% endtrans %}</label>
-		<label class="radio-inline"><input type="radio" name="d" value="r">{% trans %}Runner{% endtrans %}</label>
-	</div>
-</div>
-
-<div class="form-group">
-	<label class="col-lg-2 control-label" for="f">{% trans %}Faction{% endtrans %}</label>
-	<div class="col-lg-10">
-		<label class="checkbox-inline"><input type="checkbox" name="f[]" checked value="a">{% trans %}Anarch{% endtrans %}</label>
-		<label class="checkbox-inline"><input type="checkbox" name="f[]" checked value="c">{% trans %}Criminal{% endtrans %}</label>
-		<label class="checkbox-inline"><input type="checkbox" name="f[]" checked value="s">{% trans %}Shaper{% endtrans %}</label>
-		<label class="checkbox-inline"><input type="checkbox" name="f[]" checked value="h">{% trans %}Haas-Bioroid{% endtrans %}</label>
-		<label class="checkbox-inline"><input type="checkbox" name="f[]" checked value="j">{% trans %}Jinteki{% endtrans %}</label>
-		<label class="checkbox-inline"><input type="checkbox" name="f[]" checked value="n">{% trans %}NBN{% endtrans %}</label>
-		<label class="checkbox-inline"><input type="checkbox" name="f[]" checked value="w">{% trans %}Weyland{% endtrans %}</label>
-		<label class="checkbox-inline"><input type="checkbox" name="f[]" checked value="-">{% trans %}Neutral{% endtrans %}</label>
-	</div>
-</div>
-
-<div class="form-group">
-	<label class="col-lg-2 control-label" for="e">{% trans %}Set{% endtrans %}</label>
-	<div class="col-lg-10">
-		<select class="form-control" name="e" id="e"><option value="">{% trans %}any{% endtrans %}</option>{% for pack in packs %}<option value="{{ pack.code }}">{{ pack.name }}</option>{% endfor %}</select>
-	</div>
-</div>
-
-<div class="form-group">
-	<label class="col-lg-2 control-label" for="t">{% trans %}Type{% endtrans %}</label>
-	<div class="col-lg-10">
-		<select class="form-control" name="t" id="t"><option value="">{% trans %}any{% endtrans %}</option>{% for type in types %}<option value="{{ type }}">{{ type }}</option>{% endfor %}</select>
-	</div>
-</div>
-
-<div class="form-group">
-	<label class="col-lg-2 control-label" for="s">{% trans %}Subtype{% endtrans %}</label>
-	<div class="col-lg-10">
-		<select class="form-control" name="s" id="s"><option value="">{% trans %}any{% endtrans %}</option>{% for keyword in keywords %}<option value="{{ keyword }}">{{ keyword }}</option>{% endfor %}</select>
-	</div>
-</div>
-
-<div class="form-group">
-	<label class="col-lg-2 control-label" for="u">{% trans %}Unique{% endtrans %}</label>
-	<div class="col-lg-10">
-		<select class="form-control" name="u" id="u">
-			<option value="">{% trans %}any{% endtrans %}</option>
-			<option value="0">{% trans %}No{% endtrans %}</option>
-			<option value="1">{% trans %}Yes{% endtrans %}</option>
-		</select>
-	</div>
-</div>
-
-<div class="form-group">
-	<label class="col-lg-2 control-label" for="o">{% trans %}Cost{% endtrans %}</label>
-	<div class="col-lg-10">
-		<select name="oo" id="oo"><option value=":">=</option><option value="<">&lt;</option><option value=">">&gt;</option></select>
-		<input size="2" id="o" name="o" value="">
-	</div>
-</div>
-
-<div class="form-group">
-	<label class="col-lg-2 control-label" for="n">{% trans %}Influence{% endtrans %}</label>
-	<div class="col-lg-10">
-		<select name="no" id="no"><option value=":">=</option><option value="<">&lt;</option><option value=">">&gt;</option></select>
-		<input size="2" id="n" name="n" value="">
-	</div>
-</div>
-
-<div class="form-group">
-	<label class="col-lg-2 control-label" for="p">{% trans %}Strength{% endtrans %}</label>
-	<div class="col-lg-10">
-		<select name="po" id="po"><option value=":">=</option><option value="<">&lt;</option><option value=">">&gt;</option></select>
-		<input size="2" id="p" name="p" value="">
-	</div>
-</div>
-
-<div class="form-group">
-	<label class="col-lg-2 control-label" for="y">{% trans %}Quantity{% endtrans %}</label>
-	<div class="col-lg-10">
-		<select name="yo" id="yo"><option value=":">=</option><option value="<">&lt;</option><option value=">">&gt;</option></select>
-		<input size="2" id="y" name="y" value="">
-	</div>
-</div>
-
-<div class="form-group">
-	<label class="col-lg-2 control-label" for="i">{% trans %}Illustrator{% endtrans %}</label>
-	<div class="col-lg-10">
-		<select class="form-control" name="i" id="i"><option value="">{% trans %}any{% endtrans %}</option>{% for illustrator in illustrators %}<option value="{{ illustrator }}">{{ illustrator }}</option>{% endfor %}</select>
-	</div>
-</div>
-
-<div class="form-group">
-	<label class="col-lg-2 control-label" for="a">{% trans %}Flavor Text{% endtrans %}</label>
-	<div class="col-lg-10">
-		<input class="form-control" size="30" id="a" name="a" value="">
-	</div>
-</div>
-
-<div class="form-group">
-	<label class="col-lg-2 control-label" for="r">{% trans %}Previews{% endtrans %}</label>
-	<div class="col-lg-10">
-		<select class="form-control" name="r" id="r">
-			<option value="">{% trans %}Yes{% endtrans %}</option>
-			<option value="<now">{% trans %}No{% endtrans %}</option>
-			<option value=">now">{% trans %}Only{% endtrans %}</option>
-		</select>
-	</div>
-</div>
+<div class="row">
+<div class="col-sm-12">
 
 <div class="form-group">
 	{% include 'NetrunnerdbCardsBundle:Default:searchoptions.html.twig' %}
@@ -146,18 +189,13 @@
 		<button class="btn btn-primary" type="submit">{% trans %}Search{% endtrans %}</button>
 	</div>
 </div>
+</div>
+
+</div>
+
 </form>
 
 </div>
 
-
-<div class="col-lg-5 col-md-offset-1">
-
-<h1>Card Sets</h1>
-
-	{{ allsets|raw }}
-
-	</div>
 </div>
-
 			{% endblock %}

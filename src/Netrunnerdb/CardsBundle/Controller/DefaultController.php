@@ -148,6 +148,7 @@ class DefaultController extends Controller
 				$packs[] = array(
 						"name" => $pack->getName($this->getRequest()->getLocale()),
 						"code" => $pack->getCode(),
+				        "cyclenumber" => $cycle->getNumber(),
 						"available" => $pack->getReleased() ? $pack->getReleased()->format('Y-m-d') : '',
 						"known" => intval($real),
 						"total" => $max,
@@ -163,6 +164,7 @@ class DefaultController extends Controller
 				$cycles[] = array(
 						"name" => $cycle->getName($this->getRequest()->getLocale()),
 						"code" => $cycle->getCode(),
+				        "cyclenumber" => $cycle->getNumber(),
 						"known" => intval($sreal),
 						"total" => $smax,
 						"url" => $this->generateUrl('netrunnerdb_netrunner_cards_cycle', array('cycle_code' => $cycle->getCode()), true),
