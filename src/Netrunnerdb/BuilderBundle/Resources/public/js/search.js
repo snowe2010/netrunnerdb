@@ -8,10 +8,16 @@ function when_all_parsed() {
 		return;
 	SetDB = TAFFY(sets_data);
 	SetDB.sort("cyclenumber,number");
+	SetDB({
+		code : "alt"
+	}).remove();
 
 	var cards_data = CardsData
 			|| JSON.parse(localStorage.getItem('cards_data_' + Locale));
 	CardDB = TAFFY(cards_data);
+	CardDB({
+		set_code : "alt"
+	}).remove();
 
 	$('#card').typeahead({
 		name : 'cardnames',
