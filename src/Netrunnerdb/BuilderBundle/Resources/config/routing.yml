@@ -130,6 +130,14 @@ decklist_new:
     requirements:
         _locale: en|fr|de|es|it|pl
     
+
+decklists_searchform:
+    pattern: /{_locale}/decklists/search
+    methods: [GET]
+    defaults:
+        _controller: NetrunnerdbBuilderBundle:Social:search
+    requirements:
+        _locale: en|fr|de|es|it|pl
     
 decklists_list:
     pattern: /{_locale}/decklists/{type}/{page}
@@ -158,7 +166,14 @@ decklists_list_code:
 
 
 
-
+decklists_searchform:
+    pattern: /{_locale}/decklists/search
+    methods: [GET]
+    defaults:
+        _controller: NetrunnerdbBuilderBundle:Social:search
+    requirements:
+        _locale: en|fr|de|es|it|pl
+        
 
 decklist_detail:
     pattern: /{_locale}/decklist/{decklist_id}/{decklist_name}

@@ -427,6 +427,100 @@ class SocialController extends Controller {
 		return array("count" => $count, "decklists" => $rows);
 	}
 	
+	/**
+	 * returns a list of decklists according to search criteria
+	 * @param integer $limit
+	 * @return \Doctrine\DBAL\Driver\PDOStatement
+	 */
+	public function find($start = 0, $limit = 30)
+	{
+	    $request  = $this->getRequest();
+	    $cards_code = $request->query->get('cards');
+	    $faction_code = $request->query->get('faction');
+	    $lastpack_code = $request->query->get('lastpack');
+	    $author_name = $request->query->get('author');
+	    $decklist_title = $request->query->get('title');
+	    $sort = $request->query->get('sort');
+	     
+	    if($faction_code === "Corp" || $faction_code === "Runner") {
+	        $side_code = $faction_code;
+	        unset($faction_code);
+	    }
+	    
+	    $wheres = array();
+	    $bindings = array();
+	    if(!empty($side_code)) {
+	        $wheres[] = 's.name=?';
+	        $bindings[] = $side_code;
+	    }
+	    if(!empty($faction_code)) {
+	        $wheres[] = 'f.code=?';
+	        $bindings[] = $faction_code;
+	    }
+	    if(!empty($lastpack_code)) {
+	        $wheres[] = 'p.code=?';
+	        $bindings[] = $lastpack_code;
+	    }
+	    if(!empty($author_name)) {
+	        $wheres[] = 'u.username=?';
+	        $bindings[] = $author_name;
+	    }
+	    if(!empty($decklist_title)) {
+	        $wheres[] = 'd.name like ?';
+	        $bindings[] = '%'.$decklist_title.'%';
+	    }
+	    if(!empty($cards_code)) {
+	        foreach($cards_code as $card_code) {
+	            $wheres[] = 'exists(select * from decklistslot where decklistslot.decklist_id=d.id and decklistslot.card_id=(select id from card where code=?))';
+	            $bindings[] = $card_code;
+	        }
+	    }
+	    
+	    if(empty($wheres)) {
+	        $where = "d.creation > DATE_SUB(CURRENT_DATE, INTERVAL 1 MONTH)";
+	        $bindings = array();
+	    } else {
+	        $where = implode(" AND ", $wheres);
+	    }
+	    
+	    switch($sort) {
+	    	case 'date': $order = 'creation'; break;
+	    	case 'likes': $order = 'nbvotes'; break;
+	    	case 'reputation': $order = 'reputation'; break;
+	    	default: $order = 'creation';
+	    }
+	    
+	    /* @var $dbh \Doctrine\DBAL\Driver\PDOConnection */
+	    $dbh = $this->get('doctrine')->getConnection();
+	    
+	    $rows = $dbh->executeQuery("SELECT SQL_CALC_FOUND_ROWS
+	            d.id,
+	            d.name,
+	            d.prettyname,
+	            d.creation,
+	            d.user_id,
+	            u.username,
+	            u.faction usercolor,
+	            u.reputation,
+	            c.code,
+	            d.nbvotes,
+	            d.nbfavorites,
+	            d.nbcomments
+	            from decklist d
+	            join user u on d.user_id=u.id
+	            join side s on d.side_id=s.id
+	            join card c on d.identity_id=c.id
+				join pack p on d.last_pack_id=p.id
+	            join faction f on d.faction_id=f.id
+	            where $where
+	            order by $order desc
+	            limit $start, $limit", $bindings)->fetchAll(\PDO::FETCH_ASSOC);
+	    
+	    $count = $dbh->executeQuery("SELECT FOUND_ROWS()")->fetch(\PDO::FETCH_NUM)[0];
+	    
+	    return array("count" => $count, "decklists" => $rows);
+	}
+	
 	/*
 	 * displays the lists of decklists
 	 */
@@ -464,6 +558,9 @@ class SocialController extends Controller {
 			else
 				$result = $this->by_author($this->getUser()->getId(), $start, $limit);
 			break;
+		case 'find':
+		    $result = $this->find($start, $limit);
+		    break;
 		case 'popular':
 		default:
 			$result = $this->popular($start, $limit);
@@ -1310,4 +1407,44 @@ class SocialController extends Controller {
 		$response->setContent($content);
 		return $response;
 	}
+	
+	public function searchAction()
+	{
+
+	    $dbh = $this->get('doctrine')->getConnection();
+	    $factions = $dbh
+	    ->executeQuery(
+	            "SELECT
+				f.name"
+	            . ($this->getRequest()->getLocale() == "en" ? ''
+	                    : '_'
+	                    . $this->getRequest()
+	                    ->getLocale())
+	            . " name,
+				f.code
+				from faction f
+				order by f.side_id asc, f.name asc")->fetchAll();
+	    
+	    $packs = $dbh
+	    ->executeQuery(
+	            "SELECT
+				p.name"
+	            . ($this->getRequest()->getLocale() == "en" ? ''
+	                    : '_'
+	                    . $this->getRequest()
+	                    ->getLocale())
+	            . " name,
+				p.code
+				from pack p
+				where p.released is not null
+				order by p.released desc")->fetchAll();
+	    
+	    
+        return $this->render('NetrunnerdbBuilderBundle:Search:form.html.twig', array(
+					'url' => $this->getRequest()->getRequestUri(),
+                'factions' => $factions,
+               'packs' => $packs,
+        ));
+	}
+	
 }

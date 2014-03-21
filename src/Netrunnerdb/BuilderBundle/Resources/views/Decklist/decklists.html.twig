@@ -19,31 +19,9 @@
 {% set linkurl = path('decklists_list', {type:'favorites'}) %}<li class="{% if url == linkurl %}active{% endif %}"><a href="{{ linkurl }}">My favorites</a></li>
 {% set linkurl = path('decklists_list', {type:'mine'}) %}<li class="{% if url == linkurl %}active{% endif %}"><a href="{{ linkurl }}">My decklists</a></li>
 {% endif %}
+{% set linkurl = path('decklists_searchform') %}<li class="{% if url == linkurl %}active{% endif %}"><a href="{{ linkurl }}"><span class="glyphicon glyphicon-search"></span> Search</a></li>
 </ul>
 
-<h4>Factions</h4>
-<ul class="nav nav-pills nav-stacked">
-{% for faction in factions %}
-{% if faction.code != "neutral" %}
-{% set linkurl = path('decklists_list_code', {type:'faction', code:faction.code}) %}<li class="{% if url == linkurl %}active{% endif %}">
-  <a href="{{ linkurl }}">
-    {{ faction.name }}
-  </a>
-</li>
-{% endif %}
-{% endfor %}
-</ul>
-
-<h4>Packs</h4>
-<ul class="nav nav-pills nav-stacked">
-{% for pack in packs %}
-{% set linkurl = path('decklists_list_code', {type:'lastpack', code:pack.code}) %}<li class="{% if url == linkurl %}active{% endif %}">
-  <a href="{{ linkurl }}">
-    {{ pack.name }}
-  </a>
-</li>
-{% endfor %}
-</ul>
 </div>
 
 <div class="col-md-9">
