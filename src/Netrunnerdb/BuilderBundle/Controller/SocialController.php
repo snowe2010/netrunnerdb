@@ -611,11 +611,15 @@ class SocialController extends Controller {
 		
 		$route = $this->getRequest()->get('_route');
 		
+		$params = $this->getRequest()->query->all();
+		$params['type'] = $type;
+		$params['code'] = $code;
+
 		$pages = array();
 		for($page=1; $page<=$nbpages; $page++) {
 			$pages[] = array(
 				"numero" => $page,
-				"url" => $this->generateUrl($route, array("type" => $type, "code" => $code, "page" => $page)),
+				"url" => $this->generateUrl($route, $params + array("page" => $page)),
 				"current" => $page == $currpage,
 			);
 		}
@@ -630,8 +634,8 @@ class SocialController extends Controller {
 					'url' => $this->getRequest()->getRequestUri(),
 					'route' => $route,
 					'pages' => $pages,
-					'prevurl' => $currpage == 1 ? null : $this->generateUrl($route, array("type" => $type, "code" => $code, "page" => $prevpage)),
-					'nexturl' => $currpage == $nbpages ? null : $this->generateUrl($route, array("type" => $type, "code" => $code, "page" => $nextpage))
+					'prevurl' => $currpage == 1 ? null : $this->generateUrl($route, $params + array("page" => $prevpage)),
+					'nexturl' => $currpage == $nbpages ? null : $this->generateUrl($route, $params + array("page" => $nextpage))
 			), $response);
 
 	}
