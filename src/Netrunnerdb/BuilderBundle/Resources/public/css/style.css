@@ -264,3 +264,17 @@ tbody .btn-group{white-space:nowrap}
 .flag.flag-pt {background-position: -32px -22px}
 .flag.flag-tw {background-position: -48px -22px}
 .flag.flag-us {background-position: 0 -33px}
+
+#deck-description > h1 {
+font-size: 24px;
+font-family: serif;
+border: none;
+}
+#deck-description > h2 {
+font-size: 20px;
+font-family: serif;
+}
+#deck-description > h3 {
+font-size: 18px;
+font-family: serif;
+}
