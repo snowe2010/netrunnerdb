@@ -40,7 +40,7 @@ class HighlightCommand extends ContainerAwareCommand
 				join user u on d.user_id=u.id
 				join card c on d.identity_id=c.id
 				join faction f on d.faction_id=f.id
-				where d.creation > date_sub( current_date, interval 7 month )
+				where d.creation > date_sub( current_date, interval 7 day )
                 order by nbvotes desc , nbcomments desc
                 limit 0,1
 				", array())->fetchAll();
