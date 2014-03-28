@@ -2,15 +2,27 @@
 
 {% block head %}
 <script src="{{ asset('/web/bundles/netrunnerdbbuilder/js/nrdb.js') }}"></script>
+<script src="{{ asset('/web/bundles/netrunnerdbbuilder/js/deck_browser.js') }}"></script>
+<script src="{{ asset('/web/bundles/netrunnerdbbuilder/js/smart_filter.js') }}"></script>
+<script src="{{ asset('/web/bundles/netrunnerdbbuilder/js/index.js') }}"></script>
 <script type="text/javascript">
-$(function() { $('#version-popover').popover({html:true}); });
+
+var CardDB = null,
+	SetDB = null,
+	Identity = null
+	Decklist = {{ decklist|json_encode|raw }},
+	DeckDB = TAFFY([Decklist]),
+	SelectedDeck = DeckDB().first()
+	Url_Like = "{{ path('decklist_like') }}",
+	Url_Favorite = "{{ path('decklist_favorite') }}",
+	Url_CardPage = '{{ path('netrunnerdb_netrunner_cards_zoom', {card_code:'00000'}) }}',
+	DisplaySort = 'type';
+	
 </script>
 {% endblock %}
 {% block body %}
 
-
-    <!-- Main jumbotron for a primary marketing message or call to action -->
-    <div class="jumbotron visible-sm">
+    <div class="jumbotron visible-sm visible-xs">
       <div class="container">
         <h1>Welcome on NetrunnerDB!</h1>
         <p>You can explore the public <a href="{{ path('decklists_list', {type:'popular'}) }}">decklists</a> or start building your own <a href="{{ path('decks_list') }}">decks</a>.</p>
@@ -18,79 +30,125 @@ $(function() { $('#version-popover').popover({html:true}); });
     </div>
 
 
-<div class="container">
+<div class="container" id="index_page">
 <div class="row">
-<div class="col-md-6">
-<div class="page-header">
+
+<div class="col-md-4 col-md-push-8">
+	<div id="card_search">
+	<h3 class="section">Card search <a href="{{ path('netrunnerdb_netrunner_cards_about') }}" class="small">?</a></h3>
+	<form role="form">
+	<div class="form-group">
+	    <input type="text" class="form-control" id="card_search_form" placeholder="Enter card name or query">
+	  </div>
+	</form>
+	<table class="table table-condensed table-striped">
+	<tbody id="card_search_results">
+	</tbody>
+	</table>
+	</div><!-- #card_search -->
+	
+	<div id="recent_decklists">
+	<h3 class="section">Last 10 decklists <a href="{{ path('decklists_list', {type:'recent'}) }}" class="small">more</a></h3>
+	<table class="table">
+	{% for decklist in recent %}
+	<tr>
+	<td>
+		<img src="/web/bundles/netrunnerdbcards/images/cards/en/{{ decklist.code }}.png" style="width:52px">
+	</td>
+	<td class="decklists">
+	<div>
+			<a class="decklist-name" href="{{ path('decklist_detail', { 'decklist_id': decklist.id, 'decklist_name': decklist.prettyname|e('url') }) }}">{{ decklist.name }}</a>
+	</div>
+	<div class="small">
+			<i>{{ decklist.lastpack }}</i>
+	</div>
+	<div class="author small">
+		<a href="{{ path('user_profile_view', {user_id:decklist.user_id,user_name:decklist.username|e('url')}) }}" class="{{ decklist.usercolor }}">{{ decklist.username }}</a>
+		<small class="reputation">{{ decklist.reputation }}</small>
+	</div>
+	<div class="small decklist-social">
+		<span class="glyphicon glyphicon-heart social-icon-like"></span> {{ decklist.nbvotes }}
+		<span class="glyphicon glyphicon-star social-icon-favorite"></span> {{ decklist.nbfavorites }}
+		<span class="glyphicon glyphicon-comment social-icon-comment"></span> {{ decklist.nbcomments }}
+	</div>
+	</td>
+	</tr>
+	{% endfor %}
+	</table>
+	</div><!-- #recent_decklists -->
+
+</div>
+
+<div class="col-md-8 col-md-pull-4">
+<div class="page-header hidden-sm hidden-xs">
 <h1>Welcome on NetrunnerDB</h1>
 <p class="">You can explore the public <a href="{{ path('decklists_list', {type:'popular'}) }}">decklists</a> or start building your own <a href="{{ path('decks_list') }}">decks</a>.</p>
 </div>
-</div>
+<div id="highlight" class="decklist">
+
+<h2 class="section">Decklist of the week </h2>
+<h3><a class="decklist-name" href="{{ path('decklist_detail', { 'decklist_id': decklist.id, 'decklist_name': decklist.prettyname|e('url') }) }}">{{ decklist.name }}</a></h3>
+	
+<!-- Identity and Stats -->
+<div class="row">
+    <div class="col-sm-4">
+        <h4 id="identity"></h4>
+		<div id="influence" class="small"></div>
+		<div id="agendapoints" class="small"></div>
+		<div id="cardcount" class="small"></div>
+		<div id="latestpack" class="small"></div>
+		<div class="decklist-social">
+			<div id="decklist-social-icons" class="small">
+			<span class="social-icon-like">
+				<span class="glyphicon glyphicon-heart"></span> <span class="num">{{ decklist.nbvotes }}</span>
+			</span>
+			| <span class="social-icon-favorite">
+				<span class="glyphicon glyphicon-star"></span> <span class="num">{{ decklist.nbfavorites }}</span>
+			</span>
+			| <span class="social-icon-comment">
+				<span class="glyphicon glyphicon-comment"></span> <span class="num">{{ decklist.nbcomments }}</span>
+			</span>
+			</div>
+		</div>
+		
+    </div>
+	<div class="col-sm-8" id="deck-content">
+	</div>
+</div><!-- /.row -->
+<!-- Identity and Stats -->
+
+<div class="row hidden-xs">
+    <div class="col-sm-12" >
+        <table id="deck_browser">
+            <tr>
+                <td id="deck_browser_left">
+                </td>
+                <td id="deck_browser_center">
+                </td>
+                <td id="deck_browser_right">
+                </td>
+            </tr>
+        </table>
+    </div>
 </div>
 
 <div class="row">
-<div class="col-md-6">
-<h3>Popular decklists <a href="{{ path('decklists_list', {type:'popular'}) }}" class="small">more</a></h3>
-{% for decklist in popular %}
-<div class="panel panel-default">
-<div class="panel-body">
-<div class="row">
-<div class="col-sm-2 hidden-xs">
-	<img src="/web/bundles/netrunnerdbcards/images/cards/en/{{ decklist.code }}.png" class="img-responsive" data-toggle="tooltip" data-index="{{ decklist.code }}">
-</div>
-<div class="col-sm-10">
-	<h4>
-		<small class="pull-right decklist-social">
-			<span class="glyphicon glyphicon-heart social-icon-like"></span> {{ decklist.nbvotes }}
-			<span class="glyphicon glyphicon-star social-icon-favorite"></span> {{ decklist.nbfavorites }}
-			<span class="glyphicon glyphicon-comment social-icon-comment"></span> {{ decklist.nbcomments }}
-		</small>
-		<a class="decklist-name" href="{{ path('decklist_detail', { 'decklist_id': decklist.id, 'decklist_name': decklist.prettyname|e('url') }) }}">{{ decklist.name }}</a>
-	</h4>
-	<h5 class="username author">
-		<span class="pull-right decklist-creation">{{ decklist.creation|date('M d') }}</span>
-		<a href="{{ path('user_profile_view', {user_id:decklist.user_id,user_name:decklist.username|e('url')}) }}" class="{{ decklist.usercolor }}">{{ decklist.username }}</a>
-		<small class="reputation">{{ decklist.reputation }}</small>
-		
-	</h5>
-</div>
-</div>
-</div>
-</div>
-{% endfor %}
-</div>
-<div class="col-md-6">
-<h3>Recent decklists <a href="{{ path('decklists_list', {type:'recent'}) }}" class="small">more</a></h3>
-{% for decklist in recent %}
-<div class="panel panel-default">
-<div class="panel-body">
-<div class="row">
-<div class="col-sm-2 hidden-xs">
-	<img src="/web/bundles/netrunnerdbcards/images/cards/en/{{ decklist.code }}.png" class="img-responsive" data-toggle="tooltip" data-index="{{ decklist.code }}">
-</div>
-<div class="col-sm-10">
-	<h4>
-		<small class="pull-right decklist-social">
-			<span class="glyphicon glyphicon-heart social-icon-like"></span> {{ decklist.nbvotes }}
-			<span class="glyphicon glyphicon-star social-icon-favorite"></span> {{ decklist.nbfavorites }}
-			<span class="glyphicon glyphicon-comment social-icon-comment"></span> {{ decklist.nbcomments }}
-		</small>
-		<a class="decklist-name" href="{{ path('decklist_detail', { 'decklist_id': decklist.id, 'decklist_name': decklist.prettyname|e('url') }) }}">{{ decklist.name }}</a>
-	</h4>
-	<h5 class="username author">
-		<span class="pull-right decklist-creation">{{ decklist.creation|date('M d') }}</span>
-		<a href="{{ path('user_profile_view', {user_id:decklist.user_id,user_name:decklist.username|e('url')}) }}" class="{{ decklist.usercolor }}">{{ decklist.username }}</a>
-		<small class="reputation">{{ decklist.reputation }}</small>
-		
-	</h5>
-</div>
-</div>
-</div>
-</div>
-{% endfor %}
+<div class="col-sm-12">
+<h4 class="decklist-author">
+    Description by the author: 
+    <a href="{{ path('user_profile_view', {user_id:decklist.user_id,user_name:decklist.username|e('url')}) }}" class="{{ decklist.usercolor }}">{{ decklist.username }}</a>
+    <small title="User Reputation">{{ decklist.reputation }}</small>
+</h4>  
+{{ decklist.description|raw }}
 </div>
 </div>
 
-</div> <!-- /container -->
+</div> <!-- #highlight -->
+
+</div>
+
+</div> <!-- .row -->
+
+</div> <!-- .container -->
 
 {% endblock %}

@@ -86,11 +86,6 @@ var promise2 = $.ajax("{{ path('api_cards') }}?jsonp=parseCards&_locale="+Locale
             <li><a href="{{ path('fos_user_security_login') }}">Login</a></li>
           {% endif %}
 	  </ul>
-          <form class="navbar-form navbar-right" action="{{ path('netrunnerdb_netrunner_cards_find') }}">
-            <div class="form-group">
-              <input type="text" placeholder="Card Search" class="form-control" name="q">
-            </div>
-          </form>
         </div><!--/.navbar-collapse -->
       </div>
     </nav>

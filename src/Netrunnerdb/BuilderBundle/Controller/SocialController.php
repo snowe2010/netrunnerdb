@@ -412,12 +412,15 @@ class SocialController extends Controller {
 				u.faction usercolor,
 				u.reputation,
 				c.code,
+		        c.title identity,
+		        p.name lastpack,
 				d.nbvotes,
 				d.nbfavorites,
 				d.nbcomments
 				from decklist d
 				join user u on d.user_id=u.id
 				join card c on d.identity_id=c.id
+		        join pack p on d.last_pack_id=p.id
 		        where d.creation > DATE_SUB(CURRENT_DATE, INTERVAL 1 MONTH)
 				order by creation desc
 				limit $start, $limit")->fetchAll(\PDO::FETCH_ASSOC);
@@ -1109,17 +1112,33 @@ class SocialController extends Controller {
 
 		$response->setPrivate();
 
-		$decklists_popular = $this->popular(0, 5)['decklists'];
-		$decklists_recent = $this->recent(0, 5)['decklists'];
+		$decklists_recent = $this->recent(0, 10)['decklists'];
 
+		$dbh = $this->get('doctrine')->getConnection();
+		$rows = $dbh
+				->executeQuery(
+						"SELECT
+				decklist from highlight where id=?
+				", array(1))->fetchAll();
+
+		if(empty($rows)) {
+			
+		    $decklist = json_decode($this->saveHighlight());
+		    
+		} else {
+		    
+		    $decklist = json_decode($rows[0]['decklist']);
+		    
+		}
+		
 		return $this
 				->render('NetrunnerdbBuilderBundle:Default:index.html.twig',
 						array(
 								'locales' => $this
 										->renderView(
 												'NetrunnerdbCardsBundle:Default:langs.html.twig'),
-								'popular' => $decklists_popular,
 								'recent' => $decklists_recent,
+						        'decklist' => $decklist,
 								'url' => $this->getRequest()->getRequestUri()), $response);
 	}
 
@@ -1449,6 +1468,63 @@ class SocialController extends Controller {
                 'factions' => $factions,
                'packs' => $packs,
         ));
+	}
+	
+	public function saveHighlight()
+	{
+
+	    $dbh = $this->get('doctrine')->getConnection();
+	    $rows = $dbh
+	    ->executeQuery(
+	            "SELECT
+				d.id,
+				d.ts,
+				d.name,
+				d.prettyname,
+				d.creation,
+				d.rawdescription,
+				d.description,
+				d.precedent_decklist_id precedent,
+				u.id user_id,
+				u.username,
+				u.faction usercolor,
+				u.reputation,
+				c.code identity_code,
+				f.code faction_code,
+				d.nbvotes,
+				d.nbfavorites,
+				d.nbcomments
+				from decklist d
+				join user u on d.user_id=u.id
+				join card c on d.identity_id=c.id
+				join faction f on d.faction_id=f.id
+				where d.creation > date_sub( current_date, interval 7 month )
+                order by nbvotes desc , nbcomments desc
+                limit 0,1
+				", array())->fetchAll();
+	     
+	    if(empty($rows)) {
+	        throw new AccessDeniedException('No decklist this week');
+	    }
+	     
+	    $decklist = $rows[0];
+	     
+	    $cards = $dbh
+	    ->executeQuery(
+	            "SELECT
+				c.code card_code,
+				s.quantity qty
+				from decklistslot s
+				join card c on s.card_id=c.id
+				where s.decklist_id=?
+				order by c.code asc", array($decklist['id']))->fetchAll();
+	     
+	    $decklist['cards'] = $cards;
+	    
+	    $json = json_encode($decklist);
+	    $dbh->executeQuery("INSERT INTO highlight (id, decklist) VALUES (?,?) ON DUPLICATE KEY UPDATE decklist=values(decklist)", array(1, $json));
+	     
+	    return $json;
 	}
 	
 }

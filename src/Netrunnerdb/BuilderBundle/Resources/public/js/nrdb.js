@@ -1,5 +1,16 @@
 var NRDB = {};
 
+function debounce(fn, delay) {
+	var timer = null;
+	return function() {
+		var context = this, args = arguments;
+		clearTimeout(timer);
+		timer = setTimeout(function() {
+			fn.apply(context, args);
+		}, delay);
+	};
+}
+
 function getDisplayDescriptions(sort) {
         var dd = {
             'type': [
@@ -261,7 +272,7 @@ function update_deck() {
 	$('#latestpack').html('Cards up to <i>'+latestpack.name+'</i>');
 	check_influence();
 	check_decksize();
-	setTimeout(make_graphs, 100);
+	if($('#costChart').size()) setTimeout(make_graphs, 100);
 	$('#deck').show();
 }
 

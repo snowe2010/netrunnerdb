@@ -195,7 +195,9 @@ $(function() {
 			}, 'label');
 
 	$('#filter-text').on({
-		change : handle_smartfilter_change
+		change : function (event) {
+			NRDB.smart_filter.handler($(this).val(), refresh_collection);
+		}
 	});
 
 	$('#save_form').submit(handle_submit);
@@ -343,173 +345,6 @@ function handle_input_change(event) {
 		}
 	});
 	refresh_collection();
-}
-function handle_smartfilter_change(event) {
-	var conditions = filterSyntax($(this).val());
-	SmartFilterQuery = {};
-	AdditionalFilters = [];
-
-	for (var i = 0; i < conditions.length; i++) {
-		var condition = conditions[i];
-		var type = condition.shift();
-		var operator = condition.shift();
-		var values = condition;
-
-		switch (type) {
-		case "e":
-		case "c":
-		case "f":
-		case "t":
-			continue;
-			break;
-		case "":
-			add_string_sf('title', operator, values);
-			break;
-		case "x":
-			add_string_sf('text', operator, values);
-			break;
-		case "a":
-			add_string_sf('flavor', operator, values);
-			break;
-		case "s":
-			add_string_sf('subtype', operator, values);
-			break;
-		case "o":
-			add_integer_sf('cost', operator, values);
-			break;
-		case "v":
-			add_integer_sf('agendapoints', operator, values);
-			break;
-		case "n":
-			add_integer_sf('factioncost', operator, values);
-			break;
-		case "p":
-			add_integer_sf('strength', operator, values);
-			break;
-		case "g":
-			add_integer_sf('advancementcost', operator, values);
-			break;
-		case "h":
-			add_integer_sf('trash', operator, values);
-			break;
-		case "y":
-			add_integer_sf('quantity', operator, values);
-			break;
-		}
-	}
-
-	refresh_collection();
-}
-function add_integer_sf(key, operator, values) {
-	for (var j = 0; j < values.length; j++)
-		values[j] = parseInt(values[j], 10);
-	switch (operator) {
-	case ":":
-		SmartFilterQuery[key] = {
-			'is' : values
-		};
-		break;
-	case "<":
-		SmartFilterQuery[key] = {
-			'lt' : values
-		};
-		break;
-	case ">":
-		SmartFilterQuery[key] = {
-			'gt' : values
-		};
-		break;
-	case "!":
-		SmartFilterQuery[key] = {
-			'!is' : values
-		};
-		break;
-	}
-}
-function add_string_sf(key, operator, values) {
-	switch (operator) {
-	case ":":
-		SmartFilterQuery[key] = {
-			'likenocase' : values
-		};
-		break;
-	case "!":
-		SmartFilterQuery[key] = {
-			'!likenocase' : values
-		};
-		break;
-	}
-}
-function filterSyntax(query) {
-	// renvoie une liste de conditions (array)
-	// chaque condition est un tableau à n>1 éléments
-	// le premier est le type de condition (0 ou 1 caractère)
-	// les suivants sont les arguments, en OR
-
-	query = query.replace(/^\s*(.*?)\s*$/, "$1").replace('/\s+/', ' ');
-
-	var list = [];
-	var cond = null;
-	// l'automate a 3 états :
-	// 1:recherche de type
-	// 2:recherche d'argument principal
-	// 3:recherche d'argument supplémentaire
-	// 4:erreur de parsing, on recherche la prochaine condition
-	// s'il tombe sur un argument alors qu'il est en recherche de type, alors le
-	// type est vide
-	var etat = 1;
-	while (query != "") {
-		if (etat == 1) {
-			if (cond !== null && etat !== 4 && cond.length > 2) {
-				list.push(cond);
-			}
-			// on commence par rechercher un type de condition
-			if (query.match(/^(\w)([:<>!])(.*)/)) { // jeton "condition:"
-				cond = [ RegExp.$1.toLowerCase(), RegExp.$2 ];
-				query = RegExp.$3;
-			} else {
-				cond = [ "", ":" ];
-			}
-			etat = 2;
-		} else {
-			if (query.match(/^"([^"]*)"(.*)/) // jeton "texte libre entre
-												// guillements"
-					|| query.match(/^([\w\-]+)(.*)/) // jeton "texte autorisé
-														// sans guillements"
-			) {
-				if ((etat === 2 && cond.length === 2) || etat === 3) {
-					cond.push(RegExp.$1);
-					query = RegExp.$2;
-					etat = 2;
-				} else {
-					// erreur
-					query = RegExp.$2;
-					etat = 4;
-				}
-			} else if (query.match(/^\|(.*)/)) { // jeton "|"
-				if ((cond[1] === ':' || cond[1] === '!')
-						&& ((etat === 2 && cond.length > 2) || etat === 3)) {
-					query = RegExp.$1;
-					etat = 3;
-				} else {
-					// erreur
-					query = RegExp.$1;
-					etat = 4;
-				}
-			} else if (query.match(/^ (.*)/)) { // jeton " "
-				query = RegExp.$1;
-				etat = 1;
-			} else {
-				// erreur
-				query = query.substr(1);
-				etat = 4;
-			}
-		}
-	}
-	if (cond !== null && etat !== 4 && cond.length > 2) {
-		list.push(cond);
-	}
-	return list;
 }
 
 function handle_submit(event) {
@@ -695,8 +530,9 @@ function build_div(record) {
 function update_filtered() {
 	$('#collection-table').empty();
 	$('#collection-grid').empty();
-	$.extend(SmartFilterQuery, FilterQuery);
+	
 	var counter = 0, container = $('#collection-table');
+	var SmartFilterQuery = NRDB.smart_filter.get_query(FilterQuery);
 	CardDB(SmartFilterQuery)
 			.order(Sort + (Order > 0 ? " intl" : " intldesc") + ',title')
 			.each(
@@ -745,15 +581,5 @@ function update_filtered() {
 						container.append(row);
 						counter++;
 					});
-}
-function debounce(fn, delay) {
-	var timer = null;
-	return function() {
-		var context = this, args = arguments;
-		clearTimeout(timer);
-		timer = setTimeout(function() {
-			fn.apply(context, args);
-		}, delay);
-	};
 }
 var refresh_collection = debounce(update_filtered, 250);

@@ -5,6 +5,7 @@
 <script src="{{ asset('/web/bundles/netrunnerdbbuilder/js/nrdb.js') }}"></script>
 <script src="{{ asset('/web/bundles/netrunnerdbbuilder/js/draw_simulator.js') }}"></script>
 <script src="{{ asset('/web/bundles/netrunnerdbbuilder/js/card_modal.js') }}"></script>
+<script src="{{ asset('/web/bundles/netrunnerdbbuilder/js/smart_filter.js') }}"></script>
 <script src="{{ asset('/web/bundles/netrunnerdbbuilder/js/deck.js') }}"></script>
 <script type="text/javascript">
 
@@ -12,8 +13,6 @@ var CardDB = null,
 	SetDB = null,
 	Filters = {},
 	FilterQuery = {},
-	SmartFilterQuery = {}, 
-	AdditionalFilters = [],
 	CardDivs = [null, {}, {}, {}], 
 	Sort = "type", 
 	Order = 1,

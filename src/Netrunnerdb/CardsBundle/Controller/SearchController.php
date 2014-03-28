@@ -35,6 +35,12 @@ class SearchController extends Controller
 		return $alternatives;
 	}
 	
+	/**
+	 * 
+	 * @param \Netrunnerdb\CardsBundle\Entity\Card $card
+	 * @param string $api
+	 * @return multitype:multitype: string number mixed NULL unknown
+	 */
 	private function getCardInfo($card, $api = false)
 	{
 		$dbh = $this->getDoctrine()->getConnection();
@@ -55,7 +61,8 @@ class SearchController extends Controller
 				"cost" => $card->getCost(),
 				"faction" => $card->getFaction()->getName($locale),
 				"faction_code" => $card->getFaction()->getCode(),
-				"factioncost" => $card->getFactionCost(),
+				"faction_letter" => substr($card->getFaction()->getCode(), 0, 1),
+		        "factioncost" => $card->getFactionCost(),
 				"flavor" => $card->getFlavor($locale),
 				"illustrator" => $card->getIllustrator(),
 				"influencelimit" => $card->getInfluenceLimit(),
@@ -71,6 +78,7 @@ class SearchController extends Controller
 				"strength" => $card->getStrength(),
 				"trash" => $card->getTrashCost(),
 				"uniqueness" => $card->getUniqueness(),
+		        "cyclenumber" => $card->getPack()->getCycle()->getNumber(),
 		);
 		$cardinfo['url'] = $this->get('router')->generate('netrunnerdb_netrunner_cards_zoom', array('card_code' => $card->getCode(), '_locale' => $locale), true);
 		if(file_exists(__DIR__."/../Resources/public/images/cards/$locale/".$card->getCode() . ".png")) {

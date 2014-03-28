@@ -40,7 +40,7 @@
 .icon-trash:before {
 	content: "\e606";
 }
-.icon-wayland-consortium:before {
+.icon-weyland-consortium:before {
 	content: "\e607";
 }
 .icon-recurring-credit:before {
@@ -156,6 +156,7 @@ tbody .btn-group{white-space:nowrap}
 .dropdown-menu input{margin:-4px 8px 0 -6px}
 .dropdown-menu label{margin:0}
 #collection td{vertical-align:middle}
+.decklist .decklist-name{font-family:'exoregular',sans-serif}
 .decklist .decklist-author{font-family:'exoregular',sans-serif}
 .decklist .reputation{font-family:'exodemibold',sans-serif}
 .decklist .username{font-family:'exolight',sans-serif}
@@ -163,7 +164,7 @@ tbody .btn-group{white-space:nowrap}
 .decklist .comment-text{clear:right;font-size:93%;}
 .decklist h1{border-bottom:1px solid lightgray}
 .decklist h1 img{vertical-align:text-top;margin-right:10px}
-.decklist-social{color:darkgray}
+.decklist-social{color:darkgray;font-family: exolight;}
 .decklist-social>div>a,.decklist-social>div>span{margin:0 10px;font-family:exolight}
 .social-icon-like{color:red}
 .social-icon-favorite{color:orange}
@@ -277,4 +278,68 @@ font-family: serif;
 #deck-description > h3 {
 font-size: 18px;
 font-family: serif;
+}
+
+#index_page .section {
+	color: crimson;
+	
+}
+
+#deck_browser {
+	margin: 10px 0;
+	width: 100%;
+}
+#deck_browser_left {
+	direction: ltr;
+	width: 1%;
+	white-space: nowrap;
+	-webkit-perspective: 1000px;
+	perspective: 1000px;
+}
+#deck_browser_center {
+	text-align: center;
+	background: white;
+}
+#deck_browser_right {
+	direction: rtl;
+	width: 1%;
+	white-space: nowrap;
+	-webkit-perspective: 1000px;
+	perspective: 1000px;
+}
+#deck_browser div {
+	height: 150px;
+	width: 10px;
+overflow: show;
+display: inline-block;
+position: relative;
+}
+#deck_browser_left div {
+	-webkit-transform: translateZ(1px) translateX(1px) rotateY(40deg);
+-ms-transform: translateZ(1px) translateX(1px) rotateY(40deg);
+transform: translateZ(1px) translateX(1px) rotateY(40deg);
+-webkit-transform-origin: 0 75px;
+-ms-transform-origin: 0 75px;
+transform-origin: 0 75px;
+}
+#deck_browser_center div {
+	width: auto;
+	z-index: 1;
+}
+#deck_browser_center div img {
+		box-shadow: 0 0 20px 10px white;
+	
+}
+#deck_browser_right div {
+	-webkit-transform-origin: 100% 0;
+-ms-transform-origin: 100% 0;
+transform-origin: 100% 0;
+-webkit-transform: translateZ(1px) translateX(-1px) rotateY(-40deg);
+-ms-transform: translateZ(1px) translateX(-1px) rotateY(-40deg);
+transform: translateZ(1px) translateX(-1px) rotateY(-40deg);
+}
+#deck_browser div img {
+height: 100%;
+border: 1px solid white;
+border-radius: 10px;
 }
