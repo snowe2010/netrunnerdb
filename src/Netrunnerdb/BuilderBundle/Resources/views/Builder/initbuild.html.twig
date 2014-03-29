@@ -26,8 +26,8 @@ $(function() {
 <div class="list-group">
 {% for identity in identities %}
 <a href="{{ path('deck_initbuild', {card_code:identity.code}) }}" class="list-group-item" data-code="{{ identity.code }}">
-	<img class="faction-icon" src="{{ asset('/web/bundles/netrunnerdbbuilder/images/factions/16px/' ~ identity.faction.code ~ '.png') }}"> 
-	<span>{{ identity.title }}</span>
+	<img class="faction-icon" src="{{ asset('/web/bundles/netrunnerdbbuilder/images/factions/16px/' ~ identity.faction.code ~ '.png') }}">
+	<span>{{ identity.title }}</span> <span class="small">({{ identity.pack.name }})</span>
 </a>
 {% endfor %}
 </div>
