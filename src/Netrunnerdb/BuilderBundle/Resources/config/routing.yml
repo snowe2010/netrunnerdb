@@ -151,21 +151,6 @@ decklists_list:
         page: \d+
 
     
-    
-decklists_list_code:
-    pattern: /{_locale}/decklists/{type}/{code}/{page}
-    methods: [GET]
-    defaults:
-        _controller: NetrunnerdbBuilderBundle:Social:list
-        code: null
-        page: 1
-        _locale: en
-    requirements:
-        _locale: en|fr|de|es|it|pl
-        page: \d+
-
-
-
 decklists_searchform:
     pattern: /{_locale}/decklists/search
     methods: [GET]
@@ -206,6 +191,12 @@ decklist_edit:
     pattern: /decklist/edit/{decklist_id}
     defaults:
         _controller: NetrunnerdbBuilderBundle:Social:edit
+    methods: [POST]
+
+decklist_delete:
+    pattern: /decklist/delete/{decklist_id}
+    defaults:
+        _controller: NetrunnerdbBuilderBundle:Social:delete
     methods: [POST]
 
 user_favorites:

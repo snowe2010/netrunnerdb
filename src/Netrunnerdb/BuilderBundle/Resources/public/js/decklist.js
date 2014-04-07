@@ -26,6 +26,7 @@ $(function() {
 	$.when(promise1, promise2).done(when_all_parsed);
 	$('#decklist-social-icons>a').tooltip();
 	$('#decklist-edit').on('click', edit_form);
+	$('#decklist-delete').on('click', delete_form);
 	$('#decklist-social-icon-like').on('click', send_like);
 	$('#decklist-social-icon-favorite').on('click', send_favorite);
 	$('#decklist-social-icon-comment').on('click', function () { $('#comment-form-text').trigger('focus'); });
@@ -50,6 +51,10 @@ $(function() {
 
 function edit_form() {
 	$('#editModal').modal('show');
+}
+
+function delete_form() {
+	$('#deleteModal').modal('show');
 }
 
 function do_action_decklist(event) {

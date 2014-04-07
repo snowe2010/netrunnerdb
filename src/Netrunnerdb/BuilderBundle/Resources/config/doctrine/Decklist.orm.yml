@@ -56,7 +56,7 @@ Netrunnerdb\BuilderBundle\Entity\Decklist:
         slots:
             targetEntity: Decklistslot
             mappedBy: decklist
-            cascade: ["persist"]
+            cascade: ["persist","remove"]
         comments:
             targetEntity: Comment
             mappedBy: decklist

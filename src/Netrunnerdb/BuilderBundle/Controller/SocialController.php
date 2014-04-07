@@ -1180,6 +1180,49 @@ class SocialController extends Controller {
 								'decklist_name' => $decklist
 								->getPrettyName())));
 	}
+
+	/*
+	 * deletes a decklist if it has no comment, no vote, no favorite
+	*/
+	public function deleteAction($decklist_id)
+	{
+	    /* @var $em \Doctrine\ORM\EntityManager */
+	    $em = $this->get('doctrine')->getManager();
+	
+	    $user = $this->getUser();
+	    if(!$user) throw new UnauthorizedHttpException(
+	            "You must be logged in for this operation.");
+	
+	    $decklist = $em->getRepository('NetrunnerdbBuilderBundle:Decklist')->find($decklist_id);
+	    if(!$decklist || $decklist->getUser()->getId() != $user->getId()) throw new UnauthorizedHttpException(
+	            "You don't have access to this decklist.");
+	
+	    if($decklist->getNbvotes() || $decklist->getNbfavorites() || $decklist->getNbcomments()) throw new UnauthorizedHttpException(
+	            "Cannot delete this decklist.");
+	    
+	    $precedent = $decklist->getPrecedent();
+	    
+	    $children_decks = $decklist->getChildren();
+	    /* @var $children_deck Deck */
+	    foreach($children_decks as $children_deck) {
+	        $children_deck->setParent($precedent);
+	    }
+	    
+	    $successor_decklists = $decklist->getSuccessors();
+	    /* @var $successor_decklist Decklist */
+	    foreach($successor_decklists as $successor_decklist) {
+	        $successor_decklist->setPrecedent($precedent);
+	    }
+	    
+	    $em->remove($decklist);
+	    $em->flush();
+	
+	    return $this
+	    ->redirect(
+	            $this
+	            ->generateUrl('decklists_list',
+	                    array('type' => 'mine')));
+	}
 	
 	/*
 	 * displays details about a user and the list of decklists he published
