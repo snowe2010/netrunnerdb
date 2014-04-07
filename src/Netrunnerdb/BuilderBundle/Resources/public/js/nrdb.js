@@ -829,8 +829,8 @@ function display_notification()
 {
 	if(!localStorage) return;
 	var Notification = {
-		version: '1.5.1',
-		message: "<strong>New!</strong> Decklist search page. Finally."	
+		version: '1.5.2',
+		message: "<strong>New!</strong> Option to delete decklist when no vote, no fav and no comment."	
 	};
 	var localStorageNotification = localStorage.getItem('notification');
 	if(localStorageNotification === Notification.version) return;
