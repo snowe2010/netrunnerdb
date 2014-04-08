@@ -332,9 +332,9 @@ class DefaultController extends Controller
 	    print "<h2>Fails</h2>";
 	    foreach($fails as $fail) { print "<p>$fail</p>"; }
 	    print "<h2>New</h2>";
-	    foreach($new as $img) { print "<p><img src='$imgpath'></p>"; }
+	    foreach($new as $img) { print "<p><img src='$img'></p>"; }
 	    print "<h2>Old</h2>";
-	    foreach($old as $img) { print "<p><img src='$imgpath'></p>"; }
+	    foreach($old as $img) { print "<p><img src='$img'></p>"; }
 	    return new Response('');
 	}
 }
