@@ -249,7 +249,7 @@ class DefaultController extends Controller
 	    $fails = array();
 	    
 	    $base = 'http://www.fantasyflightgames.com/ffg_content/android-netrunner';
-	    $root = $this->get('kernel')->getRootDir()."/../ffg";
+	    $root = $this->get('kernel')->getRootDir()."/../../ffg_images";
 	    
 	    $segments = array(
 	    	'core' => 'core-set-cards',
@@ -262,8 +262,15 @@ class DefaultController extends Controller
 	    
 	    $corrections = array(
 	    	'astroscript-pilot-program' => 'autoscript-pilot-program',
+	            'melange-mining-corp-' => 'melange-mining-corp',
 	            'haas-bioroid-stronger-together' => 'haas-bioroid-adn02',
 	            'ash-2x3zb9cy' => 'ash',
+	            'dj-vu' => 'deja-vu',
+	            'drac' => 'draco',
+	            'joshua-b-' => 'joshua-b',
+	            'doppelgnger' => 'doppelganger',
+	            'weyland-consortium-because-we-built-it' => 'weyland-consortium',
+	            'mr--li' => 'mr-li',
 	    );
 	    
 	    $cycles = $em->getRepository('NetrunnerdbCardsBundle:Cycle')->findBy(array(), array('number' => 'asc'));
@@ -281,7 +288,7 @@ class DefaultController extends Controller
 	            /* @var $card Card */
 	            foreach($cards as $card) {
 	                $filepath = $root."/".$card->getCode().".png";
-	                $imgpath = "/ffg/".$card->getCode().".png";
+	                $imgpath = "/ffg_images/".$card->getCode().".png";
 	                if(file_exists($filepath)) {
 	                    $old[] = $imgpath;
 	                    continue;
@@ -290,6 +297,7 @@ class DefaultController extends Controller
 	                $ffg = $title = $card->getTitle();
 	                $ffg = str_replace(' ', '-', $ffg);
 	                $ffg = str_replace('.', '-', $ffg);
+	                $ffg = str_replace('&', '-', $ffg);
 	                $ffg = str_replace('\'', '', $ffg);
 	                if($cycle->getCode() === 'core' || $card->getSide()->getName() === 'Runner' || $card->getKeywords() === 'Division') {
 	                    $ffg = preg_replace('/:.*/', '', $ffg);
