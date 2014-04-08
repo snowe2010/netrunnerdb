@@ -232,4 +232,101 @@ class DefaultController extends Controller
 		$response->setContent($content);
 		return $response;
 	}
+	
+	public function ffgAction()
+	{
+	    if (false === $this->get('security.context')->isGranted('ROLE_ADMIN')) {
+	        throw new \Symfony\Component\Security\Core\Exception\AccessDeniedException();
+	    }
+	    
+	    // http://www.fantasyflightgames.com/ffg_content/organized-play/2013/private-security-force.png
+	    $em = $this->get('doctrine')->getManager();
+	    
+	    $fs = new \Symfony\Component\Filesystem\Filesystem();
+	    
+	    $old = array();
+	    $new = array();
+	    $fails = array();
+	    
+	    $base = 'http://www.fantasyflightgames.com/ffg_content/android-netrunner';
+	    $root = $this->get('kernel')->getRootDir()."/ffg";
+	    
+	    $segments = array(
+	    	'core' => 'core-set-cards',
+	        'genesis' => 'genesis-cycle/cards',
+	        'creation-and-control' => 'deluxe-expansions/creation-and-control',
+	        'spin' => 'spin-cycle/cards',
+	        'honor-and-profit' => 'deluxe-expansions/honor-and-profit/cards',
+	        'lunar' => 'lunar-cycle/cards',
+	    );
+	    
+	    $corrections = array(
+	    	'astroscript-pilot-program' => 'autoscript-pilot-program',
+	            'haas-bioroid-stronger-together' => 'haas-bioroid-adn02',
+	            'ash-2x3zb9cy' => 'ash',
+	    );
+	    
+	    $cycles = $em->getRepository('NetrunnerdbCardsBundle:Cycle')->findBy(array(), array('number' => 'asc'));
+	    /* @var $cycle Cycle */
+	    foreach ($cycles as $cycle) {
+	    	if(!isset($segments[$cycle->getCode()])) {
+	            continue;
+	        }
+	        $segment = $segments[$cycle->getCode()];
+	        
+	        $packs = $cycle->getPacks();
+	        /* @var $pack Pack */
+	        foreach($packs as $pack) {
+	            $cards = $pack->getCards();
+	            /* @var $card Card */
+	            foreach($cards as $card) {
+	                $filepath = $root."/".$card->getCode().".png";
+	                $imgpath = "/ffg/".$card->getCode().".png";
+	                if(file_exists($filepath)) {
+	                    $old[] = $imgpath;
+	                    continue;
+	                }
+	                
+	                $ffg = $title = $card->getTitle();
+	                $ffg = str_replace(' ', '-', $ffg);
+	                $ffg = str_replace('.', '-', $ffg);
+	                $ffg = str_replace('\'', '', $ffg);
+	                if($cycle->getCode() === 'core' || $card->getSide()->getName() === 'Runner' || $card->getKeywords() === 'Division') {
+	                    $ffg = preg_replace('/:.*/', '', $ffg);
+	                } else {
+	                    $ffg = str_replace(':', '', $ffg);
+	                }
+	                $ffg = strtolower($ffg);
+	                $ffg = iconv('UTF-8', 'ASCII//TRANSLIT', $ffg);
+	                $ffg = preg_replace('/[^a-z0-9\-]/', '', $ffg);
+	                
+	                if(isset($corrections[$ffg])) {
+	                    $ffg = $corrections[$ffg];
+	                }
+	                
+	                $url = "$base/$segment/$ffg.png";
+	                
+	                $ch = curl_init($url);
+	                curl_setopt($ch,CURLOPT_RETURNTRANSFER, true);
+	                if($response = curl_exec($ch)) {
+	                    $content_type = curl_getinfo($ch, CURLINFO_CONTENT_TYPE);
+	                    if($content_type === "image/png") {
+	                        $fs->dumpFile($filepath, $response);
+	                        $new[] = $imgpath;
+	                        continue;
+	                    }
+	                }
+	                
+	                $fails[] = $url;
+	            }
+	        }
+	    }
+	    print "<h2>Fails</h2>";
+	    foreach($fails as $fail) { print "<p>$fail</p>"; }
+	    print "<h2>New</h2>";
+	    foreach($new as $img) { print "<p><img src='$imgpath'></p>"; }
+	    print "<h2>Old</h2>";
+	    foreach($old as $img) { print "<p><img src='$imgpath'></p>"; }
+	    return new Response('');
+	}
 }

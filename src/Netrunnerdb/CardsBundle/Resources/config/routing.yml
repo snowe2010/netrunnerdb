@@ -143,4 +143,7 @@ all_opinions:
     requirements:
         _locale: en|fr|de|es|it|pl
 
-    
+ffg:
+    pattern: /ffg
+    defaults:
+        _controller: NetrunnerdbCardsBundle:Default:ffg
