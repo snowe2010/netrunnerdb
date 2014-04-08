@@ -249,7 +249,7 @@ class DefaultController extends Controller
 	    $fails = array();
 	    
 	    $base = 'http://www.fantasyflightgames.com/ffg_content/android-netrunner';
-	    $root = $this->get('kernel')->getRootDir()."/ffg";
+	    $root = $this->get('kernel')->getRootDir()."/../ffg";
 	    
 	    $segments = array(
 	    	'core' => 'core-set-cards',
