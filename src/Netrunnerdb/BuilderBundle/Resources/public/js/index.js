@@ -36,12 +36,15 @@ function update_cardsearch_result() {
 	var query = NRDB.smart_filter.get_query();
 	if ($.isEmptyObject(query))
 		return;
+	var tabindex = 2;
 	CardDB(query).order("title intl").each(
 			function(record) {
 				$('#card_search_results').append(
 						'<tr><td><span class="icon icon-' + record.faction_code
 								+ ' ' + record.faction_code
-								+ '"></td><td><a href="'
+								+ '"></td><td><a tabindex="'
+								+ (tabindex++)
+								+ '" href="'
 								+ Url_CardPage.replace('00000', record.code)
 								+ '" class="card" data-index="' + record.code
 								+ '">' + record.title
@@ -63,7 +66,7 @@ $(function() {
 	});
 
 	$('#card_search_form').on({
-		keyup : debounce(handle_input_change, 500)
+		keyup : debounce(handle_input_change, 250)
 	});
 
 });

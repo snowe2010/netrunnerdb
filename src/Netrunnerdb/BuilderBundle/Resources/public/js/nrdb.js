@@ -324,7 +324,10 @@ function check_influence() {
 
 $(function () {
 	
-	if(!Modernizr.touch)  $('body').on({mouseover: display_qtip}, '.card');
+	if(!Modernizr.touch) {
+		$('body').on({mouseover: display_qtip, focus: display_qtip}, '.card');
+	}
+	
 	if(Modernizr.touch) $('#svg').remove();
 		
 	if($('#opinion-form-text').size()) {
@@ -411,11 +414,9 @@ function display_qtip(event) {
 		},
 		show: {
 			event: event.type,
-			ready: true
-		}/*,
-		hide: {
-			event: 'click'
-		}*/
+			ready: true,
+			solo: true
+		}
 	}, event);
 }
 
