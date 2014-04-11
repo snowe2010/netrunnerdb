@@ -1,7 +1,6 @@
 <?php
 
 namespace Netrunnerdb\BuilderBundle\Controller;
-use Symfony\Component\Finder\Exception\AccessDeniedException;
 
 use \DateTime;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -678,7 +677,7 @@ class SocialController extends Controller {
 				", array($decklist_id))->fetchAll();
 
 		if(empty($rows)) {
-			throw new AccessDeniedException('Wrong id');
+			throw new NotFoundHttpException('Wrong id');
 		}
 		
 		$decklist = $rows[0];
@@ -802,7 +801,7 @@ class SocialController extends Controller {
 		/* @var $decklist \Netrunnerdb\BuilderBundle\Entity\Decklist */
 		$decklist = $em->getRepository('NetrunnerdbBuilderBundle:Decklist')->find($decklist_id);
 		if (!$decklist)
-			throw new AccessDeniedException('Wrong id');
+			throw new NotFoundHttpException('Wrong id');
 
 		$author = $decklist->getUser();
 		
@@ -1008,6 +1007,7 @@ class SocialController extends Controller {
 		
 		/* @var $decklist \Netrunnerdb\BuilderBundle\Entity\Decklist */
 		$decklist = $em->getRepository('NetrunnerdbBuilderBundle:Decklist')->find($decklist_id);
+		if(!decklist) throw new NotFoundHttpException();
 
 		/* @var $judge \Netrunnerdb\SocialBundle\Services\Judge */
 		$judge = $this->get('judge');
@@ -1063,6 +1063,7 @@ class SocialController extends Controller {
 		
 		/* @var $decklist \Netrunnerdb\BuilderBundle\Entity\Decklist */
 		$decklist = $em->getRepository('NetrunnerdbBuilderBundle:Decklist')->find($decklist_id);
+		if(!$decklist) throw new NotFoundHttpException();
 
 		$rd = array();
 		$identity = null;
@@ -1432,7 +1433,7 @@ class SocialController extends Controller {
 				", array($decklist_id))->fetchAll();
 		
 		if(empty($rows)) {
-			throw new AccessDeniedException('Wrong id');
+			throw new NotFoundHttpException('Wrong id');
 		}
 		
 		$decklist = $rows[0];
@@ -1547,7 +1548,7 @@ class SocialController extends Controller {
 				", array())->fetchAll();
 	     
 	    if(empty($rows)) {
-	        throw new AccessDeniedException('No decklist this week');
+	        throw new NotFoundHttpException('No decklist this week');
 	    }
 	     
 	    $decklist = $rows[0];
