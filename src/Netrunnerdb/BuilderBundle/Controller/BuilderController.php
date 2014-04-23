@@ -186,7 +186,8 @@ class BuilderController extends Controller
 	    
 	    $url = $this->getRequest()->request->get('urlmeteor');
 	    if(!preg_match('~http://netrunner.meteor.com/users/([^/]+)~', $url, $matches)) {
-	        return new Response("Wrong url $url");
+	        $this->get('session')->getFlashBag()->set('error', "Wrong URL. Please go to \"Your decks\" on Meteor Decks and copy the content of the address bar into the required field.");
+	        return $this->redirect($this->generateUrl('decks_list'));
 	    }
 	    $meteor_id = $matches[1];
 	    $meteor_json = file_get_contents("http://netrunner.meteor.com/api/decks/$meteor_id");
