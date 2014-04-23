@@ -1008,7 +1008,7 @@ class SocialController extends Controller {
 		
 		/* @var $decklist \Netrunnerdb\BuilderBundle\Entity\Decklist */
 		$decklist = $em->getRepository('NetrunnerdbBuilderBundle:Decklist')->find($decklist_id);
-		if(!decklist) throw new NotFoundHttpException();
+		if(!$decklist) throw new NotFoundHttpException();
 
 		/* @var $judge \Netrunnerdb\SocialBundle\Services\Judge */
 		$judge = $this->get('judge');
