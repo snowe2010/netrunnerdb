@@ -847,7 +847,8 @@ class SocialController extends Controller {
 		$comment_text = trim(filter_var($request->get('comment'),
 				FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES));
 		if($decklist && !empty($comment_text)) {
-			$comment_html = Markdown::defaultTransform($comment_text);
+		    $comment_text = preg_replace('%(?<!\()\b(?:(?:https?|ftp)://)(?:((?:(?:[a-z\d\x{00a1}-\x{ffff}]+-?)*[a-z\d\x{00a1}-\x{ffff}]+)(?:\.(?:[a-z\d\x{00a1}-\x{ffff}]+-?)*[a-z\d\x{00a1}-\x{ffff}]+)*(?:\.[a-z\x{00a1}-\x{ffff}]{2,6}))(?::\d+)?)(?:[^\s]*)?%iu', '[$1]($0)', $comment_text);
+		    $comment_html = Markdown::defaultTransform($comment_text);
 			
 			$comment = new Comment();
 			$comment->setText($comment_html);
