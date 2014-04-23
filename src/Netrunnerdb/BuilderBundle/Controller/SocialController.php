@@ -1475,6 +1475,77 @@ class SocialController extends Controller {
 		return $response;
 	}
 	
+	public function apidecklistsAction($date)
+	{
+
+	    $response = new Response();
+	    $response->setPublic();
+	    $response->setMaxAge(600);
+	    $response->headers->add(array('Access-Control-Allow-Origin' => '*'));
+	    
+	    $jsonp = $this->getRequest()->query->get('jsonp');
+	    $locale = $this->getRequest()->query->get('_locale');
+	    if(isset($locale)) $this->getRequest()->setLocale($locale);
+	    
+	    $dbh = $this->get('doctrine')->getConnection();
+	    $decklists = $dbh
+	    ->executeQuery(
+	            "SELECT
+				d.id,
+				d.ts,
+				d.name,
+				d.creation,
+				d.description,
+				u.username
+				from decklist d
+				join user u on d.user_id=u.id
+				where substring(d.creation,1,10)=?
+				", array($date))->fetchAll();
+	    
+	    $lastTS = null;
+	    foreach($decklists as $i => $decklist) {
+	        $lastTS = max($lastTS, $decklist['ts']);
+	       unset($decklists[$i]['ts']);
+	    }
+	    $response->setLastModified(new DateTime($lastTS));
+	    if ($response->isNotModified($this->getRequest())) {
+	        return $response;
+	    }
+	     
+	    foreach($decklists as $i => $decklist) {
+	        $decklists[$i]['id'] = intval($decklist['id']);
+	    
+	        $cards = $dbh
+	        ->executeQuery(
+	                "SELECT
+				c.code card_code,
+				s.quantity qty
+				from decklistslot s
+				join card c on s.card_id=c.id
+				where s.decklist_id=?
+				order by c.code asc", array($decklists[$i]['id']))->fetchAll();
+	    
+	        $decklists[$i]['cards'] = array();
+	        foreach($cards as $card) {
+	            $decklists[$i]['cards'][$card['card_code']] = intval($card['qty']);
+	        }
+	    }
+	     
+	    $content = json_encode($decklists);
+	    if(isset($jsonp))
+	    {
+	        $content = "$jsonp($content)";
+	        $response->headers->set('Content-Type', 'application/javascript');
+	    } else
+	    {
+	        $response->headers->set('Content-Type', 'application/json');
+	    }
+	    
+	    $response->setContent($content);
+	    return $response;
+	    
+	}
+	
 	public function searchAction()
 	{
 

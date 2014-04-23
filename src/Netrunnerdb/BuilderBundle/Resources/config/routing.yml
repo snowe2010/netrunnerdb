@@ -263,3 +263,13 @@ api_decklist:
     requirements:
         _format: json
         decklist_id: \d+
+
+api_decklists:
+    pattern: /api/decklists/{date}.{_format}
+    defaults:
+        _controller: NetrunnerdbBuilderBundle:Social:apidecklists
+        _format: json
+    requirements:
+        _format: json
+        date: \d\d\d\d-\d\d-\d\d
+        
