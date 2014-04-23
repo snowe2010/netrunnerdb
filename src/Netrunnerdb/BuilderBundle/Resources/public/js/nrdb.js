@@ -830,8 +830,8 @@ function display_notification()
 {
 	if(!localStorage) return;
 	var Notification = {
-		version: '1.5.2',
-		message: "<strong>New!</strong> Option to delete decklist when no vote, no fav and no comment."	
+		version: '1.5.4',
+		message: "<strong>New!</strong> Option to automatically import all your decks from Meteor Decks."	
 	};
 	var localStorageNotification = localStorage.getItem('notification');
 	if(localStorageNotification === Notification.version) return;
