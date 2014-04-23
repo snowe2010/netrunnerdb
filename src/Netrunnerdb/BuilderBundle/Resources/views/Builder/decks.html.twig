@@ -29,6 +29,13 @@ var CardDB = null,
 
 <div class="container decks">
 
+{% for flashMessage in app.session.flashbag.get('error') %}
+    <div class="alert alert-danger"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>{{ flashMessage }}</div>
+{% endfor %}
+{% for flashMessage in app.session.flashbag.get('notice') %}
+    <div class="alert alert-success"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>{{ flashMessage }}</div>
+{% endfor %}
+
 <div class="row">
 
 <!-- Left-side Column -->
@@ -177,8 +184,16 @@ var CardDB = null,
 <div class="col-md-12">
 	<a href="{{ path('deck_buildform', {side_text:'corp'}) }}" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-plus color-corp"></span> Corp</a>
 	<a href="{{ path('deck_buildform', {side_text:'runner'}) }}" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-plus color-runner"></span> Runner</a>
-	<a href="{{ path('deck_import') }}" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-import"></span> Import</a>
-	<button type="button" class="btn btn-default btn-sm" onclick="$('#fileModal').modal('show')"><span class="glyphicon glyphicon-upload"></span> File</button>
+	<div class="btn-group">
+		<button type="button" class="btn btn-default dropdown-toggle btn-sm" data-toggle="dropdown">
+			<span class="glyphicon glyphicon-import"></span> Import <span class="caret"></span>
+		</button>
+		<ul class="dropdown-menu" role="menu">
+			<li><a href="{{ path('deck_import') }}" id="btn-import-paste">Copy/paste</a></li>
+			<li><a href="#" onclick="$('#fileModal').modal('show')" id="btn-import-file">File</a></li>
+			<li><a href="#" onclick="$('#meteorModal').modal('show')" id="btn-import-meteor">Meteor Decks</a></li>
+		</ul>
+	</div>
     <div class="btn-group filter" data-toggle="buttons" id="faction_filter">
 </div>
 
@@ -399,6 +414,35 @@ var CardDB = null,
 		</div>
 	</div>
 </div>
+<!-- Modal -->
+
+<!-- Modal -->
+<div class="modal fade" id="meteorModal" tabindex="-1" role="dialog" aria-labelledby="meteorModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				<h3 class="modal-title">Import from Meteor Decks</h3>
+			</div>
+			<div class="modal-body">
+				<div class="row">
+					<div class="col-md-12">
+						<form action="{{ path('deck_meteorimport') }}" method="POST" enctype="multipart/form-data">
+							<div class="form-group">
+								<label for="urlmeteor">URL of the page "Your decks" on Meteor Decks</label>
+								<input class="form-control" type="meteor" name="urlmeteor" placeholder="http://netrunner.meteor.com/users/xxxxxxxxxxxxxxxxx">
+							</div>
+							<div class="pull-right">
+								<button type="submit" class="btn btn-success">Import</button>
+								<button type="button" class="btn btn-default" onclick="$('#meteorModal').modal('hide')">Cancel</button>
+							</div>
+						</form>
+					</div><!-- /#modal-info -->
+				</div><!-- /.row -->
+			</div><!-- /.modal-body -->
+		</div><!-- /.modal-content -->
+	</div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
 <!-- Modal -->
 
 {% endblock %}

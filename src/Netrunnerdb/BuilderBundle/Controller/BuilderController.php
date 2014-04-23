@@ -60,16 +60,6 @@ class BuilderController extends Controller
 		));
 	}
 
-	/* obsolete */
-	public function textimportAction()
-	{
-		$request = $this->getRequest();
-		$deck_name = filter_var($request->get('name'), FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
-		$import = filter_var($request->get('import'), FILTER_UNSAFE_RAW);
-		$content = $this->parseTextImport($import);
-		return $this->forward('NetrunnerdbBuilderBundle:Builder:save', array('name' => $deck_name, 'content' => json_encode($content)));
-	}
-
 	public function fileimportAction()
 	{
 		$request = $this->getRequest();
@@ -162,6 +152,76 @@ class BuilderController extends Controller
 		return array("content" => $content, "description" => implode("\n", $description));
 	}
 
+	public function meteorimportAction()
+	{
+	    /* @var $em \Doctrine\ORM\EntityManager */
+	    $em = $this->get('doctrine')->getManager();
+	    
+	    // first build an array to match meteor card names with our card codes
+	    $glossary = array();
+	    $cards = $em->getRepository('NetrunnerdbCardsBundle:Card')->findAll();
+	    /* @var $card Card */
+	    foreach($cards as $card) {
+	        $title = $card->getTitle();
+	        // rule to cut the subtitle of an identity
+	        if($card->getPack()->getCycle()->getNumber() == 1 || ($card->getPack()->getCycle()->getNumber() == 2 && $card->getSide()->getName() == "Runner")) {
+	            $title = preg_replace('~:.*~', '', $title);
+	        }
+	        
+	        $pack = $card->getPack()->getName();
+	        if($pack == "Core Set") {
+	            $pack = "Core";
+	        }
+	         
+	        $str = $title . " " . $pack;
+
+	        $str = str_replace('\'', '', $str);
+	        $str = strtr(utf8_decode($str), 
+	                utf8_decode('ŠŒŽšœžŸ¥µÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝßàáâãäåæçèéêëìíîïðñòóôõöøùúûüýÿō'),
+	                'SOZsozYYuAAAAAAACEEEEIIIIDNOOOOOOUUUUYsaaaaaaaceeeeiiiionoooooouuuuyyo');
+	        $str = strtolower($str);
+	        $str = preg_replace('~\W+~', '-', $str);
+	        $glossary[$str] = $card->getCode();
+	    }
+	    
+	    $url = $this->getRequest()->request->get('urlmeteor');
+	    if(!preg_match('~http://netrunner.meteor.com/users/([^/]+)~', $url, $matches)) {
+	        return new Response("Wrong url $url");
+	    }
+	    $meteor_id = $matches[1];
+	    $meteor_json = file_get_contents("http://netrunner.meteor.com/api/decks/$meteor_id");
+	    $meteor_data = json_decode($meteor_json, true);
+
+	    // check to see if the user has enough available deck slots
+	    $user = $this->getUser();
+	    $slots_left = $user->getMaxNbDecks() - count($user->getDecks());
+	    $slots_required = count($meteor_data);
+	    if($slots_required > $slots_left) {
+	        $this->get('session')->getFlashBag()->set('error', "You don't have enough available deck slots to import the $slots_required decks from Meteor (only $slots_left slots left). You must either delete some decks here or on Meteor Decks.");
+	        return $this->redirect($this->generateUrl('decks_list'));
+	    }
+	       
+	    
+	    
+	    foreach($meteor_data as $meteor_deck) {
+	        
+	        $content = array(
+	        	$glossary[$meteor_deck['identity']] => 1
+	        );
+	        foreach($meteor_deck['entries'] as $entry => $qty) {
+	            $content[$glossary[$entry]] = $qty;
+	        }
+	        
+	        /* @var $deck Deck */
+	        $deck = new Deck();
+	        $this->saveDeck($deck, null, $meteor_deck['name'], "", $content);
+	    }
+	    
+	    $this->get('session')->getFlashBag()->set('notice', "Successfully imported $slots_required decks from Meteor Decks.");
+	     
+	    return $this->redirect($this->generateUrl('decks_list'));
+	}
+	
 	public function textexportAction($deck_id)
 	{
 		/* @var $em \Doctrine\ORM\EntityManager */
@@ -261,14 +321,11 @@ class BuilderController extends Controller
 
 	public function saveAction()
 	{
-		/* @var $em \Doctrine\ORM\EntityManager */
-		$em = $this->get('doctrine')->getManager();
 		
 		$user = $this->getUser();
 		if(count($user->getDecks()) > $user->getMaxNbDecks())
 			return new Response('You have reached the maximum number of decks allowed. Delete some decks or increase your reputation.');
 		
-		$judge = $this->get('judge');
 		$request = $this->getRequest();
 		$is_copy = (boolean) filter_var($request->get('copy'), FILTER_SANITIZE_NUMBER_INT);
 		$name = filter_var($request->get('name'), FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
@@ -285,89 +342,102 @@ class BuilderController extends Controller
 			$id = null;
 		}
 		
+		/* @var $em \Doctrine\ORM\EntityManager */
+		$em = $this->get('doctrine')->getManager();
+		 
 		if ($id) {
-			$deck = $em->getRepository('NetrunnerdbBuilderBundle:Deck')->find($id);
-			if ($user->getId() != $deck->getUser()->getId())
-				throw new UnauthorizedHttpException("You don't have access to this deck.");
-			foreach ($deck->getSlots() as $slot) {
-				$deck->removeSlot($slot);
-				$em->remove($slot);
-			}
+		    $deck = $em->getRepository('NetrunnerdbBuilderBundle:Deck')->find($id);
+		    if ($user->getId() != $deck->getUser()->getId())
+		        throw new UnauthorizedHttpException("You don't have access to this deck.");
+		    foreach ($deck->getSlots() as $slot) {
+		        $deck->removeSlot($slot);
+		        $em->remove($slot);
+		    }
 		} else {
-			$deck = new Deck;
+		    $deck = new Deck;
 		}
-		if($decklist_id) {
-			$decklist = $em->getRepository('NetrunnerdbBuilderBundle:Decklist')->find($decklist_id);
-			if($decklist) $deck->setParent($decklist);
-		}
-		$deck->setName($name);
-		$deck->setDescription($description);
-		$deck->setUser($user);
-		if (!$id) {
-			$deck->setCreation(new \DateTime());
-		}
-		$deck->setLastupdate(new \DateTime());
-		$identity = null;
-		$cards = array();
-		/* @var $latestPack \Netrunnerdb\CardsBundle\Entity\Pack */
-		$latestPack = null;
-		foreach ($content as $card_code => $qty) {
-			$card = $em->getRepository('NetrunnerdbCardsBundle:Card')->findOneBy(array("code" => $card_code));
-			$pack = $card->getPack();
-			if (!$latestPack) {
-				$latestPack = $pack;
-			} else if ($latestPack->getCycle()->getNumber() < $pack->getCycle()->getNumber()) {
-				$latestPack = $pack;
-			} else if($latestPack->getCycle()->getNumber() == $pack->getCycle()->getNumber() && $latestPack->getNumber() < $pack->getNumber()) {
-				$latestPack = $pack;
-			}
-			if ($card->getType()->getName() == "Identity") {
-				$identity = $card;
-			}
-			$cards[$card_code] = $card;
-		}
-		$deck->setLastPack($latestPack);
-		if ($identity) {
-			$deck->setSide($identity->getSide());
-			$deck->setIdentity($identity);
-		} else {
-			$deck->setSide(current($cards)->getSide());
-			$identity = $em->getRepository('NetrunnerdbCardsBundle:Card')->findOneBy(array("side" => $deck->getSide()));
-			$cards[$identity->getCode()] = $identity;
-			$content[$identity->getCode()] = 1;
-			$deck->setIdentity($identity);
-		}
-		foreach ($content as $card_code => $qty) {
-			$card = $cards[$card_code];
-			if ($card->getSide()->getId() != $deck->getSide()->getId())
-				continue;
-			$card = $cards[$card_code];
-			$slot = new Deckslot;
-			$slot->setQuantity($qty);
-			$slot->setCard($card);
-			$slot->setDeck($deck);
-			$deck->addSlot($slot);
-			$deck_content[$card_code] = array('card' => $card, 'qty' => $qty);
-		}
-		$analyse = $judge->analyse($deck_content);
-		if (is_string($analyse)) {
-			$deck->setProblem($analyse);
-		} else {
-			$deck->setProblem(NULL);
-			$deck->setDeckSize($analyse['deckSize']);
-			$deck->setInfluenceSpent($analyse['influenceSpent']);
-			$deck->setAgendaPoints($analyse['agendaPoints']);
-		}
-
-		if (!$id)
-			$em->persist($deck);
 		
-		$em->flush();
+		$this->saveDeck($deck, $decklist_id, $name, $description, $content);
 		
 		return $this->redirect($this->generateUrl('decks_list'));
 
 	}
 
+	public function saveDeck($deck, $decklist_id, $name, $description, $content)
+	{
+	    /* @var $em \Doctrine\ORM\EntityManager */
+	    $em = $this->get('doctrine')->getManager();
+	    
+	    $judge = $this->get('judge');
+	     
+	    if($decklist_id) {
+	        $decklist = $em->getRepository('NetrunnerdbBuilderBundle:Decklist')->find($decklist_id);
+	        if($decklist) $deck->setParent($decklist);
+	    }
+	    $deck->setName($name);
+	    $deck->setDescription($description);
+	    $deck->setUser($this->getUser());
+	    if (!$deck->getCreation()) {
+	        $deck->setCreation(new \DateTime());
+	    }
+	    $deck->setLastupdate(new \DateTime());
+	    $identity = null;
+	    $cards = array();
+	    /* @var $latestPack \Netrunnerdb\CardsBundle\Entity\Pack */
+	    $latestPack = null;
+	    foreach ($content as $card_code => $qty) {
+	        $card = $em->getRepository('NetrunnerdbCardsBundle:Card')->findOneBy(array("code" => $card_code));
+	        $pack = $card->getPack();
+	        if (!$latestPack) {
+	            $latestPack = $pack;
+	        } else if ($latestPack->getCycle()->getNumber() < $pack->getCycle()->getNumber()) {
+	            $latestPack = $pack;
+	        } else if($latestPack->getCycle()->getNumber() == $pack->getCycle()->getNumber() && $latestPack->getNumber() < $pack->getNumber()) {
+	            $latestPack = $pack;
+	        }
+	        if ($card->getType()->getName() == "Identity") {
+	            $identity = $card;
+	        }
+	        $cards[$card_code] = $card;
+	    }
+	    $deck->setLastPack($latestPack);
+	    if ($identity) {
+	        $deck->setSide($identity->getSide());
+	        $deck->setIdentity($identity);
+	    } else {
+	        $deck->setSide(current($cards)->getSide());
+	        $identity = $em->getRepository('NetrunnerdbCardsBundle:Card')->findOneBy(array("side" => $deck->getSide()));
+	        $cards[$identity->getCode()] = $identity;
+	        $content[$identity->getCode()] = 1;
+	        $deck->setIdentity($identity);
+	    }
+	    foreach ($content as $card_code => $qty) {
+	        $card = $cards[$card_code];
+	        if ($card->getSide()->getId() != $deck->getSide()->getId())
+	            continue;
+	        $card = $cards[$card_code];
+	        $slot = new Deckslot;
+	        $slot->setQuantity($qty);
+	        $slot->setCard($card);
+	        $slot->setDeck($deck);
+	        $deck->addSlot($slot);
+	        $deck_content[$card_code] = array('card' => $card, 'qty' => $qty);
+	    }
+	    $analyse = $judge->analyse($deck_content);
+	    if (is_string($analyse)) {
+	        $deck->setProblem($analyse);
+	    } else {
+	        $deck->setProblem(NULL);
+	        $deck->setDeckSize($analyse['deckSize']);
+	        $deck->setInfluenceSpent($analyse['influenceSpent']);
+	        $deck->setAgendaPoints($analyse['agendaPoints']);
+	    }
+	    
+        $em->persist($deck);
+	    $em->flush();
+	    
+	}
+	
 	public function deleteAction()
 	{
 		/* @var $em \Doctrine\ORM\EntityManager */
@@ -387,6 +457,8 @@ class BuilderController extends Controller
 		$em->remove($deck);
 		$em->flush();
 
+		$this->get('session')->getFlashBag()->set('notice', "Deck deleted.");
+		
 		return $this->redirect($this->generateUrl('decks_list'));
 	}
 

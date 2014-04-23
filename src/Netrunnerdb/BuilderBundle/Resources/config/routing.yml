@@ -84,6 +84,15 @@ deck_fileimport:
     requirements:
         _locale: en|fr|de|es|it|pl
 
+deck_meteorimport:
+    pattern: /{_locale}/deck/meteorimport
+    defaults:
+        _controller: NetrunnerdbBuilderBundle:Builder:meteorimport
+        _locale: en
+    requirements:
+        _locale: en|fr|de|es|it|pl
+
+
 deck_export_octgn:
     pattern: /deck/export/octgn/{deck_id}
     defaults:
@@ -272,4 +281,4 @@ api_decklists:
     requirements:
         _format: json
         date: \d\d\d\d-\d\d-\d\d
-        
+            
