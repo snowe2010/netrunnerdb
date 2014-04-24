@@ -772,7 +772,7 @@ class SearchController extends Controller
 			"last" => $last, 
 			"searchbar" => $searchbar,
 			"pagination" => $pagination,
-			"title" => $title,
+			"pagetitle" => $title,
 			"mode" => $mode,
 			"metadescription" => $meta,
 			"display_mode_template" => $mode_templates[$mode],

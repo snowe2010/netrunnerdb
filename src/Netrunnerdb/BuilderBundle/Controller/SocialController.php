@@ -535,37 +535,40 @@ class SocialController extends Controller {
 		if($page<1) $page=1;
 		$start = ($page-1)*$limit;
 		
+		$pagetitle = "Decklists";
+		
 		switch ($type) {
 		case 'recent':
 			$result = $this->recent($start, $limit);
+			$pagetitle = "Recent Decklists";
 			break;
 		case 'halloffame':
 			$result = $this->halloffame($start, $limit);
+			$pagetitle = "Hall of Fame";
 			break;
 		case 'hottopics':
 			$result = $this->hottopics($start, $limit);
-			break;
-		case 'faction':
-			$result = $this->faction($code, $start, $limit);
-			break;
-		case 'lastpack':
-			$result = $this->lastpack($code, $start, $limit);
+			$pagetitle = "Hot Topics";
 			break;
 		case 'favorites':
 			$result = $this->favorites($start, $limit);
+			$pagetitle = "Favorite Decklists";
 			break;
 		case 'mine':
 			if (!$this->getUser())
 				$result = array();
 			else
 				$result = $this->by_author($this->getUser()->getId(), $start, $limit);
+			$pagetitle = "My Decklists";
 			break;
 		case 'find':
 		    $result = $this->find($start, $limit);
+		    $pagetitle = "Decklist search results";
 		    break;
 		case 'popular':
 		default:
 			$result = $this->popular($start, $limit);
+			$pagetitle = "Popular Decklists";
 			break;
 		}
 		
@@ -629,6 +632,7 @@ class SocialController extends Controller {
 		return $this->render(
 			'NetrunnerdbBuilderBundle:Decklist:decklists.html.twig',
 			array(
+			        'pagetitle' => $pagetitle,
 					'locales' => $this->renderView('NetrunnerdbCardsBundle:Default:langs.html.twig'),
 					'decklists' => $decklists,
 					'packs' => $packs,
@@ -771,6 +775,7 @@ class SocialController extends Controller {
 				->render(
 						'NetrunnerdbBuilderBundle:Decklist:decklist.html.twig',
 						array(
+						        'pagetitle' => $decklist['name'],
 								'locales' => $this
 										->renderView(
 												'NetrunnerdbCardsBundle:Default:langs.html.twig'),
@@ -961,45 +966,6 @@ class SocialController extends Controller {
 	}
 
 	/*
-	 * (unused) adds a user to a user's list of follows
-	 */
-	public function followAction() {
-		/* @var $em \Doctrine\ORM\EntityManager */
-		$em = $this->get('doctrine')->getManager();
-		
-		$request = $this->getRequest();
-		$follow_id = $request->request->get('following');
-		$user = $this->getUser();
-		$following = $em->getRepository('NetrunnerdbUserBundle:User')->find($follow_id);
-		$user->addFollowing($following);
-		$em->flush();
-		return $this->forward('NetrunnerdbBuilderBundle:Social:following');
-	}
-
-	/*
-	 * (unused) displays the list of a user's follows
-	 */
-	public function followingAction() {
-		$user = $this->getUser();
-		$following = $user->getFollowing()->toArray();
-		if (!count($following)) {
-			return new Response('following nobody');
-		}
-		$qb = $this->get('doctrine')
-				->getRepository('NetrunnerdbBuilderBundle:Decklist')
-				->createQueryBuilder('d');
-		$qb->andWhere("d.user in (?1)")->setParameter(1, $following);
-		$query = $qb->getQuery();
-		$rows = $query->getResult();
-
-		return $this
-				->render(
-						'NetrunnerdbBuilderBundle:Decklist:decklists.html.twig',
-						array('decklists' => $rows));
-
-	}
-
-	/*
 	 * returns a text file with the content of a decklist
 	 */
 	public function textexportAction($decklist_id) {
@@ -1136,6 +1102,7 @@ class SocialController extends Controller {
 		return $this
 				->render('NetrunnerdbBuilderBundle:Default:index.html.twig',
 						array(
+						        'pagetitle' => "Android:Netrunner Cards and Deckbuilder",
 								'locales' => $this
 										->renderView(
 												'NetrunnerdbCardsBundle:Default:langs.html.twig'),
@@ -1269,6 +1236,7 @@ class SocialController extends Controller {
 		}
 		
 		return $this->render('NetrunnerdbBuilderBundle:Default:profile.html.twig', array(
+		    'pagetitle' => $user->getUsername(),
 			'user' => $user,
 			'locales' => $this->renderView('NetrunnerdbCardsBundle:Default:langs.html.twig'),
 			'decklists' => $decklists,
@@ -1580,6 +1548,7 @@ class SocialController extends Controller {
 	    
 	    
         return $this->render('NetrunnerdbBuilderBundle:Search:form.html.twig', array(
+                'pagetitle' => 'Decklist Search',
 					'url' => $this->getRequest()->getRequestUri(),
                 'factions' => $factions,
                'packs' => $packs,

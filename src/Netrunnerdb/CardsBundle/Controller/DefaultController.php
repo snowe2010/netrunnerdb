@@ -59,6 +59,7 @@ class DefaultController extends Controller
 		$response->setPrivate();
 	
 		return $this->render('NetrunnerdbCardsBundle:Search:searchform.html.twig', array(
+		        "pagetitle" => "Card Search",
 				"packs" => $packs,
 				"cycles" => $cycles,
 				"types" => $types,
@@ -120,6 +121,7 @@ class DefaultController extends Controller
 		$response->setPrivate();
 		
 		return $this->render('NetrunnerdbCardsBundle:Default:about.html.twig', array(
+		        "pagetitle" => "About",
 		), $response);
 	}
 
@@ -130,6 +132,7 @@ class DefaultController extends Controller
 		$response->setPrivate();
 		
 		return $this->render('NetrunnerdbCardsBundle:Default:apidoc.html.twig', array(
+		        "pagetitle" => "API documentation",
 		), $response);
 	}
 

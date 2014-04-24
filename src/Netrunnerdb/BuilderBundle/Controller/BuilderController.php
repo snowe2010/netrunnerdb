@@ -26,6 +26,7 @@ class BuilderController extends Controller
 		return $this
 			->render('NetrunnerdbBuilderBundle:Builder:initbuild.html.twig',
 				array(
+				        'pagetitle' => "New deck",
 				'locales' => $this->renderView('NetrunnerdbCardsBundle:Default:langs.html.twig'),
 						"identities" => array_filter($identities,
 						function ($iden)
@@ -47,6 +48,7 @@ class BuilderController extends Controller
 		return $this
 			->render('NetrunnerdbBuilderBundle:Builder:deck.html.twig',
 				array(
+				        'pagetitle' => "Deckbuilder",
 					'locales' => $this->renderView('NetrunnerdbCardsBundle:Default:langs.html.twig'),
 					'deck' => array('side_name' => mb_strtolower($card->getSide()->getName()),"slots" => $arr, "name" => "New " . $card->getSide()->getName() . " Deck", "description" => "", "id" => ""),
 					"published_decklists"=>array()));
@@ -55,6 +57,7 @@ class BuilderController extends Controller
 	public function importAction()
 	{
 		return $this->render('NetrunnerdbBuilderBundle:Builder:directimport.html.twig', array(
+		        'pagetitle' => "Import a deck",
 				'locales' => $this->renderView('NetrunnerdbCardsBundle:Default:langs.html.twig'),
 				
 		));
@@ -511,6 +514,7 @@ class BuilderController extends Controller
 		return $this
 			->render('NetrunnerdbBuilderBundle:Builder:deck.html.twig',
 				array(
+				        'pagetitle' => "Deckbuilder",
 						'locales' => $this->renderView('NetrunnerdbCardsBundle:Default:langs.html.twig'),
 						'deck' => $deck,
 						'published_decklists' => $published_decklists));
@@ -567,6 +571,7 @@ class BuilderController extends Controller
 		}
 		
 		return $this->render('NetrunnerdbBuilderBundle:Builder:decks.html.twig', array(
+		        'pagetitle' => "My Decks",
 								'locales' => $this->renderView('NetrunnerdbCardsBundle:Default:langs.html.twig'),
 				'decks' => $decks, 'nbmax' => $user->getMaxNbDecks()));
 	}
