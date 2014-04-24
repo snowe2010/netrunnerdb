@@ -166,8 +166,14 @@ class BuilderController extends Controller
 	    /* @var $card Card */
 	    foreach($cards as $card) {
 	        $title = $card->getTitle();
+	        $replacements = array(
+	                'Alix T4LB07' => 'Alix T4LBO7'
+	        );
+	        if(isset($replacements[$title])) {
+	            $title = $replacements[$title];
+	        }
 	        // rule to cut the subtitle of an identity
-	        if($card->getPack()->getCycle()->getNumber() == 1 || ($card->getPack()->getCycle()->getNumber() == 2 && $card->getSide()->getName() == "Runner")) {
+	        if($card->getPack()->getCycle()->getNumber() < 2 || ($card->getPack()->getCycle()->getNumber() == 2 && $card->getSide()->getName() == "Runner")) {
 	            $title = preg_replace('~:.*~', '', $title);
 	        }
 	        
@@ -186,7 +192,7 @@ class BuilderController extends Controller
 	        $str = preg_replace('~\W+~', '-', $str);
 	        $glossary[$str] = $card->getCode();
 	    }
-	    
+	    return new Response(json_encode($glossary));
 	    $url = $this->getRequest()->request->get('urlmeteor');
 	    if(!preg_match('~http://netrunner.meteor.com/users/([^/]+)~', $url, $matches)) {
 	        $this->get('session')->getFlashBag()->set('error', "Wrong URL. Please go to \"Your decks\" on Meteor Decks and copy the content of the address bar into the required field.");
