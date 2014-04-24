@@ -192,7 +192,7 @@ class BuilderController extends Controller
 	        $str = preg_replace('~\W+~', '-', $str);
 	        $glossary[$str] = $card->getCode();
 	    }
-	    return new Response(json_encode($glossary));
+	    
 	    $url = $this->getRequest()->request->get('urlmeteor');
 	    if(!preg_match('~http://netrunner.meteor.com/users/([^/]+)~', $url, $matches)) {
 	        $this->get('session')->getFlashBag()->set('error', "Wrong URL. Please go to \"Your decks\" on Meteor Decks and copy the content of the address bar into the required field.");
