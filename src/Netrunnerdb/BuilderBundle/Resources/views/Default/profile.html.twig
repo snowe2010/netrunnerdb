@@ -15,7 +15,9 @@ $(function() {
 <div class="col-md-5 col-md-push-7">
 <div class="panel panel-default">
   <div class="panel-body">
-    <h1><span class="{{ user.faction }}">{{ user.username }}</span> <small>{{ user.reputation }}</small></h1>
+    <h1><span class="{{ user.faction }}">{{ user.username }}</span>
+    {% if decklist.donation > 0 %}<span class="glyphicon glyphicon-gift donator" title="NetrunnerDB Gracious Donator"></span>{% endif %}
+    <small>{{ user.reputation }}</small></h1>
 	<p>Member since {{ user.creation|date('Y-m-d') }}</p>
     {% if user.resume %}<blockquote>
     		{{ user.resume }}

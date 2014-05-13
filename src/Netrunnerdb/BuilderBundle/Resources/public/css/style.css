@@ -343,3 +343,12 @@ height: 100%;
 border: 1px solid white;
 border-radius: 10px;
 }
+@-webkit-keyframes animDonator { 
+    0% { color: rgba(255,223,48, 1); }
+    100% { color: rgba(255,223,48, 0.5); }
+}
+.donator {
+    animation: animDonator 6s ease-in 0s infinite alternate;
+    -webkit-animation: animDonator 6s ease-in 0s infinite alternate;
+    color: rgba(255,223,48, 1);
+}

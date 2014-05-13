@@ -1,6 +1,6 @@
 <?php
 
-namespace Netrunnerdb\BuilderBundle\Console;
+namespace Netrunnerdb\BuilderBundle\Command;
 
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -31,6 +31,7 @@ class HighlightCommand extends ContainerAwareCommand
 				u.username,
 				u.faction usercolor,
 				u.reputation,
+                u.donation,
 				c.code identity_code,
 				f.code faction_code,
 				d.nbvotes,
