@@ -830,8 +830,8 @@ function display_notification()
 {
 	if(!localStorage) return;
 	var Notification = {
-		version: '1.5.4',
-		message: "<strong>New!</strong> Option to automatically import all your decks from Meteor Decks."	
+		version: '1.6.3',
+		message: "<strong>New!</strong> A list of all NetrunnerDB Gracious Donators! (<a href=\"/en/donators\">click here</a>) Also, donators receive a gift ;-)"	
 	};
 	var localStorageNotification = localStorage.getItem('notification');
 	if(localStorageNotification === Notification.version) return;

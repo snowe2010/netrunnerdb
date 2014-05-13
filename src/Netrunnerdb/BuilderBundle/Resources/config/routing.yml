@@ -282,3 +282,10 @@ api_decklists:
         _format: json
         date: \d\d\d\d-\d\d-\d\d
             
+donators:
+    pattern: /{_locale}/donators
+    defaults:
+        _controller: NetrunnerdbBuilderBundle:Social:donators
+    requirements:
+        _locale: en|fr|de|es|it|pl
+        
