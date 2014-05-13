@@ -786,6 +786,7 @@ class SocialController extends Controller
 				c.user_id,
 				u.username author,
 				u.faction authorcolor,
+                u.donation,
 				c.text
 				from comment c
 				join user u on c.user_id=u.id
