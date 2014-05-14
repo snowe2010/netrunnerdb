@@ -795,6 +795,8 @@ class SocialController extends Controller
                         $decklist_id
                 ))->fetchAll();
         
+		$commenters = array_unique(array_merge(array($decklist['username']), array_map(function ($item) { return $item['author']; }, $comments)));
+				
         $cards = $dbh->executeQuery("SELECT
 				c.code card_code,
 				s.quantity qty
@@ -876,6 +878,7 @@ class SocialController extends Controller
                         'pagetitle' => $decklist['name'],
                         'locales' => $this->renderView('NetrunnerdbCardsBundle:Default:langs.html.twig'),
                         'decklist' => $decklist,
+                        'commenters' => $commenters,
                         'similar' => $similar_decklists,
                         'is_liked' => $is_liked,
                         'is_favorite' => $is_favorite,

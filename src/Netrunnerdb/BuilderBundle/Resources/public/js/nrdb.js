@@ -325,7 +325,7 @@ function check_influence() {
 $(function () {
 	
 	if(!Modernizr.touch) {
-		$('body').on({mouseover: display_qtip, focus: display_qtip}, '.card');
+		$('body').on({mouseover: display_qtip, focus: display_qtip}, 'a');
 	}
 	
 	if(Modernizr.touch) $('#svg').remove();
@@ -393,7 +393,7 @@ function get_type_line(card) {
 }
 
 function display_qtip(event) {
-	var code = $(this).data('index') || $(this).closest('.card-container').data('index');
+	var code = $(this).data('index') || $(this).closest('.card-container').data('index') || ($(this).attr('href') && $(this).attr('href').replace(/.*\/card\/(\d\d\d\d\d)$/, "$1"));
 	var card = CardDB({code:code}).first();
 	if(!card) return;
 	var type = '<p class="card-info">'+get_type_line(card)+'</p>';

@@ -14,13 +14,6 @@ NRDB.card_modal = {};
 		fill_modal(code);
 	};
 
-	card_modal.display_modal = function(event) {
-		event.preventDefault();
-		$(this).qtip('hide');
-		var code = $(this).data('index') || $(this).closest('.card-container').data('index');
-		fill_modal(code);
-	};
-
 	card_modal.typeahead = function (event, data) {
 		var card = CardDB({title:data.value}).first();
 		fill_modal(card.code);
@@ -70,6 +63,6 @@ NRDB.card_modal = {};
 
 $(function () {
 	NRDB.card_modal.create_element();
-	$('body').on({click: NRDB.card_modal.display_modal}, '.card[data-target=#cardModal]');
+	$('body').on({click: NRDB.card_modal.display_modal}, '.card');
 });
 
