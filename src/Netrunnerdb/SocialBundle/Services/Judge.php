@@ -117,7 +117,7 @@ class Judge
 		}
 		
 		if($identity->getInfluenceLimit() !== null && $influenceSpent > $identity->getInfluenceLimit()) return 'influence';
-		if($identity->getSide()->getName() == "Corp") {
+		if($identity->getSide()->getName() == "Corp" && $identity->getFaction()->getName() != "Neutral") {
 			$minAgendaPoints = floor($deckSize / 5) * 2 + 2;
 			if($agendaPoints < $minAgendaPoints || $agendaPoints > $minAgendaPoints + 1) return 'agendapoints';
 		}
