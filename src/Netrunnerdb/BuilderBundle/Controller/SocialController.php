@@ -795,7 +795,7 @@ class SocialController extends Controller
                         $decklist_id
                 ))->fetchAll();
         
-		$commenters = array_unique(array_merge(array($decklist['username']), array_map(function ($item) { return $item['author']; }, $comments)));
+		$commenters = array_unique(array_values(array_merge(array($decklist['username']), array_map(function ($item) { return $item['author']; }, $comments))));
 				
         $cards = $dbh->executeQuery("SELECT
 				c.code card_code,
