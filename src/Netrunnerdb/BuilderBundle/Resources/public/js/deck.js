@@ -51,7 +51,7 @@ function when_all_parsed() {
 		var max_qty = 3, indeck = 0;
 		if (record.set_code == 'core')
 			max_qty = Math.min(record.quantity * CoreSets, 3);
-		if (record.type_code == "identity" || record.code == "03004")
+		if (record.type_code == "identity" || record.code == "03004" || record.code == "05006")
 			max_qty = 1;
 		if (Deck[record.code]) {
 			indeck = parseInt(Deck[record.code], 10);
@@ -432,7 +432,7 @@ function update_core_sets() {
 		set_code : 'core'
 	}).each(function(record) {
 		var max_qty = Math.min(record.quantity * CoreSets, 3);
-		if (record.type_code == "identity" || record.code == "03004")
+		if (record.type_code == "identity" || record.code == "03004" || record.code == "05006")
 			max_qty = 1;
 		CardDB(record.___id).update({
 			maxqty : max_qty
