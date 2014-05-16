@@ -187,6 +187,9 @@ function update_deck() {
 	Identity = CardDB({indeck:{'gt':0},type_code:'identity'}).first();
 	if(!Identity) return;
 
+	if(Identity.side_code === 'runner') $('#table-graph-strengths').hide();
+	else $('#table-graph-strengths').show();
+
 	var displayDescription = getDisplayDescriptions(DisplaySort);
 	if(displayDescription == null) return;
 	
@@ -288,7 +291,8 @@ function update_deck() {
 	$('#latestpack').html('Cards up to <i>'+latestpack.name+'</i>');
 	check_influence();
 	check_decksize();
-	if($('#costChart').size()) setTimeout(make_graphs, 100);
+	if($('#costChart .highcharts-container').size()) setTimeout(make_cost_graph, 100);
+	if($('#strengthChart .highcharts-container').size()) setTimeout(make_strength_graph, 100);
 	$('#deck').show();
 }
 
@@ -623,30 +627,14 @@ function export_plaintext() {
 	$('#exportModal').modal('show');
 }
 
-function make_graphs() {
-	if(Identity.side_code === 'runner') $('#table-graph-strengths').hide();
-	else $('#table-graph-strengths').show();
-	
-	var costs = [], strengths = [];
-	var ice_types = [ 'Barrier', 'Code Gate', 'Sentry', 'Other' ];
+function make_cost_graph() {
+	var costs = [];
 	
 	CardDB({indeck:{'gt':0},type_code:{'!is':'identity'}}).each(function(record) {
 		if(record.cost != null) {
 			if(costs[record.cost] == null) costs[record.cost] = [];
 			if(costs[record.cost][record.type] == null) costs[record.cost][record.type] = 0;
 			costs[record.cost][record.type] += record.indeck;
-		}
-		if(record.strength != null) {
-			if(strengths[record.strength] == null) strengths[record.strength] = [];
-			var ice_type = 'Other';
-			for(var i=0; i<ice_types.length; i++) {
-				if(record.subtype.indexOf(ice_types[i]) != -1) {
-					ice_type = ice_types[i];
-					break;
-				}
-			}
-			if(strengths[record.strength][ice_type] == null) strengths[record.strength][ice_type] = 0;
-			strengths[record.strength][ice_type] += record.indeck;
 		}
 	});
 	
@@ -694,6 +682,27 @@ function make_graphs() {
             }
         },
         series: cost_series
+	});
+
+}
+
+function make_strength_graph() {
+	var strengths = [];
+	var ice_types = [ 'Barrier', 'Code Gate', 'Sentry', 'Other' ];
+	
+	CardDB({indeck:{'gt':0},type_code:{'!is':'identity'}}).each(function(record) {
+		if(record.strength != null) {
+			if(strengths[record.strength] == null) strengths[record.strength] = [];
+			var ice_type = 'Other';
+			for(var i=0; i<ice_types.length; i++) {
+				if(record.subtype.indexOf(ice_types[i]) != -1) {
+					ice_type = ice_types[i];
+					break;
+				}
+			}
+			if(strengths[record.strength][ice_type] == null) strengths[record.strength][ice_type] = 0;
+			strengths[record.strength][ice_type] += record.indeck;
+		}
 	});
 	
 	// strengthChart

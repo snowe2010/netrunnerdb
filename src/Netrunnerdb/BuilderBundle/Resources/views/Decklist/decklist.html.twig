@@ -148,7 +148,7 @@ var CardDB = null,
 </thead>
 <tbody>
 <tr>
-    <td><div id="costChart" width="100%" height="200"></div></td>
+    <td><div id="costChart" width="100%" height="200"><button type="button" class="btn btn-link" onclick="make_cost_graph()">Display graph</button></div></td>
 </tr>
 </tbody>
 </table>
@@ -159,7 +159,7 @@ var CardDB = null,
 </thead>
 <tbody>
 <tr>
-    <td><div id="strengthChart" width="100%" height="200"></div></td>
+    <td><div id="strengthChart" width="100%" height="200"><button type="button" class="btn btn-link" onclick="make_strength_graph()">Display graph</button></div></td>
 </tr>
 </tbody>
 </table>
@@ -205,23 +205,6 @@ var CardDB = null,
 </tbody>
 </table>
 
-{#
-<table class="table table-condensed" id="table-similar">
-<thead>
-<tr><th colspan="4"><span class="glyphicon glyphicon-link"></span> Explore similar decklists</th></tr>
-</thead>
-<tbody>
-{% for decklist in similar %}
-<tr>
-	<td><a href="{{ path('decklist_detail', { 'decklist_id': decklist.id, 'decklist_name': decklist.prettyname|e('url') }) }}">{{ decklist.name }}</a></td>
-	<td><span class="glyphicon glyphicon-heart social-icon-like"></span> {{ decklist.nbvotes }}</td>
-	<td><span class="glyphicon glyphicon-star social-icon-favorite"></span> {{ decklist.nbfavorites }}</td>
-	<td><span class="glyphicon glyphicon-comment social-icon-comment"></span> {{ decklist.nbcomments }}</td>
-</tr>
-{% endfor %}
-</tbody>
-</table>
-#}
 </div><!-- /#deck -->
 
 </div>

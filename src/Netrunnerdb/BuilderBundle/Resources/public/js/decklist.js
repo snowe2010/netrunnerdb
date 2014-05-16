@@ -62,7 +62,6 @@ $(function() {
 			}
 		}
 	}, 'a');
-	make_graphs();
 
 	$('#comment-form-text').textcomplete(
 			[
