@@ -69,8 +69,12 @@ function getDisplayDescriptions(sort) {
                         label: 'Sentry',
                         image: '/web/bundles/netrunnerdbbuilder/images/types/ice.png'
                     }, {
-                        id: 'ice',
-                        label: 'ICE',
+                        id: 'multi',
+                        label: 'Multi',
+                        image: '/web/bundles/netrunnerdbbuilder/images/types/ice.png'
+                    }, {
+                        id: 'none',
+                        label: 'Other',
                         image: '/web/bundles/netrunnerdbbuilder/images/types/ice.png'
                     }
                 ]
@@ -134,14 +138,20 @@ function process_deck_by_type() {
 	CardDB({indeck:{'gt':0},type_code:{'!is':'identity'}}).order("type,title").each(function(record) {
 		var type = record.type_code, subtypes = record.subtype_code ? record.subtype_code.split(" - ") : [];
 		if(type == "ice") {
+			var ice_type = [];
 			 if(subtypes.indexOf("barrier") >= 0) {
-				 type = "barrier";
+				 ice_type.push("barrier");
 			 }
 			 if(subtypes.indexOf("code gate") >= 0) {
-				 type = "code-gate";
+				 ice_type.push("code-gate");
 			 }
 			 if(subtypes.indexOf("sentry") >= 0) {
-				 type = "sentry";
+				 ice_type.push("sentry");
+			 }
+			 switch(ice_type.length) {
+			 case 0: type = "none"; break;
+			 case 1: type = ice_type.pop(); break;
+			 default: type = "multi"; break;
 			 }
 		}
 		if(type == "program") {
@@ -243,9 +253,15 @@ function update_deck() {
 		if(DisplaySort === 'type') {
 			criteria = record.type_code, subtypes = record.subtype_code ? record.subtype_code.split(" - ") : [];
 			if(criteria == "ice") {
-				 if(subtypes.indexOf("barrier") >= 0) criteria = "barrier";
-				 if(subtypes.indexOf("code gate") >= 0) criteria = "code-gate";
-				 if(subtypes.indexOf("sentry") >= 0) criteria = "sentry";
+				var ice_type = [];
+				if(subtypes.indexOf("barrier") >= 0) ice_type.push("barrier");
+				if(subtypes.indexOf("code gate") >= 0) ice_type.push("code-gate");
+				if(subtypes.indexOf("sentry") >= 0) ice_type.push("sentry");
+				switch(ice_type.length) {
+				case 0: criteria = "none"; break;
+				case 1: criteria = ice_type.pop(); break;
+				default: criteria = "multi"; break;
+				}
 			}
 			if(criteria == "program") {
 				 if(subtypes.indexOf("icebreaker") >= 0) criteria = "icebreaker";
@@ -437,8 +453,8 @@ function export_bbcode() {
 	var lines = [];
 	lines.push("[b]"+SelectedDeck.name+"[/b]");
 	lines.push("");
-	var types = ["identity", "event", "hardware", "resource", "icebreaker", "program", "agenda", "asset", "upgrade", "operation", "barrier", "code-gate", "sentry", "ice"];
-	var typesstr = ["Identity", "Event", "Hardware", "Resource", "Icebreaker", "Program", "Agenda", "Asset", "Upgrade", "Operation", "Barrier", "Code Gate", "Sentry", "ICE"];
+	var types = ["identity", "event", "hardware", "resource", "icebreaker", "program", "agenda", "asset", "upgrade", "operation", "barrier", "code-gate", "sentry", "none", "multi"];
+	var typesstr = ["Identity", "Event", "Hardware", "Resource", "Icebreaker", "Program", "Agenda", "Asset", "Upgrade", "Operation", "Barrier", "Code Gate", "Sentry", "Other", "Multi"];
 	$.each(types, function (n, type) {
 		if(deck[type] != null) {
 			if(type == "identity") {
@@ -496,8 +512,8 @@ function export_markdown() {
 	var lines = [];
 	lines.push("# "+SelectedDeck.name);
 	lines.push("");
-	var types = ["identity", "event", "hardware", "resource", "icebreaker", "program", "agenda", "asset", "upgrade", "operation", "barrier", "code-gate", "sentry", "ice"];
-	var typesstr = ["Identity", "Event", "Hardware", "Resource", "Icebreaker", "Program", "Agenda", "Asset", "Upgrade", "Operation", "Barrier", "Code Gate", "Sentry", "ICE"];
+	var types = ["identity", "event", "hardware", "resource", "icebreaker", "program", "agenda", "asset", "upgrade", "operation", "barrier", "code-gate", "sentry", "none", "multi"];
+	var typesstr = ["Identity", "Event", "Hardware", "Resource", "Icebreaker", "Program", "Agenda", "Asset", "Upgrade", "Operation", "Barrier", "Code Gate", "Sentry", "Other", "Multi"];
 	$.each(types, function (n, type) {
 		if(deck[type] != null) {
 			if(type == "identity") {
@@ -558,8 +574,8 @@ function export_plaintext() {
 	var lines = [];
 	lines.push(SelectedDeck.name);
 	lines.push("");
-	var types = ["identity", "event", "hardware", "resource", "icebreaker", "program", "agenda", "asset", "upgrade", "operation", "barrier", "code-gate", "sentry", "ice"];
-	var typesstr = ["Identity", "Event", "Hardware", "Resource", "Icebreaker", "Program", "Agenda", "Asset", "Upgrade", "Operation", "Barrier", "Code Gate", "Sentry", "ICE"];
+	var types = ["identity", "event", "hardware", "resource", "icebreaker", "program", "agenda", "asset", "upgrade", "operation", "barrier", "code-gate", "sentry", "none", "multi"];
+	var typesstr = ["Identity", "Event", "Hardware", "Resource", "Icebreaker", "Program", "Agenda", "Asset", "Upgrade", "Operation", "Barrier", "Code Gate", "Sentry", "Other", "Multi"];
 	$.each(types, function (n, type) {
 		if(deck[type] != null) {
 			if(type == "identity") {
