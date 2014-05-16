@@ -798,7 +798,7 @@ var hypergeometric = {};
 	};
 	hypergeometric.get_cumul = function(k, N, K, n) {
 		var r = 0;
-		for(; k < n; k++) {
+		for(; k <= n; k++) {
 			r += hypergeometric.get(k, N, K, n);
 		}
 		return r;
