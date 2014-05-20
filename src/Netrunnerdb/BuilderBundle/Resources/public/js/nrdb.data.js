@@ -8,7 +8,7 @@ NRDB.data = {};
 
 	var sets_data = null;
 	var cards_data = null;
-	var is_modified = false;
+	var is_modified = null;
 
 	data.query = function() {
 		data.initialize();
@@ -22,12 +22,13 @@ NRDB.data = {};
 	}
 
 	data.initialize = function() {
-		if (is_modified !== false)
+		if (is_modified === false)
 			return;
 
 		sets_data = sets_data
 				|| JSON.parse(localStorage
-						.getItem('sets_data_en' + data.locale));
+						.getItem('sets_data_' + data.locale));
+		if(!sets_data) return;
 		data.sets = TAFFY(sets_data);
 		data.sets.sort("cyclenumber,number");
 
@@ -35,6 +36,7 @@ NRDB.data = {};
 				|| JSON
 						.parse(localStorage
 								.getItem('cards_data_' + data.locale));
+		if(!cards_data) return;
 		data.cards = TAFFY(cards_data);
 		data.cards.sort("code");
 		

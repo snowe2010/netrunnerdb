@@ -61,7 +61,7 @@ class SearchController extends Controller
 				"cost" => $card->getCost(),
 				"faction" => $card->getFaction()->getName($locale),
 				"faction_code" => $card->getFaction()->getCode(),
-				"faction_letter" => substr($card->getFaction()->getCode(), 0, 1),
+				"faction_letter" => $card->getFaction()->getCode() == 'neutral' ? '-' : substr($card->getFaction()->getCode(), 0, 1),
 		        "factioncost" => $card->getFactionCost(),
 				"flavor" => $card->getFlavor($locale),
 				"illustrator" => $card->getIllustrator(),
