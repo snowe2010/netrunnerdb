@@ -1,27 +1,15 @@
-function when_all_parsed() {
-	if (CardDB && IsModified === false)
-		return;
-	var sets_data = SetsData
-			|| JSON.parse(localStorage.getItem('sets_data_' + Locale));
-	if (!sets_data) {
-		return;
-	}
-	SetDB = TAFFY(sets_data);
-	SetDB.sort("cyclenumber,number");
-	SetDB({
+NRDB.data_loaded.add(function() {
+	NRDB.data.sets({
 		code : "alt"
 	}).remove();
 
-	var cards_data = CardsData
-			|| JSON.parse(localStorage.getItem('cards_data_' + Locale));
-	CardDB = TAFFY(cards_data);
-	CardDB({
+	NRDB.data.cards({
 		set_code : "alt"
 	}).remove();
 
 	for (var i = 0; i < Decklist.cards.length; i++) {
 		var slot = Decklist.cards[i];
-		CardDB({
+		NRDB.data.cards({
 			code : slot.card_code
 		}).update({
 			indeck : parseInt(slot.qty, 10)
@@ -29,7 +17,7 @@ function when_all_parsed() {
 	}
 	update_deck();
 	NRDB.deck_browser.update();
-}
+});
 
 function update_cardsearch_result() {
 	$('#card_search_results').empty();
@@ -37,7 +25,7 @@ function update_cardsearch_result() {
 	if ($.isEmptyObject(query))
 		return;
 	var tabindex = 2;
-	CardDB(query).order("title intl").each(
+	NRDB.data.cards(query).order("title intl").each(
 			function(record) {
 				$('#card_search_results').append(
 						'<tr><td><span class="icon icon-' + record.faction_code
@@ -58,9 +46,6 @@ function handle_input_change(event) {
 }
 
 $(function() {
-	when_all_parsed();
-	$.when(promise1, promise2).done(when_all_parsed);
-
 	$('#version-popover').popover({
 		html : true
 	});

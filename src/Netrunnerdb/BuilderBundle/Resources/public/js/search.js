@@ -1,29 +1,21 @@
-function when_all_parsed() {
-	if (CardDB && IsModified === false)
-		return;
-
-	var sets_data = SetsData
-			|| JSON.parse(localStorage.getItem('sets_data_' + Locale));
-	if (!sets_data)
-		return;
-	SetDB = TAFFY(sets_data);
-	SetDB.sort("cyclenumber,number");
-	SetDB({
+NRDB.data_loaded.add(function() {
+	NRDB.data.sets({
 		code : "alt"
 	}).remove();
 
-	var cards_data = CardsData
-			|| JSON.parse(localStorage.getItem('cards_data_' + Locale));
-	CardDB = TAFFY(cards_data);
-	CardDB({
+	NRDB.data.cards({
 		set_code : "alt"
 	}).remove();
-
+	
 	$('#card').typeahead({
 		name : 'cardnames',
-		local : CardDB().select('title')
-	}).on('typeahead:selected typeahead:autocompleted', function(event, data) {
-		var card = CardDB({
+		local : NRDB.data.cards().select('title')
+	});
+});
+
+$(function() {
+	$('#card').on('typeahead:selected typeahead:autocompleted', function(event, data) {
+		var card = NRDB.data.cards({
 			title : data.value
 		}).first();
 		var line = $('<p class="background-'+card.faction_code+'" style="padding: 3px 5px;border-radius: 3px;border: 1px solid silver"><button type="button" class="close" aria-hidden="true">&times;</button><input type="hidden" name="cards[]" value="'+card.code+'">'+
@@ -34,8 +26,4 @@ function when_all_parsed() {
 		line.insertBefore($('#card'));
 		$(event.target).typeahead('setQuery', '');
 	});
-}
-$(function() {
-	when_all_parsed();
-	$.when(promise1, promise2).done(when_all_parsed);
-});
+})

@@ -1,4 +1,5 @@
-var NRDB = {};
+if (typeof NRDB != "object")
+	var NRDB = { data_loaded: $.Callbacks() };
 
 function debounce(fn, delay) {
 	var timer = null;
@@ -130,12 +131,12 @@ function getDisplayDescriptions(sort) {
 function process_deck_by_type() {
 	
 	var bytype = {};
-	Identity = CardDB({indeck:{'gt':0},type_code:'identity'}).first();
+	Identity = NRDB.data.cards({indeck:{'gt':0},type_code:'identity'}).first();
 	if(!Identity) {
 		return;
 	}
 
-	CardDB({indeck:{'gt':0},type_code:{'!is':'identity'}}).order("type,title").each(function(record) {
+	NRDB.data.cards({indeck:{'gt':0},type_code:{'!is':'identity'}}).order("type,title").each(function(record) {
 		var type = record.type_code, subtypes = record.subtype_code ? record.subtype_code.split(" - ") : [];
 		if(type == "ice") {
 			var ice_type = [];
@@ -184,7 +185,7 @@ function process_deck_by_type() {
 }
 
 function update_deck() {
-	Identity = CardDB({indeck:{'gt':0},type_code:'identity'}).first();
+	Identity = NRDB.data.cards({indeck:{'gt':0},type_code:'identity'}).first();
 	if(!Identity) return;
 
 	if(Identity.side_code === 'runner') $('#table-graph-strengths').hide();
@@ -203,7 +204,7 @@ function update_deck() {
 	}
 	if(DisplaySort === 'number' && displayDescription.length === 0) {
 		var rows = [];
-		SetDB().each(function (record) {
+		NRDB.data.sets().each(function (record) {
 			rows.push({id: record.code, label: record.name});
 		});
 		displayDescription.push(rows);
@@ -234,9 +235,9 @@ function update_deck() {
 	if(typeof InfluenceLimit === "undefined") InfluenceLimit = Number.POSITIVE_INFINITY;
 	MinimumDeckSize = Identity.minimumdecksize;
 
-	var latestpack = SetDB({name:Identity.setname}).first();
-	CardDB({indeck:{'gt':0},type_code:{'!is':'identity'}}).order(DisplaySort === 'number' ? 'code' : 'title').each(function(record) {
-		var pack = SetDB({name:record.setname}).first();
+	var latestpack = NRDB.data.sets({name:Identity.setname}).first();
+	NRDB.data.cards({indeck:{'gt':0},type_code:{'!is':'identity'}}).order(DisplaySort === 'number' ? 'code' : 'title').each(function(record) {
+		var pack = NRDB.data.sets({name:record.setname}).first();
 		if(latestpack.cyclenumber < pack.cyclenumber || (latestpack.cyclenumber == pack.cyclenumber && latestpack.number < pack.number)) latestpack = pack;
 		
 		var influence = '';
@@ -298,11 +299,11 @@ function update_deck() {
 
 
 function check_decksize() {
-	DeckSize = CardDB({indeck:{'gt':0},type_code:{'!is':'identity'}}).select("indeck").reduce(function (previousValue, currentValue) { return previousValue+currentValue; }, 0);
+	DeckSize = NRDB.data.cards({indeck:{'gt':0},type_code:{'!is':'identity'}}).select("indeck").reduce(function (previousValue, currentValue) { return previousValue+currentValue; }, 0);
 	MinimumDeckSize = Identity.minimumdecksize;
 	$('#cardcount').html(DeckSize+" cards (min "+MinimumDeckSize+")")[DeckSize < MinimumDeckSize ? 'addClass' : 'removeClass']("text-danger");
 	if(Identity.side_code == 'corp') {
-		AgendaPoints = CardDB({indeck:{'gt':0},type_code:'agenda'}).select("indeck","agendapoints").reduce(function (previousValue, currentValue) { return previousValue+currentValue[0]*currentValue[1]; }, 0);
+		AgendaPoints = NRDB.data.cards({indeck:{'gt':0},type_code:'agenda'}).select("indeck","agendapoints").reduce(function (previousValue, currentValue) { return previousValue+currentValue[0]*currentValue[1]; }, 0);
 		var min = Math.floor(Math.max(DeckSize, MinimumDeckSize) / 5) * 2 + 2, max = min+1;
 		$('#agendapoints').html(AgendaPoints+" agenda points (between "+min+" and "+max+")")[AgendaPoints < min || AgendaPoints > max ? 'addClass' : 'removeClass']("text-danger");
 	} else {
@@ -313,7 +314,7 @@ function check_decksize() {
 function check_influence() {
 	InfluenceSpent = 0;
 	var repartition_influence = {};
-	CardDB({indeck:{'gt':0},faction_code:{'!is':Identity.faction_code}}).each(function(record) {
+	NRDB.data.cards({indeck:{'gt':0},faction_code:{'!is':Identity.faction_code}}).each(function(record) {
 		if(record.factioncost) {
 			var inf, faction = record.faction_code;
 			if(Identity.code == "03029" && record.type_code == "program") {
@@ -343,10 +344,6 @@ function check_influence() {
 }
 
 $(function () {
-	
-	if(!Modernizr.touch) {
-		$('body').on({mouseover: display_qtip, focus: display_qtip}, 'a');
-	}
 	
 	if(Modernizr.touch) $('#svg').remove();
 		
@@ -384,60 +381,6 @@ function toggle_table(event) {
 	var table = toggle.closest('table');
 	var tbody = table.find('tbody');
 	tbody.toggle(400, function() { toggle.text(tbody.is(':visible') ? 'hide': 'show'); });
-}
-
-function text_format(text) {
-	text = text.replace(/\[Subroutine\]/g, '<span class="icon icon-subroutine"></span>');
-	text = text.replace(/\[Credits\]/g, '<span class="icon icon-credit"></span>');
-	text = text.replace(/\[Trash\]/g, '<span class="icon icon-trash"></span>');
-	text = text.replace(/\[Click\]/g, '<span class="icon icon-click"></span>');
-	text = text.replace(/\[Recurring Credits\]/g, '<span class="icon icon-recurring-credit"></span>');
-	text = text.replace(/\[Memory Unit\]/g, '<span class="icon icon-mu"></span>');
-	text = text.replace(/\[Link\]/g, '<span class="icon icon-link"></span>');
-	text = text.split("\n").join("</p><p>");
-	
-	return "<p>"+text+"</p>";
-}
-function get_type_line(card) {
-	var type = '<span class="card-type">'+card.type+'</span>';
-	if(card.subtype) type += '<span class="card-keywords">: '+card.subtype+'</span>';
-	if(card.type_code == "agenda") type += ' &middot; <span class="card-prop">'+card.advancementcost+'/'+card.agendapoints+'</span>';
-	if(card.type_code == "identity" && card.side_code == "corp") type += ' &middot; <span class="card-prop">'+card.minimumdecksize+'/'+card.influencelimit+'</span>';
-	if(card.type_code == "identity" && card.side_code == "runner") type += ' &middot; <span class="card-prop">'+card.minimumdecksize+'/'+card.influencelimit+' '+card.baselink+'<span class="icon icon-link"></span></span>';
-	if(card.type_code == "operation" || card.type_code == "event") type += ' &middot; <span class="card-prop">'+card.cost+'<span class="icon icon-credit"></span></span>';
-	if(card.type_code == "resource" || card.type_code == "hardware") type += ' &middot; <span class="card-prop">'+card.cost+'<span class="icon icon-credit"></span></span>';
-	if(card.type_code == "program") type += ' &middot; <span class="card-prop">'+card.cost+'<span class="icon icon-credit"></span> '+card.memoryunits+'<span class="icon icon-mu"></span></span>';
-	if(card.type_code == "asset" || card.type_code == "upgrade") type += ' &middot; <span class="card-prop">'+card.cost+'<span class="icon icon-credit"></span> '+card.trash+'<span class="icon icon-trash"></span></span>';
-	if(card.type_code == "ice") type += ' &middot; <span class="card-prop">'+card.cost+'<span class="icon icon-credit"></span></span>';
-	return type;
-}
-
-function display_qtip(event) {
-	var code = $(this).data('index') || $(this).closest('.card-container').data('index') || ($(this).attr('href') && $(this).attr('href').replace(/.*\/card\/(\d\d\d\d\d)$/, "$1"));
-	var card = CardDB({code:code}).first();
-	if(!card) return;
-	var type = '<p class="card-info">'+get_type_line(card)+'</p>';
-	var influence = '';
-	for(var i=0; i<card.factioncost; i++) influence += "&bull;";
-	if(card.strength != null) type += '<p>Strength <b>'+card.strength+'</b></p>';
-	$(this).qtip({
-		content: {
-			text: '<h4>'+(card.uniqueness ? "&diams; " : "")+card.title+'</h4>'+type+text_format(card.text)+'<p style="text-align:right">'+influence+' '+card.faction+'</p>'
-		},
-		style: { 
-			classes: 'qtip-bootstrap'
-		},
-		position: {
-    		my : 'left center',
-    		at : 'right center',
-    		viewport: $(window)
-		},
-		show: {
-			event: event.type,
-			ready: true,
-			solo: true
-		}
-	}, event);
 }
 
 var FactionColors = {
@@ -630,7 +573,7 @@ function export_plaintext() {
 function make_cost_graph() {
 	var costs = [];
 	
-	CardDB({indeck:{'gt':0},type_code:{'!is':'identity'}}).each(function(record) {
+	NRDB.data.cards({indeck:{'gt':0},type_code:{'!is':'identity'}}).each(function(record) {
 		if(record.cost != null) {
 			if(costs[record.cost] == null) costs[record.cost] = [];
 			if(costs[record.cost][record.type] == null) costs[record.cost][record.type] = 0;
@@ -690,7 +633,7 @@ function make_strength_graph() {
 	var strengths = [];
 	var ice_types = [ 'Barrier', 'Code Gate', 'Sentry', 'Other' ];
 	
-	CardDB({indeck:{'gt':0},type_code:{'!is':'identity'}}).each(function(record) {
+	NRDB.data.cards({indeck:{'gt':0},type_code:{'!is':'identity'}}).each(function(record) {
 		if(record.strength != null) {
 			if(strengths[record.strength] == null) strengths[record.strength] = [];
 			var ice_type = 'Other';

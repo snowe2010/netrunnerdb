@@ -1,3 +1,6 @@
+if (typeof NRDB != "object")
+	var NRDB = { data_loaded: $.Callbacks() };
+
 NRDB.deck_browser = {};
 (function(deck_browser) {
 	var codes = null;
@@ -45,7 +48,7 @@ NRDB.deck_browser = {};
 	deck_browser.update = function() {
 
 		codes = [ Identity.code ];
-		CardDB({
+		NRDB.data.cards({
 			indeck : {
 				'gt' : 0
 			},

@@ -1,3 +1,6 @@
+if (typeof NRDB != "object")
+	var NRDB = { data_loaded: $.Callbacks() };
+
 NRDB.smart_filter = {};
 (function(smart_filter) {
 	var SmartFilterQuery = {};

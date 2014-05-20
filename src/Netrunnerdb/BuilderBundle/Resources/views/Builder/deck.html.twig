@@ -2,16 +2,13 @@
 
 {% block head %}
 
-<script src="{{ asset('/web/bundles/netrunnerdbbuilder/js/nrdb.js') }}"></script>
-<script src="{{ asset('/web/bundles/netrunnerdbbuilder/js/draw_simulator.js') }}"></script>
-<script src="{{ asset('/web/bundles/netrunnerdbbuilder/js/card_modal.js') }}"></script>
-<script src="{{ asset('/web/bundles/netrunnerdbbuilder/js/smart_filter.js') }}"></script>
+<script src="{{ asset('/web/bundles/netrunnerdbbuilder/js/nrdb.draw_simulator.js') }}"></script>
+<script src="{{ asset('/web/bundles/netrunnerdbbuilder/js/nrdb.card_modal.js') }}"></script>
+<script src="{{ asset('/web/bundles/netrunnerdbbuilder/js/nrdb.smart_filter.js') }}"></script>
 <script src="{{ asset('/web/bundles/netrunnerdbbuilder/js/deck.js') }}"></script>
 <script type="text/javascript">
 
-var CardDB = null,
-	SetDB = null,
-	Filters = {},
+var Filters = {},
 	FilterQuery = {},
 	CardDivs = [null, {}, {}, {}], 
 	Sort = "type", 

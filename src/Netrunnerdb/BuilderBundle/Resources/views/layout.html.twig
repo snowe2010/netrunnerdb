@@ -23,23 +23,13 @@
     <script src="//cdnjs.cloudflare.com/ajax/libs/pagedown/1.0/Markdown.Converter.min.js"></script>
     <script src="{{ asset('/web/bundles/netrunnerdbbuilder/js/taffy.js') }}"></script>
     <script src="{{ asset('/web/bundles/netrunnerdbbuilder/js/jquery.textcomplete.min.js') }}"></script>
+    <script src="{{ asset('/web/bundles/netrunnerdbbuilder/js/nrdb.js') }}"></script>
+    <script src="{{ asset('/web/bundles/netrunnerdbbuilder/js/nrdb.data.js') }}"></script>
+    <script src="{{ asset('/web/bundles/netrunnerdbbuilder/js/nrdb.format.js') }}"></script>
+    <script src="{{ asset('/web/bundles/netrunnerdbbuilder/js/nrdb.tip.js') }}"></script>
     
-    <script type="text/javascript">
-var Locale = "{{ app.request.locale }}", SetsData, CardsData, IsModified = null;
-function parseSets(sets_data) {
-	var json = JSON.stringify(SetsData = sets_data);
-	IsModified = IsModified || json != localStorage.getItem("sets_data_"+Locale);
-	localStorage.setItem("sets_data_"+Locale, json);
-}
-function parseCards(cards_data) {
-	var json = JSON.stringify(CardsData = cards_data);
-	IsModified = IsModified || json != localStorage.getItem("cards_data_"+Locale);
-	localStorage.setItem("cards_data_"+Locale, json);
-}
-var promise1 = $.ajax("{{ path('api_sets') }}?jsonp=parseSets&_locale="+Locale);
-var promise2 = $.ajax("{{ path('api_cards') }}?jsonp=parseCards&_locale="+Locale);
-
 {% if app.environment == 'prod' %}
+    <script type="text/javascript">
   var _gaq = _gaq || [];
   _gaq.push(['_setAccount', 'UA-44413511-1']);
   _gaq.push(['_trackPageview']);
@@ -49,8 +39,8 @@ var promise2 = $.ajax("{{ path('api_cards') }}?jsonp=parseCards&_locale="+Locale
     ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
     var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
   })();
-{% endif %}
     </script>
+{% endif %}
 {% block head %}{% endblock %}
   </head>
   <body>
@@ -111,6 +101,7 @@ var promise2 = $.ajax("{{ path('api_cards') }}?jsonp=parseCards&_locale="+Locale
     <ul class="list-inline">
     <li><a href="{{ path('netrunnerdb_netrunner_cards_about') }}">About</a></li>
     <li><a href="{{ path('netrunnerdb_netrunner_cards_api') }}">API</a></li>
+    <li><a href="{{ path('tools_demo') }}">Integration</a></li>
     <li><a href="{{ path('donators') }}">Donators</a> <span class="glyphicon glyphicon-gift donator" title="NetrunnerDB Gracious Donator"></span></li>
     <li><a href="javascript:localStorage.clear()">Clear data</a></li>
     </ul>

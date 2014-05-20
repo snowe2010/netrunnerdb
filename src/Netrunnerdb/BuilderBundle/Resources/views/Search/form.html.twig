@@ -1,15 +1,10 @@
-{% extends 'NetrunnerdbBuilderBundle::layout.html.twig' %} {% block head
-%}
-<script src="{{ asset('/web/bundles/netrunnerdbbuilder/js/nrdb.js') }}"></script>
+{% extends 'NetrunnerdbBuilderBundle::layout.html.twig' %}
+
+{% block head %}
 <script src="{{ asset('/web/bundles/netrunnerdbbuilder/js/search.js') }}"></script>
-<script type="text/javascript">
+{% endblock %}
 
-var CardDB = null,
-	SetDB = null;
-	
-</script>
-{% endblock %} {% block body %}
-
+{% block body %}
 <div class="container decklists">
 	<div class="row">
 		<div class="col-sm-3">

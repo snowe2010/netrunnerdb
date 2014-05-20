@@ -289,3 +289,8 @@ donators:
     requirements:
         _locale: en|fr|de|es|it|pl
         
+        
+tools_demo:
+    pattern: /tools/demo
+    defaults:
+        _controller: NetrunnerdbBuilderBundle:Tools:demo

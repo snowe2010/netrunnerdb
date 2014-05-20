@@ -2,10 +2,7 @@ var InputByTitle = false;
 var DisplayColumns = 1;
 var CoreSets = 3;
 
-function when_all_parsed() {
-	if (CardDB && IsModified === false)
-		return;
-
+NRDB.data_loaded.add(function() {
 	var localStorageDisplayColumns;
 	if (localStorage
 			&& (localStorageDisplayColumns = parseInt(localStorage
@@ -25,39 +22,30 @@ function when_all_parsed() {
 	}
 	$('input[name=core-set-' + CoreSets + ']').prop('checked', true);
 
-	var sets_data = SetsData
-			|| JSON.parse(localStorage.getItem('sets_data_' + Locale));
-	if (!sets_data)
-		return;
-	SetDB = TAFFY(sets_data);
-	SetDB.sort("cyclenumber,number");
-	SetDB({
+	NRDB.data.sets({
 		code : "alt"
 	}).remove();
 
-	var cards_data = CardsData
-			|| JSON.parse(localStorage.getItem('cards_data_' + Locale));
-	CardDB = TAFFY(cards_data);
-	CardDB({
+	NRDB.data.cards({
 		set_code : "alt"
 	}).remove();
-	CardDB({
+	NRDB.data.cards({
 		side_code : {
 			"!is" : Side
 		}
 	}).remove();
 	var sets_in_deck = {};
-	CardDB().each(function(record) {
+	NRDB.data.cards().each(function(record) {
 		var max_qty = 3, indeck = 0;
 		if (record.set_code == 'core')
 			max_qty = Math.min(record.quantity * CoreSets, 3);
-		if (record.type_code == "identity" || record.code == "03004" || record.code == "05006")
+		if (record.type_code == "identity" || (record.type_code == "agenda" && record.uniqueness))
 			max_qty = 1;
 		if (Deck[record.code]) {
 			indeck = parseInt(Deck[record.code], 10);
 			sets_in_deck[record.set_code] = 1;
 		}
-		CardDB(record.___id).update({
+		NRDB.data.cards(record.___id).update({
 			indeck : indeck,
 			maxqty : max_qty,
 			factioncost : record.factioncost || 0
@@ -66,7 +54,7 @@ function when_all_parsed() {
 	update_deck();
 
 	$('#faction_code').empty();
-	$.each(CardDB().distinct("faction_code").sort(
+	$.each(NRDB.data.cards().distinct("faction_code").sort(
 			function(a, b) {
 				return b === "neutral" ? -1 : a === "neutral" ? 1 : a < b ? -1
 						: a > b ? 1 : 0;
@@ -84,7 +72,7 @@ function when_all_parsed() {
 	});
 
 	$('#type_code').empty();
-	$.each(CardDB().distinct("type_code").sort(), function(index, record) {
+	$.each(NRDB.data.cards().distinct("type_code").sort(), function(index, record) {
 		$('#type_code').append(
 				'<label title="' + record
 						+ '" class="btn btn-default btn-sm" data-code="'
@@ -99,7 +87,7 @@ function when_all_parsed() {
 	});
 
 	$('#set_code').empty();
-	SetDB().each(
+	NRDB.data.sets().each(
 			function(record) {
 				var checked = record.available === ""
 						&& sets_in_deck[record.code] == null ? ''
@@ -148,15 +136,18 @@ function when_all_parsed() {
 
 	$('input[name=title]').typeahead({
 		name : 'cardnames',
-		local : CardDB().select('title')
-	}).on('typeahead:selected typeahead:autocompleted',
-			NRDB.card_modal.typeahead);
+		local : NRDB.data.cards().select('title')
+	});
 	$('html,body').css('height', 'auto');
 	$('.container').show();
-}
+});
+
 $(function() {
 	$('html,body').css('height', '100%');
 
+	$('input[name=title]').on('typeahead:selected typeahead:autocompleted',
+			NRDB.card_modal.typeahead);
+	
 	$('#set_code,#search2').on(
 			{
 				change : handle_input_change,
@@ -307,8 +298,6 @@ $(function() {
 						trigger : 'click',
 						title : "<h5>Smart filter syntax</h5><ul style=\"text-align:left\"><li>by default, filters on title</li><li>x &ndash; filters on text</li><li>a &ndash; flavor text</li><li>s &ndash; subtype</li><li>o &ndash; cost</li><li>v &ndash; agenda points</li><li>n &ndash; faction cost</li><li>p &ndash; strength</li><li>g &ndash; advancement cost</li><li>h &ndash; trash cost</li><li>y &ndash; quantity in pack</li></ul><code>s:\"code gate\" x:trace</code> to find code gates with trace"
 					});
-	when_all_parsed();
-	$.when(promise1, promise2).done(when_all_parsed);
 });
 function handle_header_click(event) {
 	var new_sort = $(this).data('sort');
@@ -350,7 +339,7 @@ function handle_input_change(event) {
 function handle_submit(event) {
 	var deck_name = $('input[name=name]').val();
 	var deck_content = {};
-	CardDB({
+	NRDB.data.cards({
 		indeck : {
 			'gt' : 0
 		}
@@ -367,17 +356,17 @@ function handle_quantity_change(event) {
 	var quantity = parseInt($(this).val(), 10);
 	$(this).closest('.card-container')[quantity ? "addClass" : "removeClass"]
 			('in-deck');
-	var card = CardDB({
+	var card = NRDB.data.cards({
 		code : index
 	}).first();
-	CardDB({
+	NRDB.data.cards({
 		code : index
 	}).update({
 		indeck : quantity
 	});
 	if (card.type_code == "identity") {
 		if (Identity.faction != card.faction) {
-			CardDB({
+			NRDB.data.cards({
 				indeck : {
 					'gt' : 0
 				},
@@ -386,7 +375,7 @@ function handle_quantity_change(event) {
 				indeck : 0
 			});
 		}
-		CardDB({
+		NRDB.data.cards({
 			indeck : {
 				'gt' : 0
 			},
@@ -417,6 +406,9 @@ function handle_quantity_change(event) {
 							if ($(element).val() != quantity) {
 								$(element).prop('checked', false).closest(
 								'label').removeClass('active');
+							} else {
+								$(element).prop('checked', true).closest(
+								'label').addClass('active');
 							}
 						});
 		});
@@ -428,13 +420,13 @@ function handle_quantity_change(event) {
 
 function update_core_sets() {
 	CardDivs = [ null, {}, {}, {} ];
-	CardDB({
+	NRDB.data.cards({
 		set_code : 'core'
 	}).each(function(record) {
 		var max_qty = Math.min(record.quantity * CoreSets, 3);
-		if (record.type_code == "identity" || record.code == "03004" || record.code == "05006")
+		if (record.type_code == "identity" || (record.type_code == "agenda" && record.uniqueness))
 			max_qty = 1;
-		CardDB(record.___id).update({
+		NRDB.data.cards(record.___id).update({
 			maxqty : max_qty
 		});
 	});
@@ -533,7 +525,7 @@ function update_filtered() {
 	
 	var counter = 0, container = $('#collection-table');
 	var SmartFilterQuery = NRDB.smart_filter.get_query(FilterQuery);
-	CardDB(SmartFilterQuery)
+	NRDB.data.cards(SmartFilterQuery)
 			.order(Sort + (Order > 0 ? " intl" : " intldesc") + ',title')
 			.each(
 					function(record) {

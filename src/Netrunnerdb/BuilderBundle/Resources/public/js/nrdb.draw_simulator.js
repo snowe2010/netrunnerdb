@@ -1,3 +1,6 @@
+if (typeof NRDB != "object")
+	var NRDB = { data_loaded: $.Callbacks() };
+
 NRDB.draw_simulator = {};
 (function( draw_simulator ) {
 	var deck = null, initial_size = 0, draw_count = 0, container = null;
@@ -13,7 +16,7 @@ NRDB.draw_simulator = {};
 	draw_simulator.init = function() {
 		container = $('#table-draw-simulator-content');
 		deck = [];
-		CardDB({indeck:{'gt':0},type_code:{'!is':'identity'}}).each(function (record) {
+		NRDB.data.cards({indeck:{'gt':0},type_code:{'!is':'identity'}}).each(function (record) {
 			for(var ex = 0; ex < record.indeck; ex++) {
 				deck.push(record);
 			}

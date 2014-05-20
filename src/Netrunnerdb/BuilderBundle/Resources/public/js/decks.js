@@ -1,21 +1,9 @@
-
-function when_all_parsed() {
-	if(CardDB && IsModified === false) return;
-	var sets_data = SetsData || JSON.parse(localStorage.getItem('sets_data_'+Locale));
-	if(!sets_data) {
-		return;
-	}
-	SetDB = TAFFY(sets_data);
-	SetDB.sort("cyclenumber,number");
-	SetDB({code:"alt"}).remove();
-
-	var cards_data = CardsData || JSON.parse(localStorage.getItem('cards_data_'+Locale));
-	CardDB = TAFFY(cards_data);
-	CardDB({set_code:"alt"}).remove();
-	
+NRDB.data_loaded.add(function() {
+	NRDB.data.sets({code:"alt"}).remove();
+	NRDB.data.cards({set_code:"alt"}).remove();
 
 	$('#faction_filter').empty();
-	$.each(CardDB().distinct("faction_code").sort(function (a, b) { return b === "neutral" ? -1 : a === "neutral" ? 1 : a < b ? -1 : a > b ? 1 : 0; }), function (index, record) {
+	$.each(NRDB.data.cards().distinct("faction_code").sort(function (a, b) { return b === "neutral" ? -1 : a === "neutral" ? 1 : a < b ? -1 : a > b ? 1 : 0; }), function (index, record) {
 		$('#faction_filter').append('<label class="btn btn-default btn-sm" data-code="'+record+'"><input type="checkbox" name="'+record+'" value="'+record+'"><img src="'+Url_FactionImage.replace('xxx', record)+'"></label>')
 	});
 	$('#faction_filter').button();
@@ -23,7 +11,7 @@ function when_all_parsed() {
 		$(elt).button('toggle');
 	});
 	
-}
+});
 
 $(function() {
 	$('#decks').on({
@@ -43,10 +31,6 @@ $(function() {
 			}
 		}
 	}, 'a');
-	
-	when_all_parsed();
-	$.when(promise1, promise2).done(when_all_parsed);
-	
 });
 
 function filter_decks(event) {
@@ -108,14 +92,14 @@ function confirm_delete() {
 function display_deck(event) {
 	NRDB.draw_simulator.reset();
 	$('#no-deck-selected').hide();
-	CardDB().update({indeck:0});
+	NRDB.data.cards().update({indeck:0});
 	var deck = DeckDB({id:$(this).data('id').toString()}).first();
 	SelectedDeck = deck;
 	$(this).closest('tr').siblings().removeClass('active');
 	$(this).closest('tr').addClass('active');
 	for(var i=0; i<deck.cards.length; i++) {
 		var slot = deck.cards[i];
-		CardDB({code:slot.card_code}).update({indeck:parseInt(slot.qty,10)});
+		NRDB.data.cards({code:slot.card_code}).update({indeck:parseInt(slot.qty,10)});
 	}
 	$('#deck-name').text(deck.name);
 	$('#deck-description').html(deck.description && deck.description.replace(/\n/g, "<br>"));

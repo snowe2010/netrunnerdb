@@ -1,3 +1,12 @@
+NRDB.data_loaded.add(function() {
+	NRDB.data.cards({set_code:"alt"}).remove();
+	CardNames = [];
+	NRDB.data.cards().each(function (record, recordnumber) {
+		CardNames.push({code: record.code, title: record.title, type: record.type, token: record.title.replace(/\W+/, ' ').trim().toLowerCase()});
+	});
+	$('#btn-import').prop('disabled', false);
+});
+
 $(function() {
 	$('#analyzed').on({
 		click: click_option
@@ -5,17 +14,8 @@ $(function() {
 	$('#analyzed').on({
 		click: click_trash
 	}, 'a.glyphicon-trash');
-	$.when(promise1, promise2).always(when_all_parsed);
 })
-function when_all_parsed() {
-	var cards_data = CardsData || JSON.parse(localStorage.getItem('cards_data_'+Locale));
-	CardDB = TAFFY(cards_data);
-	CardDB({set_code:"alt"}).remove();
-	CardDB().each(function (record, recordnumber) {
-		CardNames.push({code: record.code, title: record.title, type: record.type, token: record.title.replace(/\W+/, ' ').trim().toLowerCase()});
-	});
-	$('#btn-import').prop('disabled', false);
-}
+
 function click_trash(event) {
 	$(this).closest('li.list-group-item').remove();
 	update_stats();
@@ -43,7 +43,7 @@ function import_one_line(line, lineNumber) {
 	}
 	if(name == "") return;
 	var options = [];
-	var query = CardDB({token: {likenocase:name}});
+	var query = NRDB.data.cards({token: {likenocase:name}});
 	if(query.count() == 1) {
 		var record = query.first();
 		options.push({code: record.code, name: record.title, type: record.type});
@@ -104,7 +104,7 @@ function update_stats() {
 		var card = $(element).val().split(':');
 		var code = card[0], qty = parseInt(card[1], 10);
 		deck[code] = qty;
-		var record = CardDB({code:code}).first();
+		var record = NRDB.data.cards({code:code}).first();
 		types[record.type] = types[record.type] || 0;
 		types[record.type]+=qty;
 	});

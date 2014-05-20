@@ -1,15 +1,12 @@
 {% extends 'NetrunnerdbBuilderBundle::layout.html.twig' %}
 
 {% block head %}
-<script src="{{ asset('/web/bundles/netrunnerdbbuilder/js/nrdb.js') }}"></script>
-<script src="{{ asset('/web/bundles/netrunnerdbbuilder/js/deck_browser.js') }}"></script>
-<script src="{{ asset('/web/bundles/netrunnerdbbuilder/js/smart_filter.js') }}"></script>
+<script src="{{ asset('/web/bundles/netrunnerdbbuilder/js/nrdb.deck_browser.js') }}"></script>
+<script src="{{ asset('/web/bundles/netrunnerdbbuilder/js/nrdb.smart_filter.js') }}"></script>
 <script src="{{ asset('/web/bundles/netrunnerdbbuilder/js/index.js') }}"></script>
 <script type="text/javascript">
 
-var CardDB = null,
-	SetDB = null,
-	Identity = null
+var Identity = null
 	Decklist = {{ decklist|json_encode|raw }},
 	DeckDB = TAFFY([Decklist]),
 	SelectedDeck = DeckDB().first()

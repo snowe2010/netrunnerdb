@@ -1,21 +1,9 @@
-function when_all_parsed() {
-	if (CardDB && IsModified === false)
-		return;
-	var sets_data = SetsData
-			|| JSON.parse(localStorage.getItem('sets_data_' + Locale));
-	if (!sets_data) {
-		return;
-	}
-	SetDB = TAFFY(sets_data);
-	SetDB.sort("cyclenumber,number");
-	SetDB({
+NRDB.data_loaded.add(function() {
+	NRDB.data.sets({
 		code : "alt"
 	}).remove();
 
-	var cards_data = CardsData
-			|| JSON.parse(localStorage.getItem('cards_data_' + Locale));
-	CardDB = TAFFY(cards_data);
-	CardDB({
+	NRDB.data.cards({
 		set_code : "alt"
 	}).remove();
 
@@ -23,18 +11,16 @@ function when_all_parsed() {
 	$(this).closest('tr').addClass('active');
 	for (var i = 0; i < Decklist.cards.length; i++) {
 		var slot = Decklist.cards[i];
-		CardDB({
+		NRDB.data.cards({
 			code : slot.card_code
 		}).update({
 			indeck : parseInt(slot.qty, 10)
 		});
 	}
 	update_deck();
-}
+});
 
 $(function() {
-	when_all_parsed();
-	$.when(promise1, promise2).done(when_all_parsed);
 	$('#decklist-social-icons>a').tooltip();
 	$('#decklist-edit').on('click', edit_form);
 	$('#decklist-delete').on('click', delete_form);
@@ -68,7 +54,7 @@ $(function() {
 					{
 						match : /\B#([\-+\w]*)$/,
 						search : function(term, callback) {
-							callback(CardDB({
+							callback(NRDB.data.cards({
 								title : {
 									likenocase : term
 								}

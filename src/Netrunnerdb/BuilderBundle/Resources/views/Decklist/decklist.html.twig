@@ -2,15 +2,12 @@
 
 {% block hexagon %}{{ decklist.faction_code }}{% endblock %}
 {% block head %}
-<script src="{{ asset('/web/bundles/netrunnerdbbuilder/js/nrdb.js') }}"></script>
-<script src="{{ asset('/web/bundles/netrunnerdbbuilder/js/draw_simulator.js') }}"></script>
-<script src="{{ asset('/web/bundles/netrunnerdbbuilder/js/card_modal.js') }}"></script>
+<script src="{{ asset('/web/bundles/netrunnerdbbuilder/js/nrdb.draw_simulator.js') }}"></script>
+<script src="{{ asset('/web/bundles/netrunnerdbbuilder/js/nrdb.card_modal.js') }}"></script>
 <script src="{{ asset('/web/bundles/netrunnerdbbuilder/js/decklist.js') }}"></script>
 <script type="text/javascript">
 
-var CardDB = null,
-	SetDB = null,
-	Identity = null
+var Identity = null
 	Decklist = {{ decklist|json_encode|raw }},
 	Commenters = {{ commenters|json_encode|raw }},
 	DeckDB = TAFFY([Decklist]),
