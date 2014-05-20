@@ -799,7 +799,7 @@ function display_notification()
 	if(!localStorage) return;
 	var Notification = {
 		version: '1.6.3',
-		message: "<strong>New!</strong> A list of all NetrunnerDB Gracious Donators! (<a href=\"/en/donators\">click here</a>) Also, donators receive a gift ;-)"	
+		message: "<strong>New!</strong> Decklist publishers can now set the 'Derived From' reference with the 'Edit' action."
 	};
 	var localStorageNotification = localStorage.getItem('notification');
 	if(localStorageNotification === Notification.version) return;
