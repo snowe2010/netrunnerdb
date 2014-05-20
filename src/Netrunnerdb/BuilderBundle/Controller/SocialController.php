@@ -1288,10 +1288,31 @@ class SocialController extends Controller
         $rawdescription = trim(filter_var($request->request->get('description'), FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES));
         $description = Markdown::defaultTransform($rawdescription);
         
+        $derived_from = $request->request->get('derived');
+        if(preg_match('/^(\d+)$/', $derived_from, $matches)) {
+            
+        } else if(preg_match('/decklist\/(\d+)\//', $derived_from, $matches)) {
+            $derived_from = $matches[1];
+        } else {
+            $derived_from = null;
+        }
+        
+        if(!$derived_from) {
+            $precedent_decklist = null;
+        }
+        else {
+            /* @var $precedent_decklist Decklist */
+            $precedent_decklist = $em->getRepository('NetrunnerdbBuilderBundle:Decklist')->find($derived_from);
+            if(!$precedent_decklist || $precedent_decklist->getCreation() > $decklist->getCreation()) {
+                $precedent_decklist = $decklist->getPrecedent();
+            }
+        }
+        
         $decklist->setName($name);
         $decklist->setPrettyname(preg_replace('/[^a-z0-9]+/', '-', mb_strtolower($name)));
         $decklist->setRawdescription($rawdescription);
         $decklist->setDescription($description);
+        $decklist->setPrecedent($precedent_decklist);
         $decklist->setTs(new \DateTime());
         $em->flush();
         
