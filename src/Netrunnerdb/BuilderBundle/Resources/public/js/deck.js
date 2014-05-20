@@ -353,6 +353,7 @@ function handle_submit(event) {
 function handle_quantity_change(event) {
 	var index = $(this).closest('.card-container').data('index')
 			|| $(this).closest('div.modal').data('index');
+	var in_collection = $(this).closest('.collection').size();
 	var quantity = parseInt($(this).val(), 10);
 	$(this).closest('.card-container')[quantity ? "addClass" : "removeClass"]
 			('in-deck');
@@ -407,8 +408,10 @@ function handle_quantity_change(event) {
 								$(element).prop('checked', false).closest(
 								'label').removeClass('active');
 							} else {
-								$(element).prop('checked', true).closest(
-								'label').addClass('active');
+								if(!in_collection) {
+									$(element).prop('checked', true).closest(
+									'label').addClass('active');
+								}
 							}
 						});
 		});
