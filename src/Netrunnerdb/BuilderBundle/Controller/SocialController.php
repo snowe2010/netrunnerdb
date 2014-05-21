@@ -946,7 +946,7 @@ class SocialController extends Controller
 	 */
     public function commentAction ()
     {
-
+        /* @var $user User */
         $user = $this->getUser();
         $request = $this->getRequest();
         
@@ -962,20 +962,66 @@ class SocialController extends Controller
                     '[$1]($0)', $comment_text);
             $comment_html = Markdown::defaultTransform($comment_text);
             
+            $now = new DateTime();
+            
             $comment = new Comment();
             $comment->setText($comment_html);
-            $comment->setCreation(new DateTime());
+            $comment->setCreation($now);
             $comment->setAuthor($user);
             $comment->setDecklist($decklist);
             
             $this->get('doctrine')
                 ->getManager()
                 ->persist($comment);
-            $decklist->setTs(new \DateTime());
+            $decklist->setTs($now);
             $decklist->setNbcomments($decklist->getNbcomments() + 1);
+
             $this->get('doctrine')
-                ->getManager()
-                ->flush();
+            ->getManager()
+            ->flush();
+            
+            // send emails
+            $url_profile = $this->generateUrl('user_profile');
+            $url_comment = $this->generateUrl('decklist_detail', array('decklist_id' => $decklist->getId(), 'decklist_name' => $decklist->getPrettyname())) . '#' . $comment->getId();
+            $date = $now->format('r');
+            
+            $message = \Swift_Message::newInstance()->setSubject("[NetrunnerDB] New comment")->setFrom(array("notify@netrunnerdb.com" => $user->getUsername()))->setTo($decklist->getUser()->getEmail())->setBody(
+				$this->renderView('NetrunnerdbBuilderBundle:Emails:newcomment_author.html.twig', array(
+            	   'username' => $user->getUsername(),
+				   'decklist_name' => $decklist->getName(),
+				   'url' => $url_comment,
+				   'date' => $date,
+				   'profile' => $url_profile
+                )), 'text/html'
+            );
+            $this->get('mailer')->send($message);
+            
+            $comments = $decklist->getComments();
+            $commenters = array();
+            /* @var $comment Comment */
+            foreach($comments as $comment) {
+                $commenter = $comment->getAuthor();
+                if($commenter->getId() != $user->getId()
+            && $commenter->getId() != $decklist->getUser()->getId()
+            && !in_array($commenter->getEmail(), $commenters)) {
+                    $commenters[] = $commenter->getEmail();
+                }
+            }
+            
+            foreach($commenters as $commenter_email) {
+                
+                $message = \Swift_Message::newInstance()->setSubject("[NetrunnerDB] New comment")->setFrom(array("notify@netrunnerdb.com" => $user->getUsername()))->setTo($commenter_email)->setBody(
+                        $this->renderView('NetrunnerdbBuilderBundle:Emails:newcomment_commenter.html.twig', array(
+                            	   'username' => $user->getUsername(),
+                                'decklist_name' => $decklist->getName(),
+                                'url' => $url_comment,
+                                'date' => $date,
+                                'profile' => $url_profile
+                        )), 'text/html'
+                );
+                $this->get('mailer')->send($message);
+                
+            }
         }
         
         return $this->redirect($this->generateUrl('decklist_detail', array(
@@ -1011,19 +1057,17 @@ class SocialController extends Controller
             ->getQuery();
         
         $result = $query->getResult();
-        if (count($result))
-            goto VOTE_DONE;
-        
-        $user->addVote($decklist);
-        $author = $decklist->getUser();
-        $author->setReputation($author->getReputation() + 1);
-        $decklist->setTs(new \DateTime());
-        $decklist->setNbvotes($decklist->getNbvotes() + 1);
-        $this->get('doctrine')
+        if (empty($result)) {
+            $user->addVote($decklist);
+            $author = $decklist->getUser();
+            $author->setReputation($author->getReputation() + 1);
+            $decklist->setTs(new \DateTime());
+            $decklist->setNbvotes($decklist->getNbvotes() + 1);
+            $this->get('doctrine')
             ->getManager()
             ->flush();
+        }
         
-        VOTE_DONE:
         return new Response(count($decklist->getVotes()));
     
     }

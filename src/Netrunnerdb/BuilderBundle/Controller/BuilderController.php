@@ -435,8 +435,6 @@ class BuilderController extends Controller
         if (! count($content))
             return new Response('Cannot import empty deck');
         
-        $deck_content = array();
-        
         if ($is_copy && $id) {
             $id = null;
         }
@@ -468,6 +466,8 @@ class BuilderController extends Controller
         $em = $this->get('doctrine')->getManager();
         
         $judge = $this->get('judge');
+
+        $deck_content = array();
         
         if ($decklist_id) {
             $decklist = $em->getRepository('NetrunnerdbBuilderBundle:Decklist')->find($decklist_id);
