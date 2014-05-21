@@ -281,6 +281,11 @@ api_decklists:
     requirements:
         _format: json
         date: \d\d\d\d-\d\d-\d\d
+        
+api_decks:
+    pattern: /api/decks
+    defaults:
+        _controller: NetrunnerdbBuilderBundle:Builder:apidecks
             
 donators:
     pattern: /{_locale}/donators
@@ -294,3 +299,5 @@ tools_demo:
     pattern: /tools/demo
     defaults:
         _controller: NetrunnerdbBuilderBundle:Tools:demo
+
+        
