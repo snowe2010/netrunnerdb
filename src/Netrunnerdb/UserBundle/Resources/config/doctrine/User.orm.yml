@@ -73,4 +73,19 @@ Netrunnerdb\UserBundle\Entity\User:
         donation:
             type: integer
             nullable: false
+        notif_author:
+            type: boolean
+            nullable: false
+        notif_commenter:
+            type: boolean
+            nullable: false
+        notif_mention:
+            type: boolean
+            nullable: false
+        notif_follow:
+            type: boolean
+            nullable: false
+        notif_successor:
+            type: boolean
+            nullable: false
     lifecycleCallbacks: {  }

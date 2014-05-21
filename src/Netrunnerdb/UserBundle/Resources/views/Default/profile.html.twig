@@ -11,7 +11,7 @@ $(function() {
 
 <div class="container">
 <div class="row">
-<div class="col-md-4 col-md-offset-4">
+<div class="col-md-6 col-md-offset-3">
 <div class="panel panel-default">
 <div class="panel-heading">
 <h3 class="panel-title" id="title">Profile</h3>
@@ -29,6 +29,27 @@ $(function() {
     <p>{{ user.reputation }}</p>
   </div>
   
+  <div class="checkbox">
+    <label>
+        <input type="checkbox" name="notif_author" value="1" {% if user.notifAuthor %}checked{% endif %}>
+        Be notified when a user comments one of your decklists
+    </label>
+  </div>
+ 
+  <div class="checkbox">
+    <label>
+        <input type="checkbox" name="notif_commenter" value="1" {% if user.notifCommenter %}checked{% endif %}>
+        Be notified when a user also comments a decklist you commented
+    </label>
+  </div>
+ 
+  <div class="checkbox">
+    <label>
+        <input type="checkbox" name="notif_mention" value="1" {% if user.notifMention %}checked{% endif %}>
+        Be notified when a user mentions you in a comment
+    </label>
+  </div>
+ 
   <div class="form-group">
     <label for="resume">Something about you</label>
     <textarea id="resume" name="resume" class="form-control">{{ user.resume }}</textarea>
@@ -45,6 +66,7 @@ $(function() {
 	</div>
 	{% endfor %}
   </div>
+ 
   <button type="submit" class="btn btn-default">Save</button>
 </form>
 

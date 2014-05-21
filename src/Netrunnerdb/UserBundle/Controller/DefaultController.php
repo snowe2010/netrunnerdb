@@ -32,9 +32,15 @@ class DefaultController extends Controller
     	
     	$resume = filter_var($request->get('resume'), FILTER_SANITIZE_STRING);
     	$faction_code = filter_var($request->get('user_faction_code'), FILTER_SANITIZE_STRING);
-    	
+    	$notifAuthor = $request->get('notif_author') ? TRUE : FALSE;
+    	$notifCommenter = $request->get('notif_commenter') ? TRUE : FALSE;
+    	$notifMention = $request->get('notif_mention') ? TRUE : FALSE;
+    	 
     	$user->setFaction($faction_code);
     	$user->setResume($resume);
+    	$user->setNotifAuthor($notifAuthor);
+    	$user->setNotifCommenter($notifCommenter);
+    	$user->setNotifMention($notifMention);
     	
     	$this->get('doctrine')->getManager()->flush();
     	

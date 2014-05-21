@@ -527,4 +527,266 @@ class User extends BaseUser
        	
        	parent::__construct();
     }
+    /**
+     * @var boolean
+     */
+    private $notif_author;
+
+    /**
+     * @var boolean
+     */
+    private $notif_commenter;
+
+    /**
+     * @var boolean
+     */
+    private $notif_mention;
+
+    /**
+     * @var boolean
+     */
+    private $notif_follow;
+
+    /**
+     * @var boolean
+     */
+    private $notif_successor;
+
+
+    /**
+     * Set notif_author
+     *
+     * @param boolean $notifAuthor
+     * @return User
+     */
+    public function setNotifAuthor($notifAuthor)
+    {
+        $this->notif_author = $notifAuthor;
+    
+        return $this;
+    }
+
+    /**
+     * Get notif_author
+     *
+     * @return boolean 
+     */
+    public function getNotifAuthor()
+    {
+        return $this->notif_author;
+    }
+
+    /**
+     * Set notif_commenter
+     *
+     * @param boolean $notifCommenter
+     * @return User
+     */
+    public function setNotifCommenter($notifCommenter)
+    {
+        $this->notif_commenter = $notifCommenter;
+    
+        return $this;
+    }
+
+    /**
+     * Get notif_commenter
+     *
+     * @return boolean 
+     */
+    public function getNotifCommenter()
+    {
+        return $this->notif_commenter;
+    }
+
+    /**
+     * Set notif_mention
+     *
+     * @param boolean $notifMention
+     * @return User
+     */
+    public function setNotifMention($notifMention)
+    {
+        $this->notif_mention = $notifMention;
+    
+        return $this;
+    }
+
+    /**
+     * Get notif_mention
+     *
+     * @return boolean 
+     */
+    public function getNotifMention()
+    {
+        return $this->notif_mention;
+    }
+
+    /**
+     * Set notif_follow
+     *
+     * @param boolean $notifFollow
+     * @return User
+     */
+    public function setNotifFollow($notifFollow)
+    {
+        $this->notif_follow = $notifFollow;
+    
+        return $this;
+    }
+
+    /**
+     * Get notif_follow
+     *
+     * @return boolean 
+     */
+    public function getNotifFollow()
+    {
+        return $this->notif_follow;
+    }
+
+    /**
+     * Set notif_successor
+     *
+     * @param boolean $notifSuccessor
+     * @return User
+     */
+    public function setNotifSuccessor($notifSuccessor)
+    {
+        $this->notif_successor = $notifSuccessor;
+    
+        return $this;
+    }
+
+    /**
+     * Get notif_successor
+     *
+     * @return boolean 
+     */
+    public function getNotifSuccessor()
+    {
+        return $this->notif_successor;
+    }
+
+    /**
+     * Add decks
+     *
+     * @param \Netrunnerdb\BuilderBundle\Entity\Deck $decks
+     * @return User
+     */
+    public function addDeck(\Netrunnerdb\BuilderBundle\Entity\Deck $decks)
+    {
+        $this->decks[] = $decks;
+    
+        return $this;
+    }
+
+    /**
+     * Remove decks
+     *
+     * @param \Netrunnerdb\BuilderBundle\Entity\Deck $decks
+     */
+    public function removeDeck(\Netrunnerdb\BuilderBundle\Entity\Deck $decks)
+    {
+        $this->decks->removeElement($decks);
+    }
+
+    /**
+     * Add decklists
+     *
+     * @param \Netrunnerdb\BuilderBundle\Entity\Decklist $decklists
+     * @return User
+     */
+    public function addDecklist(\Netrunnerdb\BuilderBundle\Entity\Decklist $decklists)
+    {
+        $this->decklists[] = $decklists;
+    
+        return $this;
+    }
+
+    /**
+     * Remove decklists
+     *
+     * @param \Netrunnerdb\BuilderBundle\Entity\Decklist $decklists
+     */
+    public function removeDecklist(\Netrunnerdb\BuilderBundle\Entity\Decklist $decklists)
+    {
+        $this->decklists->removeElement($decklists);
+    }
+
+    /**
+     * Add comments
+     *
+     * @param \Netrunnerdb\BuilderBundle\Entity\Comment $comments
+     * @return User
+     */
+    public function addComment(\Netrunnerdb\BuilderBundle\Entity\Comment $comments)
+    {
+        $this->comments[] = $comments;
+    
+        return $this;
+    }
+
+    /**
+     * Remove comments
+     *
+     * @param \Netrunnerdb\BuilderBundle\Entity\Comment $comments
+     */
+    public function removeComment(\Netrunnerdb\BuilderBundle\Entity\Comment $comments)
+    {
+        $this->comments->removeElement($comments);
+    }
+
+    /**
+     * Add opinions
+     *
+     * @param \Netrunnerdb\CardsBundle\Entity\Opinion $opinions
+     * @return User
+     */
+    public function addOpinion(\Netrunnerdb\CardsBundle\Entity\Opinion $opinions)
+    {
+        $this->opinions[] = $opinions;
+    
+        return $this;
+    }
+
+    /**
+     * Remove opinions
+     *
+     * @param \Netrunnerdb\CardsBundle\Entity\Opinion $opinions
+     */
+    public function removeOpinion(\Netrunnerdb\CardsBundle\Entity\Opinion $opinions)
+    {
+        $this->opinions->removeElement($opinions);
+    }
+
+    /**
+     * Remove votes
+     *
+     * @param \Netrunnerdb\BuilderBundle\Entity\Decklist $votes
+     */
+    public function removeVote(\Netrunnerdb\BuilderBundle\Entity\Decklist $votes)
+    {
+        $this->votes->removeElement($votes);
+    }
+
+    /**
+     * Remove following
+     *
+     * @param \Netrunnerdb\UserBundle\Entity\User $following
+     */
+    public function removeFollowing(\Netrunnerdb\UserBundle\Entity\User $following)
+    {
+        $this->following->removeElement($following);
+    }
+
+    /**
+     * Remove followers
+     *
+     * @param \Netrunnerdb\UserBundle\Entity\User $followers
+     */
+    public function removeFollower(\Netrunnerdb\UserBundle\Entity\User $followers)
+    {
+        $this->followers->removeElement($followers);
+    }
 }
