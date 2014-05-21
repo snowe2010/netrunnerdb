@@ -985,16 +985,18 @@ class SocialController extends Controller
             $url_comment = $this->generateUrl('decklist_detail', array('decklist_id' => $decklist->getId(), 'decklist_name' => $decklist->getPrettyname())) . '#' . $comment->getId();
             $date = $now->format('r');
             
-            $message = \Swift_Message::newInstance()->setSubject("[NetrunnerDB] New comment")->setFrom(array("notify@netrunnerdb.com" => $user->getUsername()))->setTo($decklist->getUser()->getEmail())->setBody(
-				$this->renderView('NetrunnerdbBuilderBundle:Emails:newcomment_author.html.twig', array(
-            	   'username' => $user->getUsername(),
-				   'decklist_name' => $decklist->getName(),
-				   'url' => $url_comment,
-				   'date' => $date,
-				   'profile' => $url_profile
-                )), 'text/html'
-            );
-            $this->get('mailer')->send($message);
+			if($user->getId() != $decklist->getUser()->getId()) {
+	            $message = \Swift_Message::newInstance()->setSubject("[NetrunnerDB] New comment")->setFrom(array("notify@netrunnerdb.com" => $user->getUsername()))->setTo($decklist->getUser()->getEmail())->setBody(
+					$this->renderView('NetrunnerdbBuilderBundle:Emails:newcomment_author.html.twig', array(
+	            	   'username' => $user->getUsername(),
+					   'decklist_name' => $decklist->getName(),
+					   'url' => $url_comment,
+					   'comment' => $comment_html,
+					   'profile' => $url_profile
+	                )), 'text/html'
+	            );
+	            $this->get('mailer')->send($message);
+			}
             
             $comments = $decklist->getComments();
             $commenters = array();
@@ -1015,7 +1017,7 @@ class SocialController extends Controller
                             	   'username' => $user->getUsername(),
                                 'decklist_name' => $decklist->getName(),
                                 'url' => $url_comment,
-                                'date' => $date,
+                                'comment' => $comment_html,
                                 'profile' => $url_profile
                         )), 'text/html'
                 );
