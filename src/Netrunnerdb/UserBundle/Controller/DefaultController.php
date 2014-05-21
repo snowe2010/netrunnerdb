@@ -44,6 +44,10 @@ class DefaultController extends Controller
     	
     	$this->get('doctrine')->getManager()->flush();
     	
+        $this->get('session')
+            ->getFlashBag()
+            ->set('notice', "Successfully saved your profile.");
+		
     	return $this->redirect($this->generateUrl('user_profile'));
     }
 }

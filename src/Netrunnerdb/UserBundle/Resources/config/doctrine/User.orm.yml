@@ -76,16 +76,26 @@ Netrunnerdb\UserBundle\Entity\User:
         notif_author:
             type: boolean
             nullable: false
+            options:
+                default: TRUE
         notif_commenter:
             type: boolean
             nullable: false
+            options:
+                default: TRUE
         notif_mention:
             type: boolean
             nullable: false
+            options:
+                default: TRUE
         notif_follow:
             type: boolean
             nullable: false
+            options:
+                default: TRUE
         notif_successor:
             type: boolean
             nullable: false
+            options:
+                default: TRUE
     lifecycleCallbacks: {  }
