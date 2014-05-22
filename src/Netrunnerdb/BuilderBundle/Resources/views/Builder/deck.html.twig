@@ -71,8 +71,9 @@ var Filters = {},
 					</div>
 					<div class="form-group">
 						<label for="name">Notes</label>
-						<textarea class="form-control" rows="3" name="description">{{ deck.description }}</textarea>
+						<textarea class="form-control" rows="3" name="description" id="description" placeholder="Type # to enter a card name.">{{ deck.description }}</textarea>
 					</div>
+					<div class="well text-muted" id="description-preview"><small>Preview. Look <a href="http://daringfireball.net/projects/markdown/dingus">here</a> for a Markdown syntax reference.</small></div>
 					<button type="submit" class="btn btn-warning">Save</button>
 					<button type="submit" id="btn-save-as-copy" class="btn btn-primary">Save as Copy</button>
 				</form>

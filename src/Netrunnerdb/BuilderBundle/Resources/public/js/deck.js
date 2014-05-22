@@ -298,6 +298,37 @@ $(function() {
 						trigger : 'click',
 						title : "<h5>Smart filter syntax</h5><ul style=\"text-align:left\"><li>by default, filters on title</li><li>x &ndash; filters on text</li><li>a &ndash; flavor text</li><li>s &ndash; subtype</li><li>o &ndash; cost</li><li>v &ndash; agenda points</li><li>n &ndash; faction cost</li><li>p &ndash; strength</li><li>g &ndash; advancement cost</li><li>h &ndash; trash cost</li><li>y &ndash; quantity in pack</li></ul><code>s:\"code gate\" x:trace</code> to find code gates with trace"
 					});
+	
+	var converter = new Markdown.Converter();
+	$('#description').on(
+			'keyup',
+			function() {
+				$('#description-preview').html(
+						converter.makeHtml($('#description').val()));
+			});
+
+	$('#description').textcomplete(
+			[
+					{
+						match : /\B#([\-+\w]*)$/,
+						search : function(term, callback) {
+							callback(NRDB.data.cards({
+								title : {
+									likenocase : term
+								}
+							}).get());
+						},
+						template : function(value) {
+							return value.title;
+						},
+						replace : function(value) {
+							return '[' + value.title + ']('
+									+ Url_CardPage.replace('00000', value.code)
+									+ ')';
+						},
+						index : 1
+					}
+			]);
 });
 function handle_header_click(event) {
 	var new_sort = $(this).data('sort');
