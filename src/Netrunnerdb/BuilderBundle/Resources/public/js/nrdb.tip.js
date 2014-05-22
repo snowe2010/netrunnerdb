@@ -8,8 +8,8 @@ NRDB.tip = {};
 		var code = $(this).data('index')
 				|| $(this).closest('.card-container').data('index')
 				|| ($(this).attr('href') && $(this).attr('href').replace(
-						/\/card\/(\d\d\d\d\d)$/,
-						"$2"));
+						/.*\/card\/(\d\d\d\d\d)$/,
+						"$1"));
 		var card = NRDB.data.cards({
 			code : code
 		}).first();
