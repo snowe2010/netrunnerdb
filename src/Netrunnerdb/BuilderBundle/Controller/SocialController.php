@@ -1022,7 +1022,7 @@ class SocialController extends Controller
                 if($commenter 
                     && $commenter->getId() != $user->getId()
                     && $commenter->getNotifCommenter()
-                    && !in_array($already_sent_usernames, $commenter->getUsername())) {
+                    && array_search($commenter->getUsername(), $already_sent_usernames) !== FALSE) {
                     
                     $message = \Swift_Message::newInstance()->setSubject("[NetrunnerDB] New comment")->setFrom(array("alsciende@netrunnerdb.com" => $user->getUsername()))->setTo($commenter->getEmail())->setBody(
                             $this->renderView('NetrunnerdbBuilderBundle:Emails:newcomment_commenter.html.twig', array(
