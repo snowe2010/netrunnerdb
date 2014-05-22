@@ -530,27 +530,27 @@ class User extends BaseUser
     /**
      * @var boolean
      */
-    private $notif_author;
+    private $notif_author = TRUE;
 
     /**
      * @var boolean
      */
-    private $notif_commenter;
+    private $notif_commenter = TRUE;
 
     /**
      * @var boolean
      */
-    private $notif_mention;
+    private $notif_mention = TRUE;
 
     /**
      * @var boolean
      */
-    private $notif_follow;
+    private $notif_follow = TRUE;
 
     /**
      * @var boolean
      */
-    private $notif_successor;
+    private $notif_successor = TRUE;
 
 
     /**
