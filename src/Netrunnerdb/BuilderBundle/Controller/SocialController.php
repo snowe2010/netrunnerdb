@@ -998,7 +998,8 @@ class SocialController extends Controller
             
             // author
 			if($user->getId() != $decklist->getUser()->getId() && $decklist->getUser()->getNotifAuthor()) {
-	            $message = \Swift_Message::newInstance()->setSubject("[NetrunnerDB] New comment")->setFrom(array("notify@netrunnerdb.com" => $user->getUsername()))->setTo($decklist->getUser()->getEmail())->setBody(
+			    
+	            $message = \Swift_Message::newInstance()->setSubject("[NetrunnerDB] New comment")->setFrom(array("alsciende@netrunnerdb.com" => $user->getUsername()))->setTo($decklist->getUser()->getEmail())->setBody(
 					$this->renderView('NetrunnerdbBuilderBundle:Emails:newcomment_author.html.twig', array(
 	            	   'username' => $user->getUsername(),
 					   'decklist_name' => $decklist->getName(),
@@ -1009,6 +1010,7 @@ class SocialController extends Controller
 	            );
 	            $this->get('mailer')->send($message);
 	            $already_sent_usernames[] = $decklist->getUser()->getUsername();
+	            
 			}
             
 			// commenters
@@ -1017,27 +1019,24 @@ class SocialController extends Controller
             /* @var $comment Comment */
             foreach($comments as $comment) {
                 $commenter = $comment->getAuthor();
-                if($commenter && $commenter->getId() != $user->getId()
-                    && $commenter->getId() != $decklist->getUser()->getId()
+                if($commenter 
+                    && $commenter->getId() != $user->getId()
                     && $commenter->getNotifCommenter()
-                    && !in_array($commenter->getEmail(), $commenters)) {
-                    $commenters[] = $commenter->getEmail();
+                    && !in_array($already_sent_usernames, $commenter->getUsername())) {
+                    
+                    $message = \Swift_Message::newInstance()->setSubject("[NetrunnerDB] New comment")->setFrom(array("alsciende@netrunnerdb.com" => $user->getUsername()))->setTo($commenter->getEmail())->setBody(
+                            $this->renderView('NetrunnerdbBuilderBundle:Emails:newcomment_commenter.html.twig', array(
+                                    'username' => $user->getUsername(),
+                                    'decklist_name' => $decklist->getName(),
+                                    'url' => $url_comment,
+                                    'comment' => $comment_html,
+                                    'profile' => $url_profile
+                            )), 'text/html'
+                    );
+                    $this->get('mailer')->send($message);
                     $already_sent_usernames[] = $commenter->getUsername();
+                    
                 }
-            }
-            $commenters = array_unique($commenters);
-            
-            foreach($commenters as $commenter_email) {
-                $message = \Swift_Message::newInstance()->setSubject("[NetrunnerDB] New comment")->setFrom(array("notify@netrunnerdb.com" => $user->getUsername()))->setTo($commenter_email)->setBody(
-                        $this->renderView('NetrunnerdbBuilderBundle:Emails:newcomment_commenter.html.twig', array(
-                            	   'username' => $user->getUsername(),
-                                'decklist_name' => $decklist->getName(),
-                                'url' => $url_comment,
-                                'comment' => $comment_html,
-                                'profile' => $url_profile
-                        )), 'text/html'
-                );
-                $this->get('mailer')->send($message);
             }
             
             // mentionned
@@ -1046,7 +1045,8 @@ class SocialController extends Controller
                 /* @var $mentionned_user User */
                 $mentionned_user = $this->getDoctrine()->getRepository('NetrunnerdbUserBundle:User')->findOneBy(array('username' => $mentionned_username));
                 if($mentionned_user && $mentionned_user->getNotifMention()) {
-                    $message = \Swift_Message::newInstance()->setSubject("[NetrunnerDB] New comment")->setFrom(array("notify@netrunnerdb.com" => $user->getUsername()))->setTo($mentionned_user->getEmail())->setBody(
+                    
+                    $message = \Swift_Message::newInstance()->setSubject("[NetrunnerDB] New comment")->setFrom(array("alsciende@netrunnerdb.com" => $user->getUsername()))->setTo($mentionned_user->getEmail())->setBody(
                             $this->renderView('NetrunnerdbBuilderBundle:Emails:newcomment_mentionned.html.twig', array(
                                     'username' => $user->getUsername(),
                                     'decklist_name' => $decklist->getName(),
@@ -1057,6 +1057,7 @@ class SocialController extends Controller
                     );
                     $this->get('mailer')->send($message);
                     $already_sent_usernames[] = $mentionned_username;
+                    
                 }
             }
         }
