@@ -8,7 +8,7 @@ NRDB.tip = {};
 		var code = $(this).data('index')
 				|| $(this).closest('.card-container').data('index')
 				|| ($(this).attr('href') && $(this).attr('href').replace(
-						/http:\/\/netrunnerdb.com\/(..)\/card\/(\d\d\d\d\d)$/,
+						/\/card\/(\d\d\d\d\d)$/,
 						"$2"));
 		var card = NRDB.data.cards({
 			code : code

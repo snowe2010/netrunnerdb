@@ -948,6 +948,10 @@ class SocialController extends Controller
     {
         /* @var $user User */
         $user = $this->getUser();
+        if(!$user) {
+            throw new UnauthorizedHttpException('You must be logged in to comment.');
+        }
+        
         $request = $this->getRequest();
         
         $decklist_id = filter_var($request->get('id'), FILTER_SANITIZE_NUMBER_INT);
@@ -1013,7 +1017,7 @@ class SocialController extends Controller
             /* @var $comment Comment */
             foreach($comments as $comment) {
                 $commenter = $comment->getAuthor();
-                if($commenter->getId() != $user->getId()
+                if($commenter && $commenter->getId() != $user->getId()
                     && $commenter->getId() != $decklist->getUser()->getId()
                     && $commenter->getNotifCommenter()
                     && !in_array($commenter->getEmail(), $commenters)) {
