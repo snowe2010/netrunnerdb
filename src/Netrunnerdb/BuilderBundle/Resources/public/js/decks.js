@@ -102,7 +102,10 @@ function display_deck(event) {
 		NRDB.data.cards({code:slot.card_code}).update({indeck:parseInt(slot.qty,10)});
 	}
 	$('#deck-name').text(deck.name);
-	$('#deck-description').html(deck.description && deck.description.replace(/\n/g, "<br>"));
+	
+
+	var converter = new Markdown.Converter();
+	$('#deck-description').html(converter.makeHtml(deck.description));
 	update_deck();
 	$('#btn-publish').prop('disabled', !!$(this).closest('tr').data('problem'));
 }
