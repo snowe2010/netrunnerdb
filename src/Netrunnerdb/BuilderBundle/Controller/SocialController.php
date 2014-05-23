@@ -991,75 +991,48 @@ class SocialController extends Controller
             ->flush();
             
             // send emails
-            $already_sent_usernames = array();
-            $url_profile = $this->generateUrl('user_profile');
-            $url_comment = $this->generateUrl('decklist_detail', array('decklist_id' => $decklist->getId(), 'decklist_name' => $decklist->getPrettyname())) . '#' . $comment->getId();
-            $date = $now->format('r');
-            
-            // author
-			if($user->getId() != $decklist->getUser()->getId() && $decklist->getUser()->getNotifAuthor()) {
-			    
-	            $message = \Swift_Message::newInstance()->setSubject("[NetrunnerDB] New comment")->setFrom(array("alsciende@netrunnerdb.com" => $user->getUsername()))->setTo($decklist->getUser()->getEmail())->setBody(
-					$this->renderView('NetrunnerdbBuilderBundle:Emails:newcomment_author.html.twig', array(
-	            	   'username' => $user->getUsername(),
-					   'decklist_name' => $decklist->getName(),
-					   'url' => $url_comment,
-					   'comment' => $comment_html,
-					   'profile' => $url_profile
-	                )), 'text/html'
-	            );
-	            $this->get('mailer')->send($message);
-	            $already_sent_usernames[] = $decklist->getUser()->getUsername();
-	            
-			}
-            
-			// commenters
-            $comments = $decklist->getComments();
-            $commenters = array();
-            /* @var $comment Comment */
-            foreach($comments as $comment) {
-                $commenter = $comment->getAuthor();
-                if($commenter 
-                    && $commenter->getId() != $user->getId()
-                    && $commenter->getNotifCommenter()
-                    && array_search($commenter->getUsername(), $already_sent_usernames) !== FALSE) {
-                    
-                    $message = \Swift_Message::newInstance()->setSubject("[NetrunnerDB] New comment")->setFrom(array("alsciende@netrunnerdb.com" => $user->getUsername()))->setTo($commenter->getEmail())->setBody(
-                            $this->renderView('NetrunnerdbBuilderBundle:Emails:newcomment_commenter.html.twig', array(
-                                    'username' => $user->getUsername(),
-                                    'decklist_name' => $decklist->getName(),
-                                    'url' => $url_comment,
-                                    'comment' => $comment_html,
-                                    'profile' => $url_profile
-                            )), 'text/html'
-                    );
-                    $this->get('mailer')->send($message);
-                    $already_sent_usernames[] = $commenter->getUsername();
-                    
+            $spool = array();
+            if($decklist->getUser()->getNotifAuthor()) {
+                if(!isset($spool[$decklist->getUser()->getEmail()])) {
+                    $spool[$decklist->getUser()->getEmail()] = 'NetrunnerdbBuilderBundle:Emails:newcomment_author.html.twig';
                 }
             }
-            
-            // mentionned
-            $mentionned_usernames = array_diff($mentionned_usernames, $already_sent_usernames);
+            foreach($decklist->getComments() as $comment) {
+                /* @var $comment Comment */
+                $commenter = $comment->getAuthor();
+                if($commenter && $commenter->getNotifCommenter()) {
+                    if(!isset($spool[$commenter->getEmail()])) {
+                        $spool[$commenter->getEmail()] = 'NetrunnerdbBuilderBundle:Emails:newcomment_commenter.html.twig';
+                    }
+                }
+            }
             foreach($mentionned_usernames as $mentionned_username) {
                 /* @var $mentionned_user User */
                 $mentionned_user = $this->getDoctrine()->getRepository('NetrunnerdbUserBundle:User')->findOneBy(array('username' => $mentionned_username));
                 if($mentionned_user && $mentionned_user->getNotifMention()) {
-                    
-                    $message = \Swift_Message::newInstance()->setSubject("[NetrunnerDB] New comment")->setFrom(array("alsciende@netrunnerdb.com" => $user->getUsername()))->setTo($mentionned_user->getEmail())->setBody(
-                            $this->renderView('NetrunnerdbBuilderBundle:Emails:newcomment_mentionned.html.twig', array(
-                                    'username' => $user->getUsername(),
-                                    'decklist_name' => $decklist->getName(),
-                                    'url' => $url_comment,
-                                    'comment' => $comment_html,
-                                    'profile' => $url_profile
-                            )), 'text/html'
-                    );
-                    $this->get('mailer')->send($message);
-                    $already_sent_usernames[] = $mentionned_username;
-                    
+                    if(!isset($spool[$mentionned_user->getEmail()])) {
+                        $spool[$mentionned_user->getEmail()] = 'NetrunnerdbBuilderBundle:Emails:newcomment_mentionned.html.twig';
+                    }
                 }
             }
+            unset($spool[$user->getEmail()]);
+            
+            $email_data = array(
+                'username' => $user->getUsername(),
+                'decklist_name' => $decklist->getName(),
+                'url' => $this->generateUrl('decklist_detail', array('decklist_id' => $decklist->getId(), 'decklist_name' => $decklist->getPrettyname())) . '#' . $comment->getId(),
+                'comment' => $comment_html,
+                'profile' => $this->generateUrl('user_profile')
+            );
+            foreach($spool as $email => $view) {
+                $message = \Swift_Message::newInstance()
+                ->setSubject("[NetrunnerDB] New comment")
+                ->setFrom(array("alsciende@netrunnerdb.com" => $user->getUsername()))
+                ->setTo($email)
+                ->setBody($this->renderView($view, $email_data), 'text/html');
+                $this->get('mailer')->send($message);
+            }
+            
         }
         
         return $this->redirect($this->generateUrl('decklist_detail', array(
