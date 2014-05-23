@@ -729,14 +729,35 @@ class BuilderController extends Controller
 
     public function apidecksAction ()
     {
+        $response = new Response();
+        $response->setPublic();
+        $response->setMaxAge(600);
+        $response->headers->add(array(
+                'Access-Control-Allow-Origin' => '*'
+        ));
+        
+        $jsonp = $this->getRequest()->query->get('jsonp');
+        $locale = $this->getRequest()->query->get('_locale');
+        if (isset($locale))
+            $this->getRequest()->setLocale($locale);
+        
         /* @var $user \Netrunnerdb\UserBundle\Entity\User */
         $user = $this->getUser();
         
         if (! $user) {
             throw new UnauthorizedHttpException();
         }
-    
-        return new Response(json_encode($this->getDecks($user)));
+        
+        $content = json_encode($this->getDecks($user));
+        if (isset($jsonp)) {
+            $content = "$jsonp($content)";
+            $response->headers->set('Content-Type', 'application/javascript');
+        } else {
+            $response->headers->set('Content-Type', 'application/json');
+        }
+	
+        $response->setContent($content);
+        return $response;
     }
 
 }
