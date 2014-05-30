@@ -406,7 +406,7 @@ function export_bbcode() {
 		if(deck[type] != null) {
 			if(type == "identity") {
 				var slot = deck[type][0];
-				lines.push('[url=http://netrunnerdb.com/'+Locale+'/card/'
+				lines.push('[url=http://netrunnerdb.com/'+NRDB.data.locale+'/card/'
 				 + slot.card.code
 				 + ']'
 				 + slot.card.title
@@ -423,7 +423,7 @@ function export_bbcode() {
 						if(i%5==0) inf += " ";
 						inf+="•";
 					}
-					lines.push(slot.qty + 'x [url=http://netrunnerdb.com/'+Locale+'/card/'
+					lines.push(slot.qty + 'x [url=http://netrunnerdb.com/'+NRDB.data.locale+'/card/'
 					 + slot.card.code
 					 + ']'
 					 + slot.card.title
@@ -467,7 +467,7 @@ function export_markdown() {
 				var slot = deck[type][0];
 				lines.push('['
 				 + slot.card.title
-				 + '](http://netrunnerdb.com/'+Locale+'/card/'
+				 + '](http://netrunnerdb.com/'+NRDB.data.locale+'/card/'
 				 + slot.card.code
 				 + ') _('
 				 + slot.card.setname
@@ -486,7 +486,7 @@ function export_markdown() {
 					}
 					lines.push('* '+ slot.qty + 'x ['
 					 + slot.card.title 
-					 + '](http://netrunnerdb.com/'+Locale+'/card/'
+					 + '](http://netrunnerdb.com/'+NRDB.data.locale+'/card/'
 					 + slot.card.code
 					 + ') _('
 					 + slot.card.setname
