@@ -213,7 +213,8 @@ class BuilderController extends Controller
         foreach ($cards as $card) {
             $title = $card->getTitle();
             $replacements = array(
-                    'Alix T4LB07' => 'Alix T4LBO7'
+                    'Alix T4LB07' => 'Alix T4LBO7',
+                    'Planned Assault' => 'Planned Attack'
             );
             if (isset($replacements[$title])) {
                 $title = $replacements[$title];
