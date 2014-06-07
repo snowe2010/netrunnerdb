@@ -1,5 +1,11 @@
 if (typeof NRDB != "object")
-	var NRDB = { data_loaded: $.Callbacks() };
+	var NRDB = { 
+		data_loaded: $.Callbacks(), 
+		api_url: {
+			sets: 'http://netrunnerdb.com/api/sets/',
+			cards: 'http://netrunnerdb.com/api/cards/'
+		}
+	};
 NRDB.data = {};
 (function(data) {
 	data.locale = 'en';
@@ -13,10 +19,10 @@ NRDB.data = {};
 	data.query = function() {
 		data.initialize();
 		data.promise_sets = $
-				.ajax("http://netrunnerdb.com/api/sets/?jsonp=NRDB.data.parse_sets&_locale="
+				.ajax(NRDB.api_url.sets+"?jsonp=NRDB.data.parse_sets&_locale="
 						+ data.locale);
 		data.promise_cards = $
-				.ajax("http://netrunnerdb.com/api/cards/?jsonp=NRDB.data.parse_cards&_locale="
+				.ajax(NRDB.api_url.cards+"?jsonp=NRDB.data.parse_cards&_locale="
 						+ data.locale);
 		$.when(data.promise_sets, data.promise_cards).done(data.initialize);
 	}
