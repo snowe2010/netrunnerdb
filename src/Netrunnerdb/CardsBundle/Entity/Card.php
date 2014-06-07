@@ -23,7 +23,7 @@ class Card
      * @var \DateTime
      */
     private $opinionsTs;
-    
+
     /**
      * @var string
      */
@@ -58,7 +58,7 @@ class Card
      * @var string
      */
     private $titleIt;
-    
+
     /**
      * @var string
      */
@@ -88,7 +88,7 @@ class Card
      * @var string
      */
     private $keywordsIt;
-    
+
     /**
      * @var string
      */
@@ -118,7 +118,7 @@ class Card
      * @var string
      */
     private $textIt;
-    
+
     /**
      * @var integer
      */
@@ -173,7 +173,7 @@ class Card
      * @var string
      */
     private $flavorIt;
-    
+
     /**
      * @var string
      */
@@ -220,987 +220,20 @@ class Card
     private $uniqueness;
 
     /**
+     * @var boolean
+     */
+    private $limited;
+
+    /**
      * @var \Doctrine\Common\Collections\Collection
      */
     private $decklists;
-    
 
     /**
-     * Get id
-     *
-     * @return integer 
+     * @var \Doctrine\Common\Collections\Collection
      */
-    public function getId()
-    {
-        return $this->id;
-    }
+    private $opinions;
 
-    /**
-     * Set ts
-     *
-     * @param \DateTime $ts
-     * @return Card
-     */
-    public function setTs($ts)
-    {
-        $this->ts = $ts;
-    
-        return $this;
-    }
-
-    /**
-     * Get ts
-     *
-     * @return \DateTime 
-     */
-    public function getTs()
-    {
-        return $this->ts;
-    }
-
-    /**
-     * Set opinionsTs
-     *
-     * @param \DateTime $opinionsTs
-     * @return Card
-     */
-    public function setOpinionsTs($opinionsTs)
-    {
-    	$this->opinionsTs = $opinionsTs;
-    
-    	return $this;
-    }
-    
-    /**
-     * Get opinionsTs
-     *
-     * @return \DateTime
-     */
-    public function getOpinionsTs()
-    {
-    	return $this->opinionsTs;
-    }
-    
-    /**
-     * Set code
-     *
-     * @param string $code
-     * @return Card
-     */
-    public function setCode($code)
-    {
-        $this->code = $code;
-    
-        return $this;
-    }
-
-    /**
-     * Get code
-     *
-     * @return string 
-     */
-    public function getCode()
-    {
-        return $this->code;
-    }
-
-    /**
-     * Set title
-     *
-     * @param string $title
-     * @return Card
-     */
-    public function setTitle($title)
-    {
-        $this->title = $title;
-    
-        return $this;
-    }
-
-    /**
-     * Get title
-     *
-     * @return string 
-     */
-    public function getTitle($locale = "en")
-    {
-    	$res = $this->title;
-    	if($locale == "fr") $res = $this->titleFr ?: $res;
-    	if($locale == "de") $res = $this->titleDe ?: $res;
-    	if($locale == "es") $res = $this->titleEs ?: $res;
-    	if($locale == "pl") $res = $this->titlePl ?: $res;
-    	if($locale == "it") $res = $this->titleIt ?: $res;
-    	return $res;
-    }
-
-    /**
-     * Set titleFr
-     *
-     * @param string $titleFr
-     * @return Card
-     */
-    public function setTitleFr($titleFr)
-    {
-        $this->titleFr = $titleFr;
-    
-        return $this;
-    }
-
-    /**
-     * Get titleFr
-     *
-     * @return string 
-     */
-    public function getTitleFr()
-    {
-        return $this->titleFr;
-    }
-
-    /**
-     * Set titleDe
-     *
-     * @param string $titleDe
-     * @return Card
-     */
-    public function setTitleDe($titleDe)
-    {
-        $this->titleDe = $titleDe;
-    
-        return $this;
-    }
-
-    /**
-     * Get titleDe
-     *
-     * @return string 
-     */
-    public function getTitleDe()
-    {
-        return $this->titleDe;
-    }
-
-    /**
-     * Set titleEs
-     *
-     * @param string $titleEs
-     * @return Card
-     */
-    public function setTitleEs($titleEs)
-    {
-        $this->titleEs = $titleEs;
-    
-        return $this;
-    }
-
-    /**
-     * Get titleEs
-     *
-     * @return string 
-     */
-    public function getTitleEs()
-    {
-        return $this->titleEs;
-    }
-
-    /**
-     * Set titlePl
-     *
-     * @param string $titlePl
-     * @return Card
-     */
-    public function setTitlePl($titlePl)
-    {
-        $this->titlePl = $titlePl;
-    
-        return $this;
-    }
-
-    /**
-     * Get titlePl
-     *
-     * @return string 
-     */
-    public function getTitlePl()
-    {
-        return $this->titlePl;
-    }
-
-    /**
-     * Set titleIt
-     *
-     * @param string $titleIt
-     * @return Card
-     */
-    public function setTitleIt($titleIt)
-    {
-    	$this->titleIt = $titleIt;
-    
-    	return $this;
-    }
-    
-    /**
-     * Get titleIt
-     *
-     * @return string
-     */
-    public function getTitleIt()
-    {
-    	return $this->titleIt;
-    }
-    
-    /**
-     * Set keywords
-     *
-     * @param string $keywords
-     * @return Card
-     */
-    public function setKeywords($keywords)
-    {
-        $this->keywords = $keywords;
-    
-        return $this;
-    }
-
-    /**
-     * Get keywords
-     *
-     * @return string 
-     */
-    public function getKeywords($locale = "en")
-    {
-    	$res = $this->keywords;
-    	if($locale == "fr") $res = $this->keywordsFr ?: $res;
-    	if($locale == "de") $res = $this->keywordsDe ?: $res;
-    	if($locale == "es") $res = $this->keywordsEs ?: $res;
-    	if($locale == "pl") $res = $this->keywordsPl ?: $res;
-    	if($locale == "it") $res = $this->keywordsIt ?: $res;
-    	return $res;
-    }
-
-    /**
-     * Set keywordsFr
-     *
-     * @param string $keywordsFr
-     * @return Card
-     */
-    public function setKeywordsFr($keywordsFr)
-    {
-        $this->keywordsFr = $keywordsFr;
-    
-        return $this;
-    }
-
-    /**
-     * Get keywordsFr
-     *
-     * @return string 
-     */
-    public function getKeywordsFr()
-    {
-        return $this->keywordsFr;
-    }
-
-    /**
-     * Set keywordsDe
-     *
-     * @param string $keywordsDe
-     * @return Card
-     */
-    public function setKeywordsDe($keywordsDe)
-    {
-        $this->keywordsDe = $keywordsDe;
-    
-        return $this;
-    }
-
-    /**
-     * Get keywordsDe
-     *
-     * @return string 
-     */
-    public function getKeywordsDe()
-    {
-        return $this->keywordsDe;
-    }
-
-    /**
-     * Set keywordsEs
-     *
-     * @param string $keywordsEs
-     * @return Card
-     */
-    public function setKeywordsEs($keywordsEs)
-    {
-        $this->keywordsEs = $keywordsEs;
-    
-        return $this;
-    }
-
-    /**
-     * Get keywordsEs
-     *
-     * @return string 
-     */
-    public function getKeywordsEs()
-    {
-        return $this->keywordsEs;
-    }
-
-    /**
-     * Set keywordsPl
-     *
-     * @param string $keywordsPl
-     * @return Card
-     */
-    public function setKeywordsPl($keywordsPl)
-    {
-        $this->keywordsPl = $keywordsPl;
-    
-        return $this;
-    }
-
-    /**
-     * Get keywordsPl
-     *
-     * @return string 
-     */
-    public function getKeywordsPl()
-    {
-        return $this->keywordsPl;
-    }
-
-    /**
-     * Set keywordsIt
-     *
-     * @param string $keywordsIt
-     * @return Card
-     */
-    public function setKeywordsIt($keywordsIt)
-    {
-    	$this->keywordsIt = $keywordsIt;
-    
-    	return $this;
-    }
-    
-    /**
-     * Get keywordsIt
-     *
-     * @return string
-     */
-    public function getKeywordsIt()
-    {
-    	return $this->keywordsIt;
-    }
-    
-    /**
-     * Set text
-     *
-     * @param string $text
-     * @return Card
-     */
-    public function setText($text)
-    {
-        $this->text = $text;
-    
-        return $this;
-    }
-
-    /**
-     * Get text
-     *
-     * @return string 
-     */
-    public function getText($locale = "en")
-    {
-    	$res = $this->text;
-    	if($locale == "fr") $res = $this->textFr ?: $res;
-    	if($locale == "de") $res = $this->textDe ?: $res;
-    	if($locale == "es") $res = $this->textEs ?: $res;
-    	if($locale == "pl") $res = $this->textPl ?: $res;
-    	if($locale == "it") $res = $this->textIt ?: $res;
-    	return $res;
-    }
-
-    /**
-     * Set textFr
-     *
-     * @param string $textFr
-     * @return Card
-     */
-    public function setTextFr($textFr)
-    {
-        $this->textFr = $textFr;
-    
-        return $this;
-    }
-
-    /**
-     * Get textFr
-     *
-     * @return string 
-     */
-    public function getTextFr()
-    {
-        return $this->textFr;
-    }
-
-    /**
-     * Set textDe
-     *
-     * @param string $textDe
-     * @return Card
-     */
-    public function setTextDe($textDe)
-    {
-        $this->textDe = $textDe;
-    
-        return $this;
-    }
-
-    /**
-     * Get textDe
-     *
-     * @return string 
-     */
-    public function getTextDe()
-    {
-        return $this->textDe;
-    }
-
-    /**
-     * Set textEs
-     *
-     * @param string $textEs
-     * @return Card
-     */
-    public function setTextEs($textEs)
-    {
-        $this->textEs = $textEs;
-    
-        return $this;
-    }
-
-    /**
-     * Get textEs
-     *
-     * @return string 
-     */
-    public function getTextEs()
-    {
-        return $this->textEs;
-    }
-
-    /**
-     * Set textPl
-     *
-     * @param string $textPl
-     * @return Card
-     */
-    public function setTextPl($textPl)
-    {
-        $this->textPl = $textPl;
-    
-        return $this;
-    }
-
-    /**
-     * Get textPl
-     *
-     * @return string 
-     */
-    public function getTextPl()
-    {
-        return $this->textPl;
-    }
-    
-    /**
-     * Set textIt
-     *
-     * @param string $textIt
-     * @return Card
-     */
-    public function setTextIt($textIt)
-    {
-        $this->textIt = $textIt;
-    
-        return $this;
-    }
-
-    /**
-     * Get textIt
-     *
-     * @return string 
-     */
-    public function getTextIt()
-    {
-        return $this->textIt;
-    }
-
-    /**
-     * Set advancementCost
-     *
-     * @param integer $advancementCost
-     * @return Card
-     */
-    public function setAdvancementCost($advancementCost)
-    {
-        $this->advancementCost = $advancementCost;
-    
-        return $this;
-    }
-
-    /**
-     * Get advancementCost
-     *
-     * @return integer 
-     */
-    public function getAdvancementCost()
-    {
-        return $this->advancementCost;
-    }
-
-    /**
-     * Set agendaPoints
-     *
-     * @param integer $agendaPoints
-     * @return Card
-     */
-    public function setAgendaPoints($agendaPoints)
-    {
-        $this->agendaPoints = $agendaPoints;
-    
-        return $this;
-    }
-
-    /**
-     * Get agendaPoints
-     *
-     * @return integer 
-     */
-    public function getAgendaPoints()
-    {
-        return $this->agendaPoints;
-    }
-
-    /**
-     * Set baseLink
-     *
-     * @param integer $baseLink
-     * @return Card
-     */
-    public function setBaseLink($baseLink)
-    {
-        $this->baseLink = $baseLink;
-    
-        return $this;
-    }
-
-    /**
-     * Get baseLink
-     *
-     * @return integer 
-     */
-    public function getBaseLink()
-    {
-        return $this->baseLink;
-    }
-
-    /**
-     * Set cost
-     *
-     * @param integer $cost
-     * @return Card
-     */
-    public function setCost($cost)
-    {
-        $this->cost = $cost;
-    
-        return $this;
-    }
-
-    /**
-     * Get cost
-     *
-     * @return integer 
-     */
-    public function getCost()
-    {
-        return $this->cost;
-    }
-
-    /**
-     * Set factionCost
-     *
-     * @param integer $factionCost
-     * @return Card
-     */
-    public function setFactionCost($factionCost)
-    {
-        $this->factionCost = $factionCost;
-    
-        return $this;
-    }
-
-    /**
-     * Get factionCost
-     *
-     * @return integer 
-     */
-    public function getFactionCost()
-    {
-        return $this->factionCost;
-    }
-
-    /**
-     * Set flavor
-     *
-     * @param string $flavor
-     * @return Card
-     */
-    public function setFlavor($flavor)
-    {
-        $this->flavor = $flavor;
-    
-        return $this;
-    }
-
-    /**
-     * Get flavor
-     *
-     * @return string 
-     */
-    public function getFlavor($locale = "en")
-    {
-    	$res = $this->flavor;
-    	if($locale == "fr") $res = $this->flavorFr ?: $res;
-    	if($locale == "de") $res = $this->flavorDe ?: $res;
-    	if($locale == "es") $res = $this->flavorEs ?: $res;
-    	if($locale == "pl") $res = $this->flavorPl ?: $res;
-    	if($locale == "it") $res = $this->flavorIt ?: $res;
-    	return $res;
-    }
-
-    /**
-     * Set flavorFr
-     *
-     * @param string $flavorFr
-     * @return Card
-     */
-    public function setFlavorFr($flavorFr)
-    {
-        $this->flavorFr = $flavorFr;
-    
-        return $this;
-    }
-
-    /**
-     * Get flavorFr
-     *
-     * @return string 
-     */
-    public function getFlavorFr()
-    {
-        return $this->flavorFr;
-    }
-
-    /**
-     * Set flavorDe
-     *
-     * @param string $flavorDe
-     * @return Card
-     */
-    public function setFlavorDe($flavorDe)
-    {
-        $this->flavorDe = $flavorDe;
-    
-        return $this;
-    }
-
-    /**
-     * Get flavorDe
-     *
-     * @return string 
-     */
-    public function getFlavorDe()
-    {
-        return $this->flavorDe;
-    }
-
-    /**
-     * Set flavorEs
-     *
-     * @param string $flavorEs
-     * @return Card
-     */
-    public function setFlavorEs($flavorEs)
-    {
-        $this->flavorEs = $flavorEs;
-    
-        return $this;
-    }
-
-    /**
-     * Get flavorEs
-     *
-     * @return string 
-     */
-    public function getFlavorEs()
-    {
-        return $this->flavorEs;
-    }
-
-    /**
-     * Set flavorPl
-     *
-     * @param string $flavorPl
-     * @return Card
-     */
-    public function setFlavorPl($flavorPl)
-    {
-        $this->flavorPl = $flavorPl;
-    
-        return $this;
-    }
-
-    /**
-     * Get flavorPl
-     *
-     * @return string 
-     */
-    public function getFlavorPl()
-    {
-        return $this->flavorPl;
-    }
-
-    /**
-     * Set flavorIt
-     *
-     * @param string $flavorIt
-     * @return Card
-     */
-    public function setFlavorIt($flavorIt)
-    {
-    	$this->flavorIt = $flavorIt;
-    
-    	return $this;
-    }
-    
-    /**
-     * Get flavorIt
-     *
-     * @return string
-     */
-    public function getFlavorIt()
-    {
-    	return $this->flavorIt;
-    }
-    
-    /**
-     * Set illustrator
-     *
-     * @param string $illustrator
-     * @return Card
-     */
-    public function setIllustrator($illustrator)
-    {
-        $this->illustrator = $illustrator;
-    
-        return $this;
-    }
-
-    /**
-     * Get illustrator
-     *
-     * @return string 
-     */
-    public function getIllustrator()
-    {
-        return $this->illustrator;
-    }
-
-    /**
-     * Set influenceLimit
-     *
-     * @param integer $influenceLimit
-     * @return Card
-     */
-    public function setInfluenceLimit($influenceLimit)
-    {
-        $this->influenceLimit = $influenceLimit;
-    
-        return $this;
-    }
-
-    /**
-     * Get influenceLimit
-     *
-     * @return integer 
-     */
-    public function getInfluenceLimit()
-    {
-        return $this->influenceLimit;
-    }
-
-    /**
-     * Set memoryUnits
-     *
-     * @param integer $memoryUnits
-     * @return Card
-     */
-    public function setMemoryUnits($memoryUnits)
-    {
-        $this->memoryUnits = $memoryUnits;
-    
-        return $this;
-    }
-
-    /**
-     * Get memoryUnits
-     *
-     * @return integer 
-     */
-    public function getMemoryUnits()
-    {
-        return $this->memoryUnits;
-    }
-
-    /**
-     * Set minimumDeckSize
-     *
-     * @param integer $minimumDeckSize
-     * @return Card
-     */
-    public function setMinimumDeckSize($minimumDeckSize)
-    {
-        $this->minimumDeckSize = $minimumDeckSize;
-    
-        return $this;
-    }
-
-    /**
-     * Get minimumDeckSize
-     *
-     * @return integer 
-     */
-    public function getMinimumDeckSize()
-    {
-        return $this->minimumDeckSize;
-    }
-
-    /**
-     * Set number
-     *
-     * @param integer $number
-     * @return Card
-     */
-    public function setNumber($number)
-    {
-        $this->number = $number;
-    
-        return $this;
-    }
-
-    /**
-     * Get number
-     *
-     * @return integer 
-     */
-    public function getNumber()
-    {
-        return $this->number;
-    }
-
-    /**
-     * Set quantity
-     *
-     * @param integer $quantity
-     * @return Card
-     */
-    public function setQuantity($quantity)
-    {
-        $this->quantity = $quantity;
-    
-        return $this;
-    }
-
-    /**
-     * Get quantity
-     *
-     * @return integer 
-     */
-    public function getQuantity()
-    {
-        return $this->quantity;
-    }
-
-    /**
-     * Set strength
-     *
-     * @param integer $strength
-     * @return Card
-     */
-    public function setStrength($strength)
-    {
-        $this->strength = $strength;
-    
-        return $this;
-    }
-
-    /**
-     * Get strength
-     *
-     * @return integer 
-     */
-    public function getStrength()
-    {
-        return $this->strength;
-    }
-
-    /**
-     * Set trashCost
-     *
-     * @param integer $trashCost
-     * @return Card
-     */
-    public function setTrashCost($trashCost)
-    {
-        $this->trashCost = $trashCost;
-    
-        return $this;
-    }
-
-    /**
-     * Get trashCost
-     *
-     * @return integer 
-     */
-    public function getTrashCost()
-    {
-        return $this->trashCost;
-    }
-
-    /**
-     * Set uniqueness
-     *
-     * @param boolean $uniqueness
-     * @return Card
-     */
-    public function setUniqueness($uniqueness)
-    {
-        $this->uniqueness = $uniqueness;
-    
-        return $this;
-    }
-
-    /**
-     * Get uniqueness
-     *
-     * @return boolean 
-     */
-    public function getUniqueness()
-    {
-        return $this->uniqueness;
-    }
     /**
      * @var \Netrunnerdb\CardsBundle\Entity\Pack
      */
@@ -1231,12 +264,1053 @@ class Card
      */
     public function __construct()
     {
-        $this->ts = new \DateTime(); 
-    	$this->rulings = new \Doctrine\Common\Collections\ArrayCollection();
-    	$this->decklists = new \Doctrine\Common\Collections\ArrayCollection();
-    	$this->opinions = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->decklists = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->opinions = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->rulings = new \Doctrine\Common\Collections\ArrayCollection();
     }
-    
+
+    /**
+     * Get id
+     *
+     * @return integer 
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * Set ts
+     *
+     * @param \DateTime $ts
+     * @return Card
+     */
+    public function setTs($ts)
+    {
+        $this->ts = $ts;
+
+        return $this;
+    }
+
+    /**
+     * Get ts
+     *
+     * @return \DateTime 
+     */
+    public function getTs()
+    {
+        return $this->ts;
+    }
+
+    /**
+     * Set opinionsTs
+     *
+     * @param \DateTime $opinionsTs
+     * @return Card
+     */
+    public function setOpinionsTs($opinionsTs)
+    {
+        $this->opinionsTs = $opinionsTs;
+
+        return $this;
+    }
+
+    /**
+     * Get opinionsTs
+     *
+     * @return \DateTime 
+     */
+    public function getOpinionsTs()
+    {
+        return $this->opinionsTs;
+    }
+
+    /**
+     * Set code
+     *
+     * @param string $code
+     * @return Card
+     */
+    public function setCode($code)
+    {
+        $this->code = $code;
+
+        return $this;
+    }
+
+    /**
+     * Get code
+     *
+     * @return string 
+     */
+    public function getCode()
+    {
+        return $this->code;
+    }
+
+    /**
+     * Set title
+     *
+     * @param string $title
+     * @return Card
+     */
+    public function setTitle($title)
+    {
+        $this->title = $title;
+
+        return $this;
+    }
+
+    /**
+     * Get title
+     *
+     * @return string 
+     */
+    public function getTitle()
+    {
+        return $this->title;
+    }
+
+    /**
+     * Set titleFr
+     *
+     * @param string $titleFr
+     * @return Card
+     */
+    public function setTitleFr($titleFr)
+    {
+        $this->titleFr = $titleFr;
+
+        return $this;
+    }
+
+    /**
+     * Get titleFr
+     *
+     * @return string 
+     */
+    public function getTitleFr()
+    {
+        return $this->titleFr;
+    }
+
+    /**
+     * Set titleDe
+     *
+     * @param string $titleDe
+     * @return Card
+     */
+    public function setTitleDe($titleDe)
+    {
+        $this->titleDe = $titleDe;
+
+        return $this;
+    }
+
+    /**
+     * Get titleDe
+     *
+     * @return string 
+     */
+    public function getTitleDe()
+    {
+        return $this->titleDe;
+    }
+
+    /**
+     * Set titleEs
+     *
+     * @param string $titleEs
+     * @return Card
+     */
+    public function setTitleEs($titleEs)
+    {
+        $this->titleEs = $titleEs;
+
+        return $this;
+    }
+
+    /**
+     * Get titleEs
+     *
+     * @return string 
+     */
+    public function getTitleEs()
+    {
+        return $this->titleEs;
+    }
+
+    /**
+     * Set titlePl
+     *
+     * @param string $titlePl
+     * @return Card
+     */
+    public function setTitlePl($titlePl)
+    {
+        $this->titlePl = $titlePl;
+
+        return $this;
+    }
+
+    /**
+     * Get titlePl
+     *
+     * @return string 
+     */
+    public function getTitlePl()
+    {
+        return $this->titlePl;
+    }
+
+    /**
+     * Set titleIt
+     *
+     * @param string $titleIt
+     * @return Card
+     */
+    public function setTitleIt($titleIt)
+    {
+        $this->titleIt = $titleIt;
+
+        return $this;
+    }
+
+    /**
+     * Get titleIt
+     *
+     * @return string 
+     */
+    public function getTitleIt()
+    {
+        return $this->titleIt;
+    }
+
+    /**
+     * Set keywords
+     *
+     * @param string $keywords
+     * @return Card
+     */
+    public function setKeywords($keywords)
+    {
+        $this->keywords = $keywords;
+
+        return $this;
+    }
+
+    /**
+     * Get keywords
+     *
+     * @return string 
+     */
+    public function getKeywords()
+    {
+        return $this->keywords;
+    }
+
+    /**
+     * Set keywordsFr
+     *
+     * @param string $keywordsFr
+     * @return Card
+     */
+    public function setKeywordsFr($keywordsFr)
+    {
+        $this->keywordsFr = $keywordsFr;
+
+        return $this;
+    }
+
+    /**
+     * Get keywordsFr
+     *
+     * @return string 
+     */
+    public function getKeywordsFr()
+    {
+        return $this->keywordsFr;
+    }
+
+    /**
+     * Set keywordsDe
+     *
+     * @param string $keywordsDe
+     * @return Card
+     */
+    public function setKeywordsDe($keywordsDe)
+    {
+        $this->keywordsDe = $keywordsDe;
+
+        return $this;
+    }
+
+    /**
+     * Get keywordsDe
+     *
+     * @return string 
+     */
+    public function getKeywordsDe()
+    {
+        return $this->keywordsDe;
+    }
+
+    /**
+     * Set keywordsEs
+     *
+     * @param string $keywordsEs
+     * @return Card
+     */
+    public function setKeywordsEs($keywordsEs)
+    {
+        $this->keywordsEs = $keywordsEs;
+
+        return $this;
+    }
+
+    /**
+     * Get keywordsEs
+     *
+     * @return string 
+     */
+    public function getKeywordsEs()
+    {
+        return $this->keywordsEs;
+    }
+
+    /**
+     * Set keywordsPl
+     *
+     * @param string $keywordsPl
+     * @return Card
+     */
+    public function setKeywordsPl($keywordsPl)
+    {
+        $this->keywordsPl = $keywordsPl;
+
+        return $this;
+    }
+
+    /**
+     * Get keywordsPl
+     *
+     * @return string 
+     */
+    public function getKeywordsPl()
+    {
+        return $this->keywordsPl;
+    }
+
+    /**
+     * Set keywordsIt
+     *
+     * @param string $keywordsIt
+     * @return Card
+     */
+    public function setKeywordsIt($keywordsIt)
+    {
+        $this->keywordsIt = $keywordsIt;
+
+        return $this;
+    }
+
+    /**
+     * Get keywordsIt
+     *
+     * @return string 
+     */
+    public function getKeywordsIt()
+    {
+        return $this->keywordsIt;
+    }
+
+    /**
+     * Set text
+     *
+     * @param string $text
+     * @return Card
+     */
+    public function setText($text)
+    {
+        $this->text = $text;
+
+        return $this;
+    }
+
+    /**
+     * Get text
+     *
+     * @return string 
+     */
+    public function getText()
+    {
+        return $this->text;
+    }
+
+    /**
+     * Set textFr
+     *
+     * @param string $textFr
+     * @return Card
+     */
+    public function setTextFr($textFr)
+    {
+        $this->textFr = $textFr;
+
+        return $this;
+    }
+
+    /**
+     * Get textFr
+     *
+     * @return string 
+     */
+    public function getTextFr()
+    {
+        return $this->textFr;
+    }
+
+    /**
+     * Set textDe
+     *
+     * @param string $textDe
+     * @return Card
+     */
+    public function setTextDe($textDe)
+    {
+        $this->textDe = $textDe;
+
+        return $this;
+    }
+
+    /**
+     * Get textDe
+     *
+     * @return string 
+     */
+    public function getTextDe()
+    {
+        return $this->textDe;
+    }
+
+    /**
+     * Set textEs
+     *
+     * @param string $textEs
+     * @return Card
+     */
+    public function setTextEs($textEs)
+    {
+        $this->textEs = $textEs;
+
+        return $this;
+    }
+
+    /**
+     * Get textEs
+     *
+     * @return string 
+     */
+    public function getTextEs()
+    {
+        return $this->textEs;
+    }
+
+    /**
+     * Set textPl
+     *
+     * @param string $textPl
+     * @return Card
+     */
+    public function setTextPl($textPl)
+    {
+        $this->textPl = $textPl;
+
+        return $this;
+    }
+
+    /**
+     * Get textPl
+     *
+     * @return string 
+     */
+    public function getTextPl()
+    {
+        return $this->textPl;
+    }
+
+    /**
+     * Set textIt
+     *
+     * @param string $textIt
+     * @return Card
+     */
+    public function setTextIt($textIt)
+    {
+        $this->textIt = $textIt;
+
+        return $this;
+    }
+
+    /**
+     * Get textIt
+     *
+     * @return string 
+     */
+    public function getTextIt()
+    {
+        return $this->textIt;
+    }
+
+    /**
+     * Set advancementCost
+     *
+     * @param integer $advancementCost
+     * @return Card
+     */
+    public function setAdvancementCost($advancementCost)
+    {
+        $this->advancementCost = $advancementCost;
+
+        return $this;
+    }
+
+    /**
+     * Get advancementCost
+     *
+     * @return integer 
+     */
+    public function getAdvancementCost()
+    {
+        return $this->advancementCost;
+    }
+
+    /**
+     * Set agendaPoints
+     *
+     * @param integer $agendaPoints
+     * @return Card
+     */
+    public function setAgendaPoints($agendaPoints)
+    {
+        $this->agendaPoints = $agendaPoints;
+
+        return $this;
+    }
+
+    /**
+     * Get agendaPoints
+     *
+     * @return integer 
+     */
+    public function getAgendaPoints()
+    {
+        return $this->agendaPoints;
+    }
+
+    /**
+     * Set baseLink
+     *
+     * @param integer $baseLink
+     * @return Card
+     */
+    public function setBaseLink($baseLink)
+    {
+        $this->baseLink = $baseLink;
+
+        return $this;
+    }
+
+    /**
+     * Get baseLink
+     *
+     * @return integer 
+     */
+    public function getBaseLink()
+    {
+        return $this->baseLink;
+    }
+
+    /**
+     * Set cost
+     *
+     * @param integer $cost
+     * @return Card
+     */
+    public function setCost($cost)
+    {
+        $this->cost = $cost;
+
+        return $this;
+    }
+
+    /**
+     * Get cost
+     *
+     * @return integer 
+     */
+    public function getCost()
+    {
+        return $this->cost;
+    }
+
+    /**
+     * Set factionCost
+     *
+     * @param integer $factionCost
+     * @return Card
+     */
+    public function setFactionCost($factionCost)
+    {
+        $this->factionCost = $factionCost;
+
+        return $this;
+    }
+
+    /**
+     * Get factionCost
+     *
+     * @return integer 
+     */
+    public function getFactionCost()
+    {
+        return $this->factionCost;
+    }
+
+    /**
+     * Set flavor
+     *
+     * @param string $flavor
+     * @return Card
+     */
+    public function setFlavor($flavor)
+    {
+        $this->flavor = $flavor;
+
+        return $this;
+    }
+
+    /**
+     * Get flavor
+     *
+     * @return string 
+     */
+    public function getFlavor()
+    {
+        return $this->flavor;
+    }
+
+    /**
+     * Set flavorFr
+     *
+     * @param string $flavorFr
+     * @return Card
+     */
+    public function setFlavorFr($flavorFr)
+    {
+        $this->flavorFr = $flavorFr;
+
+        return $this;
+    }
+
+    /**
+     * Get flavorFr
+     *
+     * @return string 
+     */
+    public function getFlavorFr()
+    {
+        return $this->flavorFr;
+    }
+
+    /**
+     * Set flavorDe
+     *
+     * @param string $flavorDe
+     * @return Card
+     */
+    public function setFlavorDe($flavorDe)
+    {
+        $this->flavorDe = $flavorDe;
+
+        return $this;
+    }
+
+    /**
+     * Get flavorDe
+     *
+     * @return string 
+     */
+    public function getFlavorDe()
+    {
+        return $this->flavorDe;
+    }
+
+    /**
+     * Set flavorEs
+     *
+     * @param string $flavorEs
+     * @return Card
+     */
+    public function setFlavorEs($flavorEs)
+    {
+        $this->flavorEs = $flavorEs;
+
+        return $this;
+    }
+
+    /**
+     * Get flavorEs
+     *
+     * @return string 
+     */
+    public function getFlavorEs()
+    {
+        return $this->flavorEs;
+    }
+
+    /**
+     * Set flavorPl
+     *
+     * @param string $flavorPl
+     * @return Card
+     */
+    public function setFlavorPl($flavorPl)
+    {
+        $this->flavorPl = $flavorPl;
+
+        return $this;
+    }
+
+    /**
+     * Get flavorPl
+     *
+     * @return string 
+     */
+    public function getFlavorPl()
+    {
+        return $this->flavorPl;
+    }
+
+    /**
+     * Set flavorIt
+     *
+     * @param string $flavorIt
+     * @return Card
+     */
+    public function setFlavorIt($flavorIt)
+    {
+        $this->flavorIt = $flavorIt;
+
+        return $this;
+    }
+
+    /**
+     * Get flavorIt
+     *
+     * @return string 
+     */
+    public function getFlavorIt()
+    {
+        return $this->flavorIt;
+    }
+
+    /**
+     * Set illustrator
+     *
+     * @param string $illustrator
+     * @return Card
+     */
+    public function setIllustrator($illustrator)
+    {
+        $this->illustrator = $illustrator;
+
+        return $this;
+    }
+
+    /**
+     * Get illustrator
+     *
+     * @return string 
+     */
+    public function getIllustrator()
+    {
+        return $this->illustrator;
+    }
+
+    /**
+     * Set influenceLimit
+     *
+     * @param integer $influenceLimit
+     * @return Card
+     */
+    public function setInfluenceLimit($influenceLimit)
+    {
+        $this->influenceLimit = $influenceLimit;
+
+        return $this;
+    }
+
+    /**
+     * Get influenceLimit
+     *
+     * @return integer 
+     */
+    public function getInfluenceLimit()
+    {
+        return $this->influenceLimit;
+    }
+
+    /**
+     * Set memoryUnits
+     *
+     * @param integer $memoryUnits
+     * @return Card
+     */
+    public function setMemoryUnits($memoryUnits)
+    {
+        $this->memoryUnits = $memoryUnits;
+
+        return $this;
+    }
+
+    /**
+     * Get memoryUnits
+     *
+     * @return integer 
+     */
+    public function getMemoryUnits()
+    {
+        return $this->memoryUnits;
+    }
+
+    /**
+     * Set minimumDeckSize
+     *
+     * @param integer $minimumDeckSize
+     * @return Card
+     */
+    public function setMinimumDeckSize($minimumDeckSize)
+    {
+        $this->minimumDeckSize = $minimumDeckSize;
+
+        return $this;
+    }
+
+    /**
+     * Get minimumDeckSize
+     *
+     * @return integer 
+     */
+    public function getMinimumDeckSize()
+    {
+        return $this->minimumDeckSize;
+    }
+
+    /**
+     * Set number
+     *
+     * @param integer $number
+     * @return Card
+     */
+    public function setNumber($number)
+    {
+        $this->number = $number;
+
+        return $this;
+    }
+
+    /**
+     * Get number
+     *
+     * @return integer 
+     */
+    public function getNumber()
+    {
+        return $this->number;
+    }
+
+    /**
+     * Set quantity
+     *
+     * @param integer $quantity
+     * @return Card
+     */
+    public function setQuantity($quantity)
+    {
+        $this->quantity = $quantity;
+
+        return $this;
+    }
+
+    /**
+     * Get quantity
+     *
+     * @return integer 
+     */
+    public function getQuantity()
+    {
+        return $this->quantity;
+    }
+
+    /**
+     * Set strength
+     *
+     * @param integer $strength
+     * @return Card
+     */
+    public function setStrength($strength)
+    {
+        $this->strength = $strength;
+
+        return $this;
+    }
+
+    /**
+     * Get strength
+     *
+     * @return integer 
+     */
+    public function getStrength()
+    {
+        return $this->strength;
+    }
+
+    /**
+     * Set trashCost
+     *
+     * @param integer $trashCost
+     * @return Card
+     */
+    public function setTrashCost($trashCost)
+    {
+        $this->trashCost = $trashCost;
+
+        return $this;
+    }
+
+    /**
+     * Get trashCost
+     *
+     * @return integer 
+     */
+    public function getTrashCost()
+    {
+        return $this->trashCost;
+    }
+
+    /**
+     * Set uniqueness
+     *
+     * @param boolean $uniqueness
+     * @return Card
+     */
+    public function setUniqueness($uniqueness)
+    {
+        $this->uniqueness = $uniqueness;
+
+        return $this;
+    }
+
+    /**
+     * Get uniqueness
+     *
+     * @return boolean 
+     */
+    public function getUniqueness()
+    {
+        return $this->uniqueness;
+    }
+
+    /**
+     * Set limited
+     *
+     * @param boolean $limited
+     * @return Card
+     */
+    public function setLimited($limited)
+    {
+        $this->limited = $limited;
+
+        return $this;
+    }
+
+    /**
+     * Get limited
+     *
+     * @return boolean 
+     */
+    public function getLimited()
+    {
+        return $this->limited;
+    }
+
+    /**
+     * Add decklists
+     *
+     * @param \Netrunnerdb\BuilderBundle\Entity\Decklist $decklists
+     * @return Card
+     */
+    public function addDecklist(\Netrunnerdb\BuilderBundle\Entity\Decklist $decklists)
+    {
+        $this->decklists[] = $decklists;
+
+        return $this;
+    }
+
+    /**
+     * Remove decklists
+     *
+     * @param \Netrunnerdb\BuilderBundle\Entity\Decklist $decklists
+     */
+    public function removeDecklist(\Netrunnerdb\BuilderBundle\Entity\Decklist $decklists)
+    {
+        $this->decklists->removeElement($decklists);
+    }
+
+    /**
+     * Get decklists
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getDecklists()
+    {
+        return $this->decklists;
+    }
+
+    /**
+     * Add opinions
+     *
+     * @param \Netrunnerdb\CardsBundle\Entity\Opinion $opinions
+     * @return Card
+     */
+    public function addOpinion(\Netrunnerdb\CardsBundle\Entity\Opinion $opinions)
+    {
+        $this->opinions[] = $opinions;
+
+        return $this;
+    }
+
+    /**
+     * Remove opinions
+     *
+     * @param \Netrunnerdb\CardsBundle\Entity\Opinion $opinions
+     */
+    public function removeOpinion(\Netrunnerdb\CardsBundle\Entity\Opinion $opinions)
+    {
+        $this->opinions->removeElement($opinions);
+    }
+
+    /**
+     * Get opinions
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getOpinions()
+    {
+        return $this->opinions;
+    }
+
     /**
      * Set pack
      *
@@ -1246,7 +1320,7 @@ class Card
     public function setPack(\Netrunnerdb\CardsBundle\Entity\Pack $pack = null)
     {
         $this->pack = $pack;
-    
+
         return $this;
     }
 
@@ -1269,7 +1343,7 @@ class Card
     public function setType(\Netrunnerdb\CardsBundle\Entity\Type $type = null)
     {
         $this->type = $type;
-    
+
         return $this;
     }
 
@@ -1292,7 +1366,7 @@ class Card
     public function setFaction(\Netrunnerdb\CardsBundle\Entity\Faction $faction = null)
     {
         $this->faction = $faction;
-    
+
         return $this;
     }
 
@@ -1315,7 +1389,7 @@ class Card
     public function setSide(\Netrunnerdb\CardsBundle\Entity\Side $side = null)
     {
         $this->side = $side;
-    
+
         return $this;
     }
 
@@ -1338,7 +1412,7 @@ class Card
     public function addRuling(\Netrunnerdb\CardsBundle\Entity\Ruling $rulings)
     {
         $this->rulings[] = $rulings;
-    
+
         return $this;
     }
 
@@ -1361,68 +1435,4 @@ class Card
     {
         return $this->rulings;
     }
-
-    /**
-     * Get decklists
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getDecklists()
-    {
-    	return $this->decklists;
-    }
-    
-
-    /**
-     * @var Opinions[]
-     */
-    private $opinions;
-    
-
-    /**
-     * Set opinions
-     *
-     * @param string $opinions
-     * @return Deck
-     */
-    public function setOpinions($opinions)
-    {
-    	$this->opinions = $opinions;
-    
-    	return $this;
-    }
-    
-    /**
-     * Get opinions
-     *
-     * @return string
-     */
-    public function getOpinions()
-    {
-    	return $this->opinions;
-    }
-
-    /**
-     * Add opinions
-     *
-     * @param \Netrunnerdb\CardsBundle\Entity\Opinion $opinions
-     * @return Card
-     */
-    public function addOpinion(\Netrunnerdb\CardsBundle\Entity\Opinion $opinions)
-    {
-    	$this->opinions[] = $opinions;
-    
-    	return $this;
-    }
-    
-    /**
-     * Remove opinions
-     *
-     * @param \Netrunnerdb\CardsBundle\Entity\Opinion $opinions
-     */
-    public function removeOpinion(\Netrunnerdb\CardsBundle\Entity\Opinion $opinions)
-    {
-    	$this->opinions->removeElement($opinions);
-    }
-    
 }

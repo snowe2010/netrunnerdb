@@ -214,4 +214,6 @@ Netrunnerdb\CardsBundle\Entity\Card:
             nullable: true
         uniqueness:
             type: boolean
+        limited:
+            type: boolean
     lifecycleCallbacks: {  }
