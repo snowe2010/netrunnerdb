@@ -62,10 +62,8 @@ Netrunnerdb\CardsBundle\Entity\Card:
                 strategy: AUTO
         ts:
             type: datetime
-            nullable: true
         opinionsTs:
             type: datetime
-            nullable: true
         code:
             type: string
             length: '5'
