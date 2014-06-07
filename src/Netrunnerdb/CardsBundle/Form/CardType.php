@@ -19,6 +19,7 @@ class CardType extends AbstractType
             ->add('faction', 'entity', array('class' => 'NetrunnerdbCardsBundle:Faction', 'property' => 'name'))
             ->add('title')
             ->add('uniqueness', 'checkbox', array('required' => false))
+            ->add('limited', 'checkbox', array('required' => false))
             ->add('type', 'entity', array('class' => 'NetrunnerdbCardsBundle:Type', 'property' => 'name'))
             ->add('keywords')
             ->add('factionCost')
