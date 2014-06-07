@@ -78,6 +78,7 @@ class SearchController extends Controller
 				"strength" => $card->getStrength(),
 				"trash" => $card->getTrashCost(),
 				"uniqueness" => $card->getUniqueness(),
+				"limited" => $card->getLimited(),
 		        "cyclenumber" => $card->getPack()->getCycle()->getNumber(),
 		);
 		$cardinfo['url'] = $this->get('router')->generate('netrunnerdb_netrunner_cards_zoom', array('card_code' => $card->getCode(), '_locale' => $locale), true);
