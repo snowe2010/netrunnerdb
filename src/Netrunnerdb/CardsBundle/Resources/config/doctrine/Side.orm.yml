@@ -1,6 +1,9 @@
 Netrunnerdb\CardsBundle\Entity\Side:
     type: entity
     table: side
+    indexes:
+        name_index:
+            columns: [ name ]
     oneToMany:
         cards:
             targetEntity: Card

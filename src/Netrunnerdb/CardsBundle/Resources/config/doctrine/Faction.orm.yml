@@ -1,6 +1,9 @@
 Netrunnerdb\CardsBundle\Entity\Faction:
     type: entity
     table: faction
+    indexes:
+        code_index:
+            columns: [ code ]
     oneToMany:
         cards:
             targetEntity: Card

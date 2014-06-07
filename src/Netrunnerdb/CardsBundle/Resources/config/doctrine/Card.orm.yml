@@ -1,6 +1,21 @@
 Netrunnerdb\CardsBundle\Entity\Card:
     type: entity
     table: card
+    indexes:
+        code_index:
+            columns: [ code ]
+        title_index:
+            columns: [ title ]
+        cost_index:
+            columns: [ cost ]
+        advancement_cost_index:
+            columns: [ advancement_cost ]
+        strength_index:
+            columns: [ strength ]
+        agenda_points_index:
+            columns: [ agenda_points ]
+        trash_cost_index:
+            columns: [ trash_cost ]
     manyToOne:
         pack:
             targetEntity: Pack

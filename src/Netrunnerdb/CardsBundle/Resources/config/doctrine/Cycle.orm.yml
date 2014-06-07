@@ -1,6 +1,11 @@
 Netrunnerdb\CardsBundle\Entity\Cycle:
     type: entity
     table: cycle
+    indexes:
+        code_index:
+            columns: [ code ]
+        number_index:
+            columns: [ number ]
     oneToMany:
         packs:
             orderBy: { 'number': 'ASC' }

@@ -4,6 +4,10 @@ Netrunnerdb\CardsBundle\Entity\Pack:
     indexes:
         released_index:
             columns: [ released ]
+        code_index:
+            columns: [ code ]
+        number_index:
+            columns: [ number ]
     manyToOne:
         cycle:
             targetEntity: Cycle
