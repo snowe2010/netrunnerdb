@@ -12,4 +12,14 @@
 - Create the tables: `php app/console doctrine:schema:update --force`
 - If the above command fails, edit app/config/parameters.yml and try again
 - Import the data from the latest `netrunnerdb-*.sql.gz` into MySQL
-- Point your browser to `/web/app_dev.php` ; the page should load without card images
+- Point your browser to `/web/app_dev.php`
+
+# Quick notes for update
+
+When you update your repository, run the following commands:
+
+- `php composer.phar self-update`
+- `php composer.phar update`
+- `php app/console doctrine:schema:update --force`
+- `php app/console cache:clear --env=dev`
+
