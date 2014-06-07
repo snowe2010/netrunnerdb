@@ -2,6 +2,9 @@ Netrunnerdb\BuilderBundle\Entity\Deck:
     type: entity
     table: deck
     repositoryClass: Netrunnerdb\BuilderBundle\Entity\DeckRepository
+    indexes:
+        lastupdate_index:
+            columns: [ lastupdate ]
     manyToOne:
         user:
             targetEntity: Netrunnerdb\UserBundle\Entity\User

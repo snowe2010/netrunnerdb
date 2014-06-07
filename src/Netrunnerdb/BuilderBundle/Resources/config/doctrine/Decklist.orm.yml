@@ -2,6 +2,9 @@ Netrunnerdb\BuilderBundle\Entity\Decklist:
     type: entity
     table: decklist
     repositoryClass: Netrunnerdb\BuilderBundle\Entity\DecklistRepository
+    indexes:
+        creation_index:
+            columns: [ creation ]
     manyToOne:
         user:
             targetEntity: Netrunnerdb\UserBundle\Entity\User
