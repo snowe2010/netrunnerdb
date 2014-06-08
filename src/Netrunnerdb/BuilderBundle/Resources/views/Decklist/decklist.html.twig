@@ -31,7 +31,7 @@ var Identity = null
 <h1>
     {% if is_author and decklist.nbvotes == 0 and decklist.nbfavorites == 0 and decklist.nbcomments == 0 %}<a href="#" title="Delete decklist" id="decklist-delete"><span class="glyphicon glyphicon-trash pull-right text-danger"></span></a> {% endif %}
     {% if is_author %}<a href="#" title="Edit decklist name / description" id="decklist-edit"><span class="glyphicon glyphicon-pencil pull-right"></span></a> {% endif %}
-    <img src="/web/bundles/netrunnerdbbuilder/images/factions/38px/{{ decklist.faction_code }}.png">{{ decklist.name }}</h1>
+    <span class="icon icon-' ~ card.faction_code ~ ' ' ~ card.faction_code ~ '"></span> {{ decklist.name }}</h1>
 <div class="decklist-social">
 <div class="pull-right" id="decklist-social-icons">
 <span>published {{ decklist.creation|date('M d, Y') }}</span>
