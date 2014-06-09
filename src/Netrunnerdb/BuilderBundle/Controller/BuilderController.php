@@ -214,7 +214,8 @@ class BuilderController extends Controller
             $title = $card->getTitle();
             $replacements = array(
                     'Alix T4LB07' => 'Alix T4LBO7',
-                    'Planned Assault' => 'Planned Attack'
+                    'Planned Assault' => 'Planned Attack',
+                    'Security Testing' => 'Security Check'
             );
             if (isset($replacements[$title])) {
                 $title = $replacements[$title];
