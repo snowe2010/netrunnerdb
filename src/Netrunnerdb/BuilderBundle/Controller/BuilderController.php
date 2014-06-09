@@ -215,7 +215,11 @@ class BuilderController extends Controller
             $replacements = array(
                     'Alix T4LB07' => 'Alix T4LBO7',
                     'Planned Assault' => 'Planned Attack',
-                    'Security Testing' => 'Security Check'
+                    'Security Testing' => 'Security Check',
+                    'Mental Health Clinic' => 'Psychiatric Clinic',
+                    'Shi.Kyū' => 'Shi Kyu',
+                    'NeoTokyo Grid' => 'NeoTokyo City Grid',
+                    'Push Your Luck' => 'Double or Nothing'
             );
             if (isset($replacements[$title])) {
                 $title = $replacements[$title];
