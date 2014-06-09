@@ -1854,7 +1854,7 @@ class SocialController extends Controller
 				", array())->fetchAll();
         
         if (empty($rows)) {
-            throw new NotFoundHttpException('No decklist this week');
+			return null;
         }
         
         $decklist = $rows[0];

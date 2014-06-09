@@ -82,6 +82,7 @@ var Identity = null
 <h1>Welcome on NetrunnerDB</h1>
 <p class="">You can explore the public <a href="{{ path('decklists_list', {type:'popular'}) }}">decklists</a> or start building your own <a href="{{ path('decks_list') }}">decks</a>.</p>
 </div>
+{% if decklist %}
 <div id="highlight" class="decklist">
 
 <h2 class="section">Decklist of the week </h2>
@@ -130,6 +131,7 @@ var Identity = null
 </div>
 
 </div> <!-- #highlight -->
+{% endif %}
 
 </div>
 
