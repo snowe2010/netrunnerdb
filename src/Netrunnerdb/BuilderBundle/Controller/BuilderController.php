@@ -277,6 +277,12 @@ class BuilderController extends Controller
                     $glossary[$meteor_deck['identity']] => 1
             );
             foreach ($meteor_deck['entries'] as $entry => $qty) {
+                if(!isset($glossary[$entry])) {
+                    $this->get('session')
+                        ->getFlashBag()
+                        ->set('error', "Error importing a deck. The name \"$entry\" doesn't match any known card. Please contact the administrator.");
+                    return $this->redirect($this->generateUrl('decks_list'));
+                }
                 $content[$glossary[$entry]] = $qty;
             }
             
