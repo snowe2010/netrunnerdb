@@ -23,3 +23,13 @@ When you update your repository, run the following commands:
 - `php app/console doctrine:schema:update --force`
 - `php app/console cache:clear --env=dev`
 
+## Deck of the Week
+
+To update the deck of the week on the front page:
+
+- `php app/console highlight` 
+
+## Add cards
+
+- login as ROLE_ADMIN (edit your user) or edit `app/config/security.yml`
+- go to `/admin/card`, `/admin/pack`, `/admin/cycle`, etc.
