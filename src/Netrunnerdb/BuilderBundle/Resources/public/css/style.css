@@ -40,6 +40,7 @@ div.card-text p{margin:6px}
 .card-info .card-type{font-family:exodemibold}
 .card-flavor{font-style:italic}
 .card-preview{color:red}
+.card-title {position: relative;z-index: 1000;}
 article.rules h4{display:inline;font-weight:bold}
 article.rules h4:after{content:" –"}
 article.rules aside{border-left:1px solid blue;padding-left:20px}
