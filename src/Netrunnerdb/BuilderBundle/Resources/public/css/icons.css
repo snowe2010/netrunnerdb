@@ -1,4 +1,4 @@
-@font-face{font-family:'netrunner';src:url('../fonts/Netrunner.eot');src:url('../fonts/Netrunner.eot?#iefix') format('embedded-opentype'),url('../fonts/Netrunner.woff') format('woff'),url('../fonts/Netrunner.ttf') format('truetype'),url('../fonts/Netrunner.svg#netrunner') format('svg');font-weight: normal;font-style: normal;}
+@font-face{font-family:'netrunner';src:url('../fonts/netrunner.eot');src:url('../fonts/netrunner.eot?#iefix') format('embedded-opentype'),url('../fonts/netrunner.woff') format('woff'),url('../fonts/netrunner.ttf') format('truetype'),url('../fonts/netrunner.svg#netrunner') format('svg');font-weight: normal;font-style: normal;}
 
 .icon {
 	font-family: 'netrunner';
@@ -15,7 +15,7 @@
 }
 .icon,
 .icon-bg:before {
-	font-family: 'Netrunner';
+	font-family: 'netrunner';
 	speak: none;
 	font-style: normal;
 	font-weight: normal;
