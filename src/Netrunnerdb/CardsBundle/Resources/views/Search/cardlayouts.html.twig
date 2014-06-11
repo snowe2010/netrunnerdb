@@ -120,7 +120,7 @@
 
 
 {% macro as_grid(card) %}
-<div class="col-sm-3" style="background-repeat:no-repeat;background-position:50% 50%;background-image:url('{% if card.faction_code != 'neutral' %}{{ asset('/web/bundles/netrunnerdbcards/images/factions/64px-alpha/' ~ card.faction_code ~ '.png') }}{% endif %}')">
+<div class="col-sm-3 icon-bg icon-{{ card.faction_code }}">
 		<h5>{% if card.uniqueness == true %} 
 			&diams;
 		{% endif %}
