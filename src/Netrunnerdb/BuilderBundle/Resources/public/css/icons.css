@@ -39,60 +39,81 @@
 	opacity: 0.2;
     z-index: 0;
 }
-.icon-credit:before {
-	content: "\e600";
-}
-.icon-link:before {
-	content: "\e601";
-}
-.icon-haas-bioroid:before {
-	content: "\e602";
+.icon-shaper-smooth:before {
+	content: "\e613";
 }
 .icon-shaper:before {
 	content: "\e603";
 }
-.icon-subroutine:before {
-	content: "\e604";
+.icon-honor-and-profit:before {
+	content: "\e614";
 }
-.icon-anarch:before {
-	content: "\e605";
+.icon-spin-cycle:before {
+	content: "\e615";
 }
-.icon-trash:before {
-	content: "\e606";
+.icon-genesis-cycle:before {
+	content: "\e616";
 }
-.icon-weyland-consortium:before {
-	content: "\e607";
+.icon-creation-and-control:before {
+	content: "\e617";
+}
+.icon-core-set:before {
+	content: "\e618";
+}
+.icon-credit:before {
+	content: "\e600";
 }
 .icon-recurring-credit:before {
 	content: "\e608";
 }
-.icon-jinteki:before {
-	content: "\e609";
+.icon-click:before {
+	content: "\e611";
 }
-.icon-1mu:before {
-	content: "\e60a";
+.icon-link:before {
+	content: "\e601";
 }
-.icon-nbn:before {
-	content: "\e60b";
-}
-.icon-2mu:before {
-	content: "\e60c";
-}
-.icon-asset:before {
-	content: "\e60d";
-}
-.icon-3mu:before {
-	content: "\e60e";
-}
-.icon-rez:before {
-	content: "\e60f";
+.icon-trash:before {
+	content: "\e606";
 }
 .icon-mu:before {
 	content: "\e610";
 }
-.icon-click:before {
-	content: "\e611";
+.icon-1mu:before {
+	content: "\e60a";
+}
+.icon-subroutine:before {
+	content: "\e604";
+}
+.icon-3mu:before {
+	content: "\e60e";
+}
+.icon-2mu:before {
+	content: "\e60c";
+}
+.icon-anarch:before {
+	content: "\e605";
 }
 .icon-criminal:before {
 	content: "\e612";
+}
+.icon-haas-bioroid:before {
+	content: "\e602";
+}
+.icon-weyland-consortium:before {
+	content: "\e607";
+}
+.icon-jinteki-simple:before {
+	content: "\e005";
+}
+.icon-jinteki:before {
+	content: "\e609";
+}
+.icon-nbn:before {
+	content: "\e60b";
+}
+.icon-agenda:before {
+	content: "\e60d";
+}
+.icon-rez:before {
+	content: "\e60f";
 }
