@@ -80,7 +80,7 @@ tbody#decks{cursor:pointer}
 .type,.faction{text-align:center}
 .nav-tabs{margin-bottom:15px}
 tbody .btn-group{white-space:nowrap}
-.btn-group>.btn,.btn-group-vertical>.btn{float:none;display:inline-block}
+/* .btn-group>.btn,.btn-group-vertical>.btn{float:none;display:inline-block} */
 .dropdown-menu input{margin:-4px 8px 0 -6px}
 .dropdown-menu label{margin:0}
 #collection td{vertical-align:middle}
