@@ -12,11 +12,13 @@ use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 class HighlightCommand extends ContainerAwareCommand
 {
 
-    protected function saveHighlight()
+    protected function saveHighlight($decklist_id)
     {
-    
         $dbh = $this->getContainer()->get('doctrine')->getConnection();
-        $rows = $dbh
+        
+        if ($decklist_id) 
+        {
+            $rows = $dbh
         ->executeQuery(
                 "SELECT
 				d.id,
@@ -41,11 +43,42 @@ class HighlightCommand extends ContainerAwareCommand
 				join user u on d.user_id=u.id
 				join card c on d.identity_id=c.id
 				join faction f on d.faction_id=f.id
-				where d.creation > date_sub( current_date, interval 7 day )
-                order by nbvotes desc , nbcomments desc
-                limit 0,1
-				", array())->fetchAll();
-    
+				where d.id=?
+				", array($decklist_id))->fetchAll();
+
+        } else {
+                
+            $rows = $dbh
+            ->executeQuery(
+                    "SELECT
+    				d.id,
+    				d.ts,
+    				d.name,
+    				d.prettyname,
+    				d.creation,
+    				d.rawdescription,
+    				d.description,
+    				d.precedent_decklist_id precedent,
+    				u.id user_id,
+    				u.username,
+    				u.faction usercolor,
+    				u.reputation,
+                    u.donation,
+    				c.code identity_code,
+    				f.code faction_code,
+    				d.nbvotes,
+    				d.nbfavorites,
+    				d.nbcomments
+    				from decklist d
+    				join user u on d.user_id=u.id
+    				join card c on d.identity_id=c.id
+    				join faction f on d.faction_id=f.id
+    				where d.creation > date_sub( current_date, interval 7 day )
+                    order by nbvotes desc , nbcomments desc
+                    limit 0,1
+    				", array())->fetchAll();
+        }
+        
         if(empty($rows)) {
             return false;
         }
@@ -73,14 +106,20 @@ class HighlightCommand extends ContainerAwareCommand
     protected function configure()
     {
         $this
-        ->setName('highlight')
+        ->setName('nrdb:highlight')
         ->setDescription('Save decklist of the week')
+        ->addArgument(
+            'decklist_id',
+            InputArgument::OPTIONAL,
+            'Id for Decklist'
+        )
         ;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $result = $this->saveHighlight();
+        $decklist_id = $input->getArgument('decklist_id');
+        $result = $this->saveHighlight($decklist_id);
         $output->writeln(date('c') . " " . ($result ? "Success" : "Failure"));
     }
 }
