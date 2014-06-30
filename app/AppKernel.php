@@ -17,10 +17,10 @@ class AppKernel extends Kernel
             new Doctrine\Bundle\DoctrineBundle\DoctrineBundle(),
             new Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle(),
             new FOS\UserBundle\FOSUserBundle(),
+            new FOS\OAuthServerBundle\FOSOAuthServerBundle(),
             new Netrunnerdb\BuilderBundle\NetrunnerdbBuilderBundle(),
             new Netrunnerdb\UserBundle\NetrunnerdbUserBundle(),
             new Netrunnerdb\CardsBundle\NetrunnerdbCardsBundle(),
-            new Netrunnerdb\SocialBundle\NetrunnerdbSocialBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {

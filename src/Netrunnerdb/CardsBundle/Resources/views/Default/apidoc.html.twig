@@ -8,50 +8,69 @@
 
 <tt>http://netrunnerdb.com</tt> can be queried via an http API.
 
-<h2>All Sets</h2>
+<h3>All Sets</h3>
 
 <tt>/api/sets/</tt> returns data about all the sets in the database.
 
-<h2>All Cards</h2>
+<h3>All Cards</h3>
 
 <tt>/api/cards/</tt> returns data about all the cards in the database.
 
-<h2>One Set</h2>
+<h3>One Set</h3>
 
 <tt>/api/set/{code}</tt> returns card data about the cards in the set identified by <tt>code</tt> (core for Core Set, etc).
 
-<h2>One Card</h2>
+<h3>One Card</h3>
 
 <tt>/api/card/{code}</tt> returns card data about the card identified by <tt>code</tt> (01001 for Noise, etc).
 
-<h2>One Decklist</h2>
+<h3>One Decklist</h3>
 
 <tt>/api/decklist/{id}</tt> returns name, author and composition of the decklist identified by <tt>id</tt> (as found in decklist urls).
 
-<h2>All Decklists for One Day</h2>
+<h3>All Decklists for One Day</h3>
 
 <tt>/api/decklists/by_date/{Y-m-d}</tt> returns all decklists published at the given date. Example: <tt>/api/decklists/by_date/2013-12-31</tt>.
 
-<h2>All Decks of authenticated user</h2>
-
+<h3>All Decks of authenticated user</h3>
+<p style="color:red"><b>Deprecated</b>, will be removed August 1st, 2014</p>
 <tt>/api/decks</tt> returns all decks created by the authenticated user.
 
-<h2>Returned value</h2>
+<h2>OAuth2</h2>
+
+The following API endpoints require a OAuth2 authentication. To get the required credentials and some additional info, contact me via email (alsciende (at) icloud.com) with a description of your application.
+
+<h3>All Decks of authenticated user</h3>
+
+<tt>/api_oauth2/decks</tt> returns all decks created by the authenticated user.
+
+<h3>Save a deck for an authenticated user</h3>
+
+<tt>/api_oauth2/save_deck/{id}</tt> saves the deck and returns its info. Parameters:
+<ul>
+	<li>id: an integer. Optional</li>
+	<li>name: a string. Optional</li>
+	<li>description: a string. Optional</li>
+	<li>decklist_id: an integer. Optional. If set, saved decklist will be descendant of it.</li>
+	<li>content: a json array of json objects with 2 keys, "card_code" (string) and "qty" (integer). Mandatory</li>
+</ul>		
+
+<h3>Returned value</h3>
 
 Data returned is in json format.<br>
 Set and card data include a "url" key giving the absolute url of the page that holds the data.<br>
 Card data include a "imagesrc" key giving the relative url of the image of the card.<br>
 
-<h2>jsonp</h2>
+<h3>jsonp</h3>
 
-Optional GET parameter "jsonp" for script tags.
+Optional GET parameter "jsonp" for script tags. Unavailable for OAuth2 endpoints.
 
-<h2>Examples</h2>
+<h3>Examples</h3>
 
 <a href="/api/card/01001">/api/card/01001</a> returns data for Noise<br>
 <a href="/api/sets/?jsonp=parseSets">/api/sets/?jsonp=parseSets</a> returns data for all sets wrapped in a call to parseSets()<br>
 
-<h2>Encoding</h2>
+<h3>Encoding</h3>
 
 The response is in ascii encoding. Non-ascii characters are encoded with \uXXXX with XXXX their hexadecimal unicode value.<br>
 To test your application, 3 cards are useful:
@@ -61,24 +80,20 @@ To test your application, 3 cards are useful:
 <li><a href="/api/card/01036">01036</a> to test ", ', &</li>
 </ul>
 
-<h2>Caching</h2>
+<h3>Caching</h3>
 
 <ul>
 <li>Card data include a "last-modified" key giving the timestamp of the data (CET)</li>
 <li><tt>/api/cards/</tt>, <tt>/api/card/</tt> and <tt>/api/set/</tt> responses use both HTTP cache expiration (max-age) and cache validation (last-modified). <b>Please use both when building your queries</b>.</li>
 </ul>
 
-<h2>CORS</h2>
+<h3>CORS</h3>
 
 <ul>
-<li>All API responses include a CORS header: <tt>Access-Control-Allow-Origin:*</tt></li>
+<li>All API responses expect for OAuth2 endpoints include a CORS header: <tt>Access-Control-Allow-Origin:*</tt></li>
 </ul>
 
-<h2>Embedded Display Mode</h2>
-
-If the parameter "mode=embed" is added to an url, the page is served without the header and footer and navigation and search stuff, that is, with only the main content. See for example <a href="/card/01020?mode=embed">/card/01020?mode=embed</a> or <a href="/set/hs?mode=embed">/set/hs?mode=embed</a> or <a href="/find/?q=e%3Aasis&sort=set&view=scan&mode=embed">/find/?q=e%3Aasis&sort=set&view=scan&mode=embed</a>.
-
-<h2>Localization</h2>
+<h3>Localization</h3>
 
 Add a parameter _locale=xx to get the results in xx locale.
 

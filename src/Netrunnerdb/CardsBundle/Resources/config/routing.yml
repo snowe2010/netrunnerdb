@@ -92,12 +92,12 @@ netrunnerdb_netrunner_cards_rulings:
 api_cards:
     pattern: /api/cards/
     defaults:
-        _controller: NetrunnerdbCardsBundle:Search:apicards
+        _controller: NetrunnerdbCardsBundle:Api:cards
 
 api_card:
     pattern: /api/card/{card_code}.{_format}
     defaults:
-        _controller: NetrunnerdbCardsBundle:Search:apicard
+        _controller: NetrunnerdbCardsBundle:Api:card
         _format: json
     requirements:
         _format: json
@@ -106,12 +106,12 @@ api_card:
 api_sets:
     pattern: /api/sets/
     defaults:
-        _controller: NetrunnerdbCardsBundle:Default:apisets
+        _controller: NetrunnerdbCardsBundle:Api:sets
 
 api_set:
     pattern: /api/set/{pack_code}.{_format}
     defaults:
-        _controller: NetrunnerdbCardsBundle:Search:apiset
+        _controller: NetrunnerdbCardsBundle:Api:set
         _format: json
     requirements:
         _format: json|xml

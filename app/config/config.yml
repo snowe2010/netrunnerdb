@@ -87,3 +87,14 @@ fos_user:
         token_ttl: 86400
         email:
             template:   FOSUserBundle:Resetting:email.txt.twig
+
+fos_oauth_server:
+    db_driver: orm
+    client_class:        Netrunnerdb\UserBundle\Entity\Client
+    access_token_class:  Netrunnerdb\UserBundle\Entity\AccessToken
+    refresh_token_class: Netrunnerdb\UserBundle\Entity\RefreshToken
+    auth_code_class:     Netrunnerdb\UserBundle\Entity\AuthCode
+    service:
+        user_provider: fos_user.user_provider.username
+#        options:
+#            supported_scopes: user

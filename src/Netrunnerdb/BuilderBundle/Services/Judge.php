@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Netrunnerdb\SocialBundle\Services;
+namespace Netrunnerdb\BuilderBundle\Services;
 
 
 /*

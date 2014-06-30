@@ -49,11 +49,6 @@ Netrunnerdb\CardsBundle\Entity\Card:
             targetEntity: Opinion
             mappedBy: card
             cascade: ["persist"]
-    manyToMany:
-        rulings:
-            targetEntity: Ruling
-            mappedBy: cards
-            cascade: ["remove"]
     fields:
         id:
             type: integer

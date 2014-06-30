@@ -11,7 +11,6 @@
 <li><a href="#rop">Rules of Play 1.0</a></li>
 <li><a href="#tsr">Timing Structure of a Run 1.1</a></li>
 <li><a href="#faq">FAQ 1.1</a></li>
-<li><a href="#cc">Card Clarifications</a>
 <li><a href="#tr">Tournament Rules 1.1</a></li>
 </ul>
 </nav>
@@ -1362,28 +1361,6 @@
 <h2><a name="faq12">Destruction of Servers</a></h2>
 <p>The Corp cannot choose to destroy a server when installing cards; at least one card must be installed for other cards in or protecting that server to be trashed.</p>
 <p>If there are no cards installed in or protecting a remote server, then the server immediately ceases to exist. If a server ceases to exist during a run, the run immediately ends. Unless the run has passed step 4.4 of the timing structure of a run, it is not considered to be successful or unsuccessful.</p>
-
-<h1><a name="faq13">Frequently Asked Questions</a></h1>
-<ul>
-{% for ruling in faq %}
-	<li class="card-ruling">
-		<div class="ruling-question">{{ ruling.question|raw }}</div>
-		<div class="ruling-answer">{{ ruling.answer|raw }} <span class="ruling-source">({{ ruling.created }})</span></div>
-	</li>
-{% endfor %}
-</ul>
-
-</article>
-<article class="rules cc">
-<h1><a name="cc">Card Clarifications</a></h1>
-<ul>
-{% for ruling in mail %}
-	<li class="card-ruling">
-		<div class="ruling-question">{{ ruling.question|raw }}</div>
-		<div class="ruling-answer">{{ ruling.answer|raw }} <span class="ruling-source">({{ ruling.created }})</span></div>
-	</li>
-{% endfor %}
-</ul>
 
 </article>
 <article class="rules tr">

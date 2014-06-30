@@ -288,7 +288,7 @@ class BuilderController extends Controller
             
             /* @var $deck Deck */
             $deck = new Deck();
-            $this->saveDeck($deck, null, $meteor_deck['name'], "", $content);
+            $this->get('decks')->save($this->getUser(), $deck, null, $meteor_deck['name'], "", $content);
         }
         
         $this->get('session')
@@ -466,96 +466,9 @@ class BuilderController extends Controller
             $deck = new Deck();
         }
         
-        $this->saveDeck($deck, $decklist_id, $name, $description, $content);
+        $this->get('decks')->save($this->getUser(), $deck, $decklist_id, $name, $description, $content);
         
         return $this->redirect($this->generateUrl('decks_list'));
-    
-    }
-
-    public function saveDeck ($deck, $decklist_id, $name, $description, $content)
-    {
-        /* @var $em \Doctrine\ORM\EntityManager */
-        $em = $this->get('doctrine')->getManager();
-        
-        $judge = $this->get('judge');
-
-        $deck_content = array();
-        
-        if ($decklist_id) {
-            $decklist = $em->getRepository('NetrunnerdbBuilderBundle:Decklist')->find($decklist_id);
-            if ($decklist)
-                $deck->setParent($decklist);
-        }
-        $deck->setName($name);
-        $deck->setDescription($description);
-        $deck->setUser($this->getUser());
-        if (! $deck->getCreation()) {
-            $deck->setCreation(new \DateTime());
-        }
-        $deck->setLastupdate(new \DateTime());
-        $identity = null;
-        $cards = array();
-        /* @var $latestPack \Netrunnerdb\CardsBundle\Entity\Pack */
-        $latestPack = null;
-        foreach ($content as $card_code => $qty) {
-            $card = $em->getRepository('NetrunnerdbCardsBundle:Card')->findOneBy(array(
-                    "code" => $card_code
-            ));
-            $pack = $card->getPack();
-            if (! $latestPack) {
-                $latestPack = $pack;
-            } else 
-                if ($latestPack->getCycle()->getNumber() < $pack->getCycle()->getNumber()) {
-                    $latestPack = $pack;
-                } else 
-                    if ($latestPack->getCycle()->getNumber() == $pack->getCycle()->getNumber() && $latestPack->getNumber() < $pack->getNumber()) {
-                        $latestPack = $pack;
-                    }
-            if ($card->getType()->getName() == "Identity") {
-                $identity = $card;
-            }
-            $cards[$card_code] = $card;
-        }
-        $deck->setLastPack($latestPack);
-        if ($identity) {
-            $deck->setSide($identity->getSide());
-            $deck->setIdentity($identity);
-        } else {
-            $deck->setSide(current($cards)->getSide());
-            $identity = $em->getRepository('NetrunnerdbCardsBundle:Card')->findOneBy(array(
-                    "side" => $deck->getSide()
-            ));
-            $cards[$identity->getCode()] = $identity;
-            $content[$identity->getCode()] = 1;
-            $deck->setIdentity($identity);
-        }
-        foreach ($content as $card_code => $qty) {
-            $card = $cards[$card_code];
-            if ($card->getSide()->getId() != $deck->getSide()->getId())
-                continue;
-            $card = $cards[$card_code];
-            $slot = new Deckslot();
-            $slot->setQuantity($qty);
-            $slot->setCard($card);
-            $slot->setDeck($deck);
-            $deck->addSlot($slot);
-            $deck_content[$card_code] = array(
-                    'card' => $card,
-                    'qty' => $qty
-            );
-        }
-        $analyse = $judge->analyse($deck_content);
-        if (is_string($analyse)) {
-            $deck->setProblem($analyse);
-        } else {
-            $deck->setProblem(NULL);
-            $deck->setDeckSize($analyse['deckSize']);
-            $deck->setInfluenceSpent($analyse['influenceSpent']);
-            $deck->setAgendaPoints($analyse['agendaPoints']);
-        }
-        
-        $em->persist($deck);
-        $em->flush();
     
     }
 
@@ -653,69 +566,9 @@ class BuilderController extends Controller
                 array(
                         'pagetitle' => "My Decks",
                         'locales' => $this->renderView('NetrunnerdbCardsBundle:Default:langs.html.twig'),
-                        'decks' => $this->getDecks($user),
+                        'decks' => $this->get('decks')->getByUser($user),
                         'nbmax' => $user->getMaxNbDecks()
                 ));
-    
-    }
-
-    public function getDecks ($user)
-    {
-        /* @var $judge \Netrunnerdb\SocialBundle\Services\Judge */
-        $judge = $this->get('judge');
-        
-        $dbh = $this->get('doctrine')->getConnection();
-        $decks = $dbh->executeQuery(
-                "SELECT
-				d.id,
-				d.name,
-				d.creation,
-				d.description,
-				d.problem,
-				c.title identity_title,
-				f.code faction_code,
-				s.name side
-				from deck d
-				left join card c on d.identity_id=c.id
-				left join faction f on c.faction_id=f.id
-				left join side s on d.side_id=s.id
-				where d.user_id=?
-				order by lastupdate desc", array(
-                        $user->getId()
-                ))
-            ->fetchAll();
-        
-        $rows = $dbh->executeQuery(
-                "SELECT
-				s.deck_id,
-				c.code card_code,
-				s.quantity qty
-				from deckslot s
-				join card c on s.card_id=c.id
-				join deck d on s.deck_id=d.id
-				where d.user_id=?", array(
-                        $user->getId()
-                ))
-            ->fetchAll();
-        
-        $cards = array();
-        foreach ($rows as $row) {
-            $deck_id = $row['deck_id'];
-            unset($row['deck_id']);
-            $row['qty'] = intval($row['qty']);
-            if (! isset($cards[$deck_id])) {
-                $cards[$deck_id] = array();
-            }
-            $cards[$deck_id][] = $row;
-        }
-        
-        foreach ($decks as $i => $deck) {
-            $decks[$i]['cards'] = $cards[$deck['id']];
-            $problem = $deck['problem'];
-            $decks[$i]['message'] = isset($problem) ? $judge->problem($problem) : '';
-        }
-        
-        return $decks;
     
     }
 
@@ -737,39 +590,6 @@ class BuilderController extends Controller
                 'decklist_id' => $decklist_id
         ));
     
-    }
-
-    public function apidecksAction ()
-    {
-        $response = new Response();
-        $response->setPublic();
-        $response->setMaxAge(600);
-        $response->headers->add(array(
-                'Access-Control-Allow-Origin' => '*'
-        ));
-        
-        $jsonp = $this->getRequest()->query->get('jsonp');
-        $locale = $this->getRequest()->query->get('_locale');
-        if (isset($locale))
-            $this->getRequest()->setLocale($locale);
-        
-        /* @var $user \Netrunnerdb\UserBundle\Entity\User */
-        $user = $this->getUser();
-        
-        if (! $user) {
-            throw new UnauthorizedHttpException();
-        }
-        
-        $content = json_encode($this->getDecks($user));
-        if (isset($jsonp)) {
-            $content = "$jsonp($content)";
-            $response->headers->set('Content-Type', 'application/javascript');
-        } else {
-            $response->headers->set('Content-Type', 'application/json');
-        }
-	
-        $response->setContent($content);
-        return $response;
     }
 
 }

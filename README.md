@@ -33,3 +33,7 @@ To update the deck of the week on the front page:
 
 - login as ROLE_ADMIN (edit your user) or edit `app/config/security.yml`
 - go to `/admin/card`, `/admin/pack`, `/admin/cycle`, etc.
+
+# Misc Notes
+
+- your php module must be configured with `mbstring.internal_encoding = UTF-8`

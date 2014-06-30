@@ -1,8 +1,12 @@
 parameters:
-    judge.class: Netrunnerdb\SocialBundle\Services\Judge
+    judge.class: Netrunnerdb\BuilderBundle\Services\Judge
+    decks.class: Netrunnerdb\BuilderBundle\Services\Decks
 
 services:
     judge:
         class: %judge.class%
-        arguments: [@doctrine]
+        arguments: [@doctrine.orm.entity_manager]
+    decks:
+        class: %decks.class%
+        arguments: [@doctrine.orm.entity_manager, @judge]
 

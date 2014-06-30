@@ -1,7 +1,8 @@
 parameters:
-#    netrunnerdb_netrunner_cards.example.class: Netrunnerdb\CardsBundle\Example
+    cards_data.class: Netrunnerdb\CardsBundle\Services\CardsData
 
 services:
-#    netrunnerdb_netrunner_cards.example:
-#        class: %netrunnerdb_netrunner_cards.example.class%
-#        arguments: [@service_id, "plain_value", %parameter%]
+    cards_data:
+        class: %cards_data.class%
+        arguments: [@doctrine, @request_stack, @router]
+
