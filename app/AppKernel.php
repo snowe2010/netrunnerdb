@@ -39,12 +39,12 @@ class AppKernel extends Kernel
     
     public function getCacheDir()
     {
-    	return $this->rootDir.'/../../../../temp/'.$this->environment.'/cache';
+    	return $this->rootDir.'/../../../temp/'.$this->environment.'/cache';
     }
     
     public function getLogDir()
     {
-    	return $this->rootDir.'/../../../../temp/'.$this->environment.'/logs';
+    	return $this->rootDir.'/../../../temp/'.$this->environment.'/logs';
     }
     
     
