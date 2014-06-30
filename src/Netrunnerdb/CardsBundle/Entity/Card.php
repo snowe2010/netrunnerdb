@@ -255,18 +255,12 @@ class Card
     private $side;
 
     /**
-     * @var \Doctrine\Common\Collections\Collection
-     */
-    private $rulings;
-
-    /**
      * Constructor
      */
     public function __construct()
     {
         $this->decklists = new \Doctrine\Common\Collections\ArrayCollection();
         $this->opinions = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->rulings = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     /**
@@ -1401,38 +1395,5 @@ class Card
     public function getSide()
     {
         return $this->side;
-    }
-
-    /**
-     * Add rulings
-     *
-     * @param \Netrunnerdb\CardsBundle\Entity\Ruling $rulings
-     * @return Card
-     */
-    public function addRuling(\Netrunnerdb\CardsBundle\Entity\Ruling $rulings)
-    {
-        $this->rulings[] = $rulings;
-
-        return $this;
-    }
-
-    /**
-     * Remove rulings
-     *
-     * @param \Netrunnerdb\CardsBundle\Entity\Ruling $rulings
-     */
-    public function removeRuling(\Netrunnerdb\CardsBundle\Entity\Ruling $rulings)
-    {
-        $this->rulings->removeElement($rulings);
-    }
-
-    /**
-     * Get rulings
-     *
-     * @return \Doctrine\Common\Collections\Collection 
-     */
-    public function getRulings()
-    {
-        return $this->rulings;
     }
 }
