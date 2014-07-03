@@ -114,7 +114,7 @@ api_set:
         _controller: NetrunnerdbCardsBundle:Api:set
         _format: json
     requirements:
-        _format: json|xml
+        _format: json|xml|xlsx
 
 NetrunnerdbCardsBundle_admin_cards:
     resource: "@NetrunnerdbCardsBundle/Resources/config/routing/cards.yml"

@@ -234,8 +234,9 @@ class ApiController extends Controller
 				$card['flavor'] = str_replace("\n", '&#xA;', $card['flavor']);
 								
 				$cardsxml[] = $card;
+                
 			}
-			
+            
 			$response->headers->set('Content-Type', 'application/xml');
 			$response->setContent($this->renderView('NetrunnerdbCardsBundle::apiset.xml.twig', array(
 				"name" => $pack->getName(),
@@ -243,6 +244,78 @@ class ApiController extends Controller
 			)));
 			
 		}
+        else if($format == 'xlsx')
+        {
+            $columns = array(
+                "code" => "Code",
+                "setname" => "Pack",
+                "number" => "Number",
+                "uniqueness" => "Unique",
+                "title" => "Name",
+                "cost" => "Cost",
+                "type" => "Type",
+                "subtype" => "Keywords",
+                "text" => "Text",
+                "side" => "Side",
+                "faction" => "Faction",
+                "factioncost" => "Influence cost",
+                "strength" => "Strength",
+                "trash" => "Trash cost",
+                "memoryunits" => "MU",
+                "advancementcost" => "Adv.",
+                "agendapoints" => "Pts.",
+                "minimumdecksize" => "Deck size",
+                "influencelimit" => "Inf.",
+                "baselink" => "Link",
+                "illustrator" => "Illustrator",
+                "flavor" => "Flavor text",
+                "quantity" => "Qty",
+                "limited" => "Deck limit",
+            );
+            $phpExcelObject = $this->get('phpexcel')->createPHPExcelObject();
+            $phpExcelObject->getProperties()->setCreator("NetrunnerDB")
+                       ->setLastModifiedBy($last_modified->format('Y-m-d'))
+                       ->setTitle($pack->getName())
+                       ->setSubject($pack->getName())
+                       ->setDescription($pack->getName() . " Cards Description")
+                       ->setKeywords("android:netrunner ".$pack->getName());
+            $phpActiveSheet = $phpExcelObject->setActiveSheetIndex(0);
+            $phpActiveSheet->setTitle($pack->getName());
+            
+            $col_index = 0;
+            foreach($columns as $key => $label)
+            {
+                $phpCell = $phpActiveSheet->getCellByColumnAndRow($col_index++, 1);
+                $phpCell->setValue($label);
+            }
+            
+            foreach($cards as $row_index => $card) 
+            {
+                $col_index = 0;
+                foreach($columns as $key => $label)
+                {
+                    $value = isset($card[$key]) ? $card[$key] : '';
+                    $phpCell = $phpActiveSheet->getCellByColumnAndRow($col_index++, $row_index+2);
+                    if($key == 'code')
+                    {
+                        $phpCell->setValueExplicit($value, 's');
+                    }
+                    else
+                    {
+                        $phpCell->setValue($value);
+                    }
+                }
+            }
+                
+            $writer = $this->get('phpexcel')->createWriter($phpExcelObject, 'Excel2007');
+            $response = $this->get('phpexcel')->createStreamedResponse($writer);
+            $response->headers->set('Content-Type', 'text/vnd.ms-excel; charset=utf-8');
+            $response->headers->set('Content-Disposition', 'attachment;filename='.$pack->getName().'.xlsx');
+    		$response->setPublic();
+    		$response->setMaxAge(600);
+    		$response->headers->add(array('Access-Control-Allow-Origin' => '*'));
+        }
+		
 		return $response;
 	}
 	

@@ -18,6 +18,7 @@ class AppKernel extends Kernel
             new Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle(),
             new FOS\UserBundle\FOSUserBundle(),
             new FOS\OAuthServerBundle\FOSOAuthServerBundle(),
+            new Liuggio\ExcelBundle\LiuggioExcelBundle(),
             new Netrunnerdb\BuilderBundle\NetrunnerdbBuilderBundle(),
             new Netrunnerdb\UserBundle\NetrunnerdbUserBundle(),
             new Netrunnerdb\CardsBundle\NetrunnerdbCardsBundle(),
