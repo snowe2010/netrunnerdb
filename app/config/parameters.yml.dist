@@ -13,4 +13,4 @@ parameters:
 
     locale:            en
     secret:            ThisTokenIsNotSoSecretChangeIt
-	cardimages_dir:    /a/dir/path
+    cardimages_dir:    /a/dir/path
