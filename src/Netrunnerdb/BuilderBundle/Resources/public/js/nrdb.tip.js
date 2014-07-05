@@ -24,7 +24,7 @@ NRDB.tip = {};
 		$(this).qtip(
 				{
 					content : {
-						text : '<h4>' + (card.uniqueness ? "&diams; " : "")
+						text : '<div class="card-image card-image-'+card.side_code+'-'+card.type_code+'"'+(card.imagesrc ? ' style="background-image:url(/web/bundles/netrunnerdbcards/images/cards/en/'+card.code+'.png)"': '')+'><img src="/web/bundles/netrunnerdbbuilder/images/hexagon.svg"></div><h4>' + (card.uniqueness ? "&diams; " : "")
 								+ card.title + '</h4>' + type
 								+ '<div class="card-text">' + NRDB.format.text(card) + '</div>'
 								+ '<p class="card-faction" style="text-align:right">' + influence

@@ -33,7 +33,20 @@ h1,h2,h3,h4,h5,h6{font-family:exoregular,sans-serif}
 .background-jinteki{background-color:#f8d0d8}
 .background-nbn{background-color:#ffe8cc}
 .background-weyland-consortium{background-color:#cce0cc}
-.qtip-bootstrap{max-width:310px;font-size:85.7%}
+.qtip-nrdb{min-width: 310px;max-width:350px;font-size:85.7%}
+	.qtip-nrdb .card-image { float: right;height:90px;width: 101px; background-size:120px;background-repeat: no-repeat; margin: 5px 0px;position: relative;image-rendering: optimizeSpeed;}
+	.qtip-nrdb .card-image img { position: relative; top: -1px; left: -1px; height:92px;width: 103px }
+	.qtip-nrdb .card-image-runner-identity {  background-size:95px; background-position: 3px -8px }
+	.qtip-nrdb .card-image-runner-event { background-size:100px; background-position: 3px -1px }
+	.qtip-nrdb .card-image-runner-hardware {  background-size:110px; background-position: -5px 3px }
+	.qtip-nrdb .card-image-runner-program { background-position: -10px 7px }
+	.qtip-nrdb .card-image-runner-resource { background-size:140px; background-position: -14px -5px }
+	.qtip-nrdb .card-image-corp-identity {  background-size:105px; background-position: -4px -18px }
+	.qtip-nrdb .card-image-corp-agenda { background-size:110px; background-position: -10px -4px }
+	.qtip-nrdb .card-image-corp-asset { background-size:110px; background-position: -6px 8px }
+	.qtip-nrdb .card-image-corp-operation { background-size:105px; background-position: -1px -2px }
+	.qtip-nrdb .card-image-corp-upgrade { background-size:105px; background-position: -4px 8px }
+	.qtip-nrdb .card-image-corp-ice { background-size:115px; background-position: -9px -77px;transform: rotate(90deg) ;-webkit-transform: rotate(90deg) ;-moz-transform: rotate(90deg) ;-o-transform: rotate(90deg) ;-ms-transform: rotate(90deg)}
 div.card-text{font-size:14px;font-family:"Palatino Linotype",Palatino,"URW Palladio L",serif;border-left:1px solid #888}
 div.card-text sup{line-height:0;font-size:x-small}
 div.card-text p{margin:6px}
