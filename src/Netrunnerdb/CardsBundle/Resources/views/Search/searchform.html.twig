@@ -44,40 +44,25 @@
 				<input class="form-control" size="30" id="a" name="a" value="">
 			</div>
 		</div>
-		
+    
 		<div class="form-group">
 			<label for="d">{% trans %}Side{% endtrans %}</label>
-			<div>
-				<label class="radio-inline"><input type="radio" name="d" checked value="">{% trans %}Either{% endtrans %}</label>
-				<label class="radio-inline"><input type="radio" name="d" value="c">{% trans %}Corp{% endtrans %}</label>
-				<label class="radio-inline"><input type="radio" name="d" value="r">{% trans %}Runner{% endtrans %}</label>
+			<div class="btn-group btn-group-justified" data-toggle="buttons">
+				<label class="btn btn-default"><input type="radio" name="d" checked value="">{% trans %}Either{% endtrans %}</label>
+				<label class="btn btn-default"><input type="radio" name="d" value="c">{% trans %}Corp{% endtrans %}</label>
+				<label class="btn btn-default"><input type="radio" name="d" value="r">{% trans %}Runner{% endtrans %}</label>
 			</div>
 		</div>
-		
-		<div class="form-group">
-			<label for="f">{% trans %}Faction{% endtrans %}</label>
-			<div>
-				<label class="checkbox-inline"><input type="checkbox" name="f[]" checked value="a">{% trans %}Anarch{% endtrans %}</label>
-				<label class="checkbox-inline"><input type="checkbox" name="f[]" checked value="c">{% trans %}Criminal{% endtrans %}</label>
-				<label class="checkbox-inline"><input type="checkbox" name="f[]" checked value="s">{% trans %}Shaper{% endtrans %}</label>
-				<label class="checkbox-inline"><input type="checkbox" name="f[]" checked value="h">{% trans %}Haas-Bioroid{% endtrans %}</label>
-				<label class="checkbox-inline"><input type="checkbox" name="f[]" checked value="j">{% trans %}Jinteki{% endtrans %}</label>
-				<label class="checkbox-inline"><input type="checkbox" name="f[]" checked value="n">{% trans %}NBN{% endtrans %}</label>
-				<label class="checkbox-inline"><input type="checkbox" name="f[]" checked value="w">{% trans %}Weyland{% endtrans %}</label>
-				<label class="checkbox-inline"><input type="checkbox" name="f[]" checked value="-">{% trans %}Neutral{% endtrans %}</label>
-			</div>
-		</div>
-		
-		
+    
 		<div class="form-group">
 			<label for="d">{% trans %}Previews{% endtrans %}</label>
-			<div>
-				<label class="radio-inline"><input type="radio" name="r" checked value="">{% trans %}Yes{% endtrans %}</label>
-				<label class="radio-inline"><input type="radio" name="r" value="<now">{% trans %}No{% endtrans %}</label>
-				<label class="radio-inline"><input type="radio" name="r" value=">now">{% trans %}Only{% endtrans %}</label>
+			<div class="btn-group btn-group-justified" data-toggle="buttons">
+				<label class="btn btn-default"><input type="radio" name="r" checked value="">{% trans %}Yes{% endtrans %}</label>
+				<label class="btn btn-default"><input type="radio" name="r" value="<now">{% trans %}No{% endtrans %}</label>
+				<label class="btn btn-default"><input type="radio" name="r" value=">now">{% trans %}Only{% endtrans %}</label>
 			</div>
 		</div>
-		
+			
 </div>
 <div class="col-sm-4">
 
@@ -179,6 +164,25 @@
 
 </div>
 
+</div>
+<div class="row">
+<div class="col-sm-12">
+
+		
+		<div class="form-group">
+			<label for="f">{% trans %}Faction{% endtrans %}</label>
+			<div class="btn-group" data-toggle="buttons">
+				<label class="btn btn-default"><input type="checkbox" name="f[]" checked value="a"><span class="icon icon-anarch anarch"></span></label>
+				<label class="btn btn-default"><input type="checkbox" name="f[]" checked value="c"><span class="icon icon-criminal criminal"></span></label>
+				<label class="btn btn-default"><input type="checkbox" name="f[]" checked value="s"><span class="icon icon-shaper shaper"></span></label>
+				<label class="btn btn-default"><input type="checkbox" name="f[]" checked value="h"><span class="icon icon-haas-bioroid haas-bioroid"></span></label>
+				<label class="btn btn-default"><input type="checkbox" name="f[]" checked value="j"><span class="icon icon-jinteki jinteki"></span></label>
+				<label class="btn btn-default"><input type="checkbox" name="f[]" checked value="n"><span class="icon icon-nbn nbn"></span></label>
+				<label class="btn btn-default"><input type="checkbox" name="f[]" checked value="w"><span class="icon icon-weyland-consortium weyland-consortium"></span></label>
+				<label class="btn btn-default"><input type="checkbox" name="f[]" checked value="-">{% trans %}Neutral{% endtrans %}</label>
+			</div>
+		</div>    
+</div>    
 </div>
 <div class="row">
 <div class="col-sm-12">
