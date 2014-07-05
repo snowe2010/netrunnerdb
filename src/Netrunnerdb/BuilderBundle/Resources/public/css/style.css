@@ -34,7 +34,7 @@ h1,h2,h3,h4,h5,h6{font-family:exoregular,sans-serif}
 .background-nbn{background-color:#ffe8cc}
 .background-weyland-consortium{background-color:#cce0cc}
 .qtip-nrdb{min-width: 310px;max-width:350px;font-size:85.7%}
-	.qtip-nrdb .card-image { float: right;height:90px;width: 101px; background-size:120px;background-repeat: no-repeat; margin: 5px 0px;position: relative;image-rendering: optimizeSpeed;}
+	.qtip-nrdb .card-image { float: right;height:90px;width: 101px; background-size:120px;background-repeat: no-repeat; margin: 5px 0px;position: relative}
 	.qtip-nrdb .card-image svg { position: relative; top: -1px; left: -1px; height:92px;width: 103px }
 	.qtip-nrdb .card-image-runner-identity {  background-size:95px; background-position: 3px -8px }
 	.qtip-nrdb .card-image-runner-event { background-size:100px; background-position: 3px -1px }
