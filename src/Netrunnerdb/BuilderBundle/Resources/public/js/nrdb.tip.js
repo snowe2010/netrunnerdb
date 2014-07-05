@@ -44,8 +44,7 @@ NRDB.tip = {};
 						event : event.type,
 						ready : true,
 						solo : true
-					},
-					hide: { event: 'unfocus' }
+					}
 				}, event);
 	};
 
@@ -53,9 +52,11 @@ NRDB.tip = {};
 
 $(function() {
 
+	if(typeof Modernizr == 'undefined' || !Modernizr.touch ) {
 		$('body').on({
 			mouseover : NRDB.tip.display,
 			focus : NRDB.tip.display
 		}, 'a');
+	}
 
 });
