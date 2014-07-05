@@ -15,11 +15,15 @@ RewriteRule assets/(.+) /web/bundles/netrunnerdbcards/$1 [L]
 
 RewriteRule ^(.*)$ /web/app_dev.php [QSA,L]
 
-<IfModule mod_expires>
 ExpiresActive On
 ExpiresByType image/png "access plus 1 month"
 ExpiresByType text/css "access plus 1 month"
 ExpiresByType text/javascript "access plus 1 month"
-ExpiresByType application/font-woff "access plus 1 month"
-</IfModule>
+ExpiresByType application/javascript "access plus 1 month"
+ExpiresByType application/json "access plus 1 month"
+ExpiresByType application/x-font-woff "access plus 1 month"
+ExpiresByType application/vnd.ms-fontobject "access plus 1 month"
+ExpiresByType application/x-font-ttf "access plus 1 month"
+ExpiresByType image/svg+xml "access plus 1 month"
+
 
