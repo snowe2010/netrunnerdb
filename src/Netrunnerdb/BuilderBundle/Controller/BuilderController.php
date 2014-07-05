@@ -8,11 +8,12 @@ use Netrunnerdb\BuilderBundle\Entity\Deck;
 use Netrunnerdb\BuilderBundle\Entity\Deckslot;
 use Netrunnerdb\CardsBundle\Entity\Card;
 use Doctrine\ORM\EntityManager;
+use Symfony\Component\HttpFoundation\Request;
 
 class BuilderController extends Controller
 {
 
-    public function buildformAction ($side_text)
+    public function buildformAction ($side_text, Request $request)
     {
         /* @var $em \Doctrine\ORM\EntityManager */
         $em = $this->get('doctrine')->getManager();

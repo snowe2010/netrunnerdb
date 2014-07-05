@@ -360,9 +360,14 @@ class Card
      *
      * @return string 
      */
-    public function getTitle()
+    public function getTitle($locale = "en")
     {
-        return $this->title;
+        $res = $this->title;
+        if($locale == "fr") $res = $this->titleFr ?: $res;
+        if($locale == "de") $res = $this->titleDe ?: $res;
+        if($locale == "es") $res = $this->titleEs ?: $res;
+        if($locale == "pl") $res = $this->titlePl ?: $res;
+        return $res;
     }
 
     /**
@@ -498,9 +503,14 @@ class Card
      *
      * @return string 
      */
-    public function getKeywords()
+    public function getKeywords($locale = "en")
     {
-        return $this->keywords;
+        $res = $this->keywords;
+        if($locale == "fr") $res = $this->keywordsFr ?: $res;
+        if($locale == "de") $res = $this->keywordsDe ?: $res;
+        if($locale == "es") $res = $this->keywordsEs ?: $res;
+        if($locale == "pl") $res = $this->keywordsPl ?: $res;
+        return $res;
     }
 
     /**
@@ -636,9 +646,14 @@ class Card
      *
      * @return string 
      */
-    public function getText()
+    public function getText($locale = "en")
     {
-        return $this->text;
+        $res = $this->text;
+        if($locale == "fr") $res = $this->textFr ?: $res;
+        if($locale == "de") $res = $this->textDe ?: $res;
+        if($locale == "es") $res = $this->textEs ?: $res;
+        if($locale == "pl") $res = $this->textPl ?: $res;
+        return $res;
     }
 
     /**
@@ -889,9 +904,14 @@ class Card
      *
      * @return string 
      */
-    public function getFlavor()
+    public function getFlavor($locale = "en")
     {
-        return $this->flavor;
+        $res = $this->flavor;
+        if($locale == "fr") $res = $this->flavorFr ?: $res;
+        if($locale == "de") $res = $this->flavorDe ?: $res;
+        if($locale == "es") $res = $this->flavorEs ?: $res;
+        if($locale == "pl") $res = $this->flavorPl ?: $res;
+        return $res;
     }
 
     /**

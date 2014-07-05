@@ -242,13 +242,12 @@ function update_deck() {
 		
 		var influence = '';
 		if(record.faction != Identity.faction) {
-			var faction = record.faction.toLowerCase().replace(' ','-');
 			var infcost = record.factioncost * record.indeck;
 			for(var i=0; i<infcost; i++) {
 				if(i%5 == 0) influence+=" ";
 				influence+="&bull;";
 			}
-			influence = ' <span class="influence-'+faction+'">'+influence+'</span>';
+			influence = ' <span class="influence-'+record.faction_code+'">'+influence+'</span>';
 		}
 
 		var criteria = null;
@@ -406,7 +405,7 @@ function export_bbcode() {
 		if(deck[type] != null) {
 			if(type == "identity") {
 				var slot = deck[type][0];
-				lines.push('[url=http://netrunnerdb.com/'+NRDB.data.locale+'/card/'
+				lines.push('[url=http://netrunnerdb.com/'+NRDB.locale+'/card/'
 				 + slot.card.code
 				 + ']'
 				 + slot.card.title
@@ -423,7 +422,7 @@ function export_bbcode() {
 						if(i%5==0) inf += " ";
 						inf+="•";
 					}
-					lines.push(slot.qty + 'x [url=http://netrunnerdb.com/'+NRDB.data.locale+'/card/'
+					lines.push(slot.qty + 'x [url=http://netrunnerdb.com/'+NRDB.locale+'/card/'
 					 + slot.card.code
 					 + ']'
 					 + slot.card.title
@@ -467,7 +466,7 @@ function export_markdown() {
 				var slot = deck[type][0];
 				lines.push('['
 				 + slot.card.title
-				 + '](http://netrunnerdb.com/'+NRDB.data.locale+'/card/'
+				 + '](http://netrunnerdb.com/'+NRDB.locale+'/card/'
 				 + slot.card.code
 				 + ') _('
 				 + slot.card.setname
@@ -486,7 +485,7 @@ function export_markdown() {
 					}
 					lines.push('* '+ slot.qty + 'x ['
 					 + slot.card.title 
-					 + '](http://netrunnerdb.com/'+NRDB.data.locale+'/card/'
+					 + '](http://netrunnerdb.com/'+NRDB.locale+'/card/'
 					 + slot.card.code
 					 + ') _('
 					 + slot.card.setname

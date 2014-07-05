@@ -30,7 +30,8 @@
 		api_url: {
 			sets: '{{ path('api_sets')|raw }}',
 			cards: '{{ path('api_cards')|raw }}'
-		}
+		}, 
+		locale: '{{ app.request.locale }}'
 	};
 {% if app.environment == 'prod' %}
   var _gaq = _gaq || [];

@@ -7,7 +7,8 @@ $(function() {
 	$('.list-group').on({
 		mouseenter: function(event) {
 			var card_code = $(this).data('code');
-			$('#cardimg').prop('src', '/web/bundles/netrunnerdbcards/images/cards/en/'+card_code+'.png');
+			var card = NRDB.data.cards({code:card_code}).first();
+			$('#cardimg').prop('src', card.imagesrc);
 		}	
 	}, 'a');
 	
@@ -27,7 +28,7 @@ $(function() {
 {% for identity in identities %}
 <a href="{{ path('deck_initbuild', {card_code:identity.code}) }}" class="list-group-item" data-code="{{ identity.code }}">
 	<img class="faction-icon" src="{{ asset('/web/bundles/netrunnerdbbuilder/images/factions/16px/' ~ identity.faction.code ~ '.png') }}">
-	<span>{{ identity.title }}</span> <span class="small">({{ identity.pack.name }})</span>
+	<span>{{ identity.title(app.request.locale) }}</span> <span class="small">({{ identity.pack.name }})</span>
 </a>
 {% endfor %}
 </div>

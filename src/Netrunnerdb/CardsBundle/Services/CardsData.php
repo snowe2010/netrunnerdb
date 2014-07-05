@@ -401,6 +401,7 @@ class CardsData
 	{
 		$dbh = $this->doctrine->getConnection();
 		$locale = $this->request_stack->getCurrentRequest()->getLocale();
+		
 		$cardinfo = array(
 				"id" => $card->getId(),
 				"last-modified" => $card->getTs()->format('c'),
