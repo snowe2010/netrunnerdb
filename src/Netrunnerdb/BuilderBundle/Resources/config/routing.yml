@@ -318,9 +318,12 @@ api_oauth2_save_deck:
     pattern: /api_oauth2/save_deck/{id}
     defaults:
         _controller: NetrunnerdbBuilderBundle:Api:saveDeck
-        id: null
-#    requirements:
-#        id: \d*
-
-
-        
+    requirements:
+        id: \d+
+            
+api_oauth2_publish_deck:
+    pattern: /api_oauth2/publish_deck/{deck_id}
+    defaults:
+        _controller: NetrunnerdbBuilderBundle:Api:publish
+    requirements:
+        id: \d+

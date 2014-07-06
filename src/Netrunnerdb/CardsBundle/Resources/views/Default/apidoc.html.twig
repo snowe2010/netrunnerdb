@@ -48,12 +48,21 @@ The following API endpoints require a OAuth2 authentication. To get the required
 
 <tt>/api_oauth2/save_deck/{id}</tt> saves the deck and returns its info. Parameters:
 <ul>
-	<li>id: an integer. Optional</li>
+	<li>id: an integer. Mandatory. Set to 0 to create a new deck.</li>
 	<li>name: a string. Optional</li>
 	<li>description: a string. Optional</li>
 	<li>decklist_id: an integer. Optional. If set, saved decklist will be descendant of it.</li>
 	<li>content: a json array of json objects with 2 keys, "card_code" (string) and "qty" (integer). Mandatory</li>
 </ul>		
+
+<h3>Publish a decklist for an authenticated user</h3>
+
+<tt>/api_oauth2/publish_deck/{id}</tt> publishes a deck and returns the info of the decklist. Parameters:
+<ul>
+	<li>id: an integer. Mandatory</li>
+	<li>name: a string. Optional. Will fallback to the name of the deck.</li>
+	<li>description: a string. Optional. Will fallback to the description of the deck.</li>
+</ul>
 
 <h3>Returned value</h3>
 

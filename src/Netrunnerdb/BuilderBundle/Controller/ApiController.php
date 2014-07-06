@@ -6,6 +6,12 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
 use Netrunnerdb\BuilderBundle\Entity\Deck;
 use Netrunnerdb\BuilderBundle\Entity\Deckslot;
+use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use \Michelf\Markdown;
+use Netrunnerdb\BuilderBundle\Entity\Decklist;
+use Netrunnerdb\BuilderBundle\Entity\Decklistslot;
+use Symfony\Component\HttpFoundation\Request;
 
 class ApiController extends Controller
 {
@@ -236,6 +242,101 @@ class ApiController extends Controller
             $response->setContent(json_encode(array('success' => false, 'message' => 'Unknown error')));
             return $response;
         }
+    }
+    
+    public function publishAction($deck_id, Request $request)
+    {
+        $response = new Response();
+        $response->setPrivate();
+        $response->headers->set('Content-Type', 'application/json');
+        
+        /* @var $em \Doctrine\ORM\EntityManager */
+        $em = $this->get('doctrine')->getManager();
+        
+        /* @var $deck \Netrunnerdb\BuilderBundle\Entity\Deck */
+        $deck = $this->getDoctrine()
+        ->getRepository('NetrunnerdbBuilderBundle:Deck')
+        ->find($deck_id);
+        if ($this->getUser()->getId() != $deck->getUser()->getId()) {
+            $response->setContent(json_encode(array('success' => false, 'message' => "You don't have access to this deck.")));
+            return $response;
+        }
+        
+        $judge = $this->get('judge');
+        $analyse = $judge->analyse($deck->getCards());
+        if (is_string($analyse)) {
+            $response->setContent(json_encode(array('success' => false, 'message' => $judge->problem($analyse))));
+            return $response;
+        }
+        
+        $new_content = json_encode($deck->getContent());
+        $new_signature = md5($new_content);
+        $old_decklists = $this->getDoctrine()
+        ->getRepository('NetrunnerdbBuilderBundle:Decklist')
+        ->findBy(array(
+                'signature' => $new_signature
+        ));
+        foreach ($old_decklists as $decklist) {
+            if (json_encode($decklist->getContent()) == $new_content) {
+                $response->setContent(json_encode(array('success' => false, 'message' => "That decklist already exists.")));
+                return $response;
+            }
+        }
+        
+        $name = filter_var($request->request->get('name'), FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
+        $name = substr($name, 0, 60);
+        if (empty($name)) {
+            $name = $deck->getName();
+        }
+        
+        $rawdescription = filter_var($request->request->get('description'), FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
+        if (empty($rawdescription)) {
+            $rawdescription = $deck->getDescription();
+        }
+        $description = Markdown::defaultTransform($rawdescription);
+        
+        $decklist = new Decklist();
+        $decklist->setName($name);
+        $decklist->setPrettyname(preg_replace('/[^a-z0-9]+/', '-', mb_strtolower($name)));
+        $decklist->setRawdescription($rawdescription);
+        $decklist->setDescription($description);
+        $decklist->setUser($this->getUser());
+        $decklist->setCreation(new \DateTime());
+        $decklist->setTs(new \DateTime());
+        $decklist->setSignature($new_signature);
+        $decklist->setIdentity($deck->getIdentity());
+        $decklist->setFaction($deck->getIdentity()
+                ->getFaction());
+        $decklist->setSide($deck->getSide());
+        $decklist->setLastPack($deck->getLastPack());
+        $decklist->setNbvotes(0);
+        $decklist->setNbfavorites(0);
+        $decklist->setNbcomments(0);
+        foreach ($deck->getSlots() as $slot) {
+            $card = $slot->getCard();
+            $decklistslot = new Decklistslot();
+            $decklistslot->setQuantity($slot->getQuantity());
+            $decklistslot->setCard($card);
+            $decklistslot->setDecklist($decklist);
+            $decklist->getSlots()->add($decklistslot);
+        }
+        if (count($deck->getChildren())) {
+            $decklist->setPrecedent($deck->getChildren()[0]);
+        } else
+        if ($deck->getParent()) {
+            $decklist->setPrecedent($deck->getParent());
+        }
+        $decklist->setParent($deck);
+        
+        $em->persist($decklist);
+        $em->flush();
+        
+        $response->setContent(json_encode(array('success' => true, 'message' => array("id" => $decklist->getId(), "url" => $this->generateUrl('decklist_detail', array(
+                'decklist_id' => $decklist->getId(),
+                'decklist_name' => $decklist->getPrettyName()
+        ))))));
+        return $response;
+        
     }
     
 }
