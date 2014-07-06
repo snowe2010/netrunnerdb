@@ -37,11 +37,12 @@ class BuilderController extends Controller
                 array(
                         'pagetitle' => "New deck",
                         'locales' => $this->renderView('NetrunnerdbCardsBundle:Default:langs.html.twig'),
-                        "identities" => array_filter($identities, function  ($iden)
-                        {
-                            return $iden->getPack()
-                                ->getCode() != "alt";
-                        })
+                        "identities" => array_filter($identities, 
+                                function  ($iden)
+                                {
+                                    return $iden->getPack()
+                                        ->getCode() != "alt";
+                                })
                 ));
     
     }
@@ -85,8 +86,7 @@ class BuilderController extends Controller
                 array(
                         'pagetitle' => "Import a deck",
                         'locales' => $this->renderView('NetrunnerdbCardsBundle:Default:langs.html.twig')
-                )
-                );
+                ));
     
     }
 
@@ -117,11 +117,12 @@ class BuilderController extends Controller
         } else {
             $parse = $this->parseTextImport(file_get_contents($filename));
         }
-        return $this->forward('NetrunnerdbBuilderBundle:Builder:save', array(
-                'name' => $origname,
-                'content' => json_encode($parse['content']),
-                'description' => $parse['description']
-        ));
+        return $this->forward('NetrunnerdbBuilderBundle:Builder:save', 
+                array(
+                        'name' => $origname,
+                        'content' => json_encode($parse['content']),
+                        'description' => $parse['description']
+                ));
     
     }
 
@@ -278,7 +279,7 @@ class BuilderController extends Controller
                     $glossary[$meteor_deck['identity']] => 1
             );
             foreach ($meteor_deck['entries'] as $entry => $qty) {
-                if(!isset($glossary[$entry])) {
+                if (! isset($glossary[$entry])) {
                     $this->get('session')
                         ->getFlashBag()
                         ->set('error', "Error importing a deck. The name \"$entry\" doesn't match any known card. Please contact the administrator.");
@@ -415,11 +416,12 @@ class BuilderController extends Controller
     public function octgnexport ($filename, $identity, $rd, $description)
     {
 
-        $content = $this->renderView('NetrunnerdbBuilderBundle::octgn.xml.twig', array(
-                "identity" => $identity,
-                "rd" => $rd,
-                "description" => strip_tags($description)
-        ));
+        $content = $this->renderView('NetrunnerdbBuilderBundle::octgn.xml.twig', 
+                array(
+                        "identity" => $identity,
+                        "rd" => $rd,
+                        "description" => strip_tags($description)
+                ));
         
         $response = new Response();
         
@@ -558,6 +560,72 @@ class BuilderController extends Controller
     
     }
 
+    public function viewAction ($deck_id)
+    {
+
+        $dbh = $this->get('doctrine')->getConnection();
+        $rows = $dbh->executeQuery("SELECT
+				d.id,
+				d.name,
+				d.description,
+                d.problem,
+				s.name side_name,
+				c.code identity_code,
+				f.code faction_code
+                from deck d
+				join side s on d.side_id=s.id
+				join card c on d.identity_id=c.id
+				join faction f on c.faction_id=f.id
+                where d.id=?
+				", array(
+                $deck_id
+        ))->fetchAll();
+        
+        $deck = $rows[0];
+        $deck['side_name'] = mb_strtolower($deck['side_name']);
+        
+        $rows = $dbh->executeQuery("SELECT
+				c.code,
+				s.quantity
+				from deckslot s
+				join card c on s.card_id=c.id
+				where s.deck_id=?", array(
+                $deck_id
+        ))->fetchAll();
+        
+        $cards = array();
+        foreach ($rows as $row) {
+            $cards[$row['code']] = $row['quantity'];
+        }
+        $deck['slots'] = $cards;
+        
+        $published_decklists = $dbh->executeQuery(
+                "SELECT
+					d.id,
+					d.name,
+					d.prettyname,
+					d.nbvotes,
+					d.nbfavorites,
+					d.nbcomments
+					from decklist d
+					where d.parent_deck_id=?
+					order by d.creation asc", array(
+                        $deck_id
+                ))->fetchAll();
+
+		$problem = $deck['problem'];
+		$deck['message'] = isset($problem) ? $this->get('judge')->problem($problem) : '';
+		
+        return $this->render('NetrunnerdbBuilderBundle:Builder:deckview.html.twig', 
+                array(
+                        'pagetitle' => "Deckbuilder",
+                        'locales' => $this->renderView('NetrunnerdbCardsBundle:Default:langs.html.twig'),
+                        'deck' => $deck,
+                        'published_decklists' => $published_decklists
+                ));
+    
+    }
+
     public function listAction ()
     {
         /* @var $user \Netrunnerdb\UserBundle\Entity\User */
@@ -567,7 +635,8 @@ class BuilderController extends Controller
                 array(
                         'pagetitle' => "My Decks",
                         'locales' => $this->renderView('NetrunnerdbCardsBundle:Default:langs.html.twig'),
-                        'decks' => $this->get('decks')->getByUser($user),
+                        'decks' => $this->get('decks')
+                            ->getByUser($user),
                         'nbmax' => $user->getMaxNbDecks()
                 ));
     
@@ -585,11 +654,12 @@ class BuilderController extends Controller
         foreach ($decklist->getSlots() as $slot) {
             $content[$slot->getCard()->getCode()] = $slot->getQuantity();
         }
-        return $this->forward('NetrunnerdbBuilderBundle:Builder:save', array(
-                'name' => $decklist->getName(),
-                'content' => json_encode($content),
-                'decklist_id' => $decklist_id
-        ));
+        return $this->forward('NetrunnerdbBuilderBundle:Builder:save', 
+                array(
+                        'name' => $decklist->getName(),
+                        'content' => json_encode($content),
+                        'decklist_id' => $decklist_id
+                ));
     
     }
 

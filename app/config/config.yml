@@ -98,3 +98,7 @@ fos_oauth_server:
         user_provider: fos_user.user_provider.username
 #        options:
 #            supported_scopes: user
+
+# FOSJsRoutingBundle Configuration
+fos_js_routing:
+    routes_to_expose: [ '.*' ]

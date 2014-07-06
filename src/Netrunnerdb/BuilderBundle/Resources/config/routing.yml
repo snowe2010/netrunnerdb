@@ -38,6 +38,14 @@ deck_edit:
     requirements:
         _locale: en|fr|de|es|it|pl
 
+deck_view:
+    pattern: /{_locale}/deck/view/{deck_id}
+    defaults:
+        _controller: NetrunnerdbBuilderBundle:Builder:view
+        _locale: en
+    requirements:
+        _locale: en|fr|de|es|it|pl
+
 decks_list:
     pattern: /{_locale}/decks
     defaults:

@@ -8,12 +8,6 @@ var Identity = null,
 	SelectedDeck = null,
 	Decks = {{ decks|json_encode|raw }}, 
 	DeckDB = TAFFY(Decks),
-	Url_Edit = "{{ path('deck_edit', {deck_id:'xxx'}) }}",
-	Url_OctgnExport = "{{ path('deck_export_octgn', {deck_id:'xxx'}) }}",
-	Url_TextExport = "{{ path('deck_export_text', {deck_id:'xxx'}) }}",
-	Url_CanPublish = "{{ path('deck_publish', {deck_id:'xxx'}) }}",
-	Url_DecklistView = "{{ path('decklist_detail', {decklist_id:'xxx',decklist_name:'xxx'}) }}",
-	Url_CardPage = '{{ path('netrunnerdb_netrunner_cards_zoom', {card_code:'00000'}) }}',
 	Url_FactionImage = '{{  asset('/web/bundles/netrunnerdbbuilder/images/factions/16px/xxx.png') }}',
 	DisplaySort = 'type';
 	
@@ -57,6 +51,8 @@ var Identity = null,
 <div id="deck" style="display:none">
 
 <div class="" id="btn-group-deck">
+	<button type="button" id="btn-view" class="btn btn-info"><span class="glyphicon glyphicon-fullscreen"></span> View</button>
+
 	<button type="button" id="btn-edit" class="btn btn-primary"><span class="glyphicon glyphicon-pencil"></span> Edit</button>
 	
 	<button type="button" id="btn-publish" disabled="disabled" class="btn btn-success"><span class="glyphicon glyphicon-share"></span> Publish</button>
@@ -76,18 +72,6 @@ var Identity = null,
 			<li><a href="#" id="btn-export-bbcode">bbCode</a></li>
 			<li><a href="#" id="btn-export-markdown">Markdown (Reddit)</a></li>
 			<li><a href="#" id="btn-export-plaintext">plain text</a></li>
-		</ul>
-	</div>
-	
-	<div class="btn-group">
-		<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-			Sort <span class="caret"></span>
-		</button>
-		<ul class="dropdown-menu" role="menu" id="menu-sort">
-			<li><a href="#" id="btn-sort-type"><label><input type="radio" name="sort-order" checked="checked">by Type</label></a></li>
-			<li><a href="#" id="btn-sort-number"><label><input type="radio" name="sort-order">by Set</label></a></li>
-			<li><a href="#" id="btn-sort-faction"><label><input type="radio" name="sort-order">by Faction</label></a></li>
-			<li><a href="#" id="btn-sort-title"><label><input type="radio" name="sort-order">by Name</label></a></li>
 		</ul>
 	</div>
 </div>

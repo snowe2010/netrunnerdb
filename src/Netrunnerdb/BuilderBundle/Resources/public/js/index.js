@@ -33,7 +33,7 @@ function update_cardsearch_result() {
 								+ '"></td><td><a tabindex="'
 								+ (tabindex++)
 								+ '" href="'
-								+ Url_CardPage.replace('00000', record.code)
+								+ Routing.generate('netrunnerdb_netrunner_cards_zoom', {card_code:record.code})
 								+ '" class="card" data-index="' + record.code
 								+ '">' + record.title
 								+ '</a></td><td class="small">'

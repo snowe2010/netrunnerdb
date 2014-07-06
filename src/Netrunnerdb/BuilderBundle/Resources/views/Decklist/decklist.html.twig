@@ -7,17 +7,11 @@
 <script src="{{ asset('/web/bundles/netrunnerdbbuilder/js/decklist.js') }}"></script>
 <script type="text/javascript">
 
-var Identity = null
+var Identity = null,
 	Decklist = {{ decklist|json_encode|raw }},
 	Commenters = {{ commenters|json_encode|raw }},
 	DeckDB = TAFFY([Decklist]),
-	SelectedDeck = DeckDB().first()
-	Url_Like = "{{ path('decklist_like') }}",
-	Url_Favorite = "{{ path('decklist_favorite') }}",
-	Url_Copy = "{{ path('deck_copy', {decklist_id:decklist.id}) }}",
-	Url_OctgnExport = "{{ path('decklist_export_octgn', {decklist_id:decklist.id}) }}",
-	Url_TextExport = "{{ path('decklist_export_text', {decklist_id:decklist.id}) }}",
-	Url_CardPage = '{{ path('netrunnerdb_netrunner_cards_zoom', {card_code:'00000'}) }}',
+	SelectedDeck = DeckDB().first(),
 	DisplaySort = 'type';
 
 </script>

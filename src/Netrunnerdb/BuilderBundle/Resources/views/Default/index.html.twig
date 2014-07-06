@@ -6,13 +6,10 @@
 <script src="{{ asset('/web/bundles/netrunnerdbbuilder/js/index.js') }}"></script>
 <script type="text/javascript">
 
-var Identity = null
+var Identity = null,
 	Decklist = {{ decklist|json_encode|raw }},
 	DeckDB = TAFFY([Decklist]),
-	SelectedDeck = DeckDB().first()
-	Url_Like = "{{ path('decklist_like') }}",
-	Url_Favorite = "{{ path('decklist_favorite') }}",
-	Url_CardPage = '{{ path('netrunnerdb_netrunner_cards_zoom', {card_code:'00000'}) }}',
+	SelectedDeck = DeckDB().first(),
 	DisplaySort = 'type';
 	
 </script>

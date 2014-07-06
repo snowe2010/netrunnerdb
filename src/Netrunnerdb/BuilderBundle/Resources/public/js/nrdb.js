@@ -84,36 +84,28 @@ function getDisplayDescriptions(sort) {
                 [],
                 [{
                     id: 'anarch',
-                    label: 'Anarch',
-                    image: '/web/bundles/netrunnerdbbuilder/images/factions/16px/anarch.png'
+                    label: 'Anarch'
                 }, {
                     id: 'criminal',
-                    label: 'Criminal',
-                    image: '/web/bundles/netrunnerdbbuilder/images/factions/16px/criminal.png'
+                    label: 'Criminal'
                 }, {
                     id: 'haas-bioroid',
-                    label: 'Haas-Bioroid',
-                    image: '/web/bundles/netrunnerdbbuilder/images/factions/16px/haas-bioroid.png'
+                    label: 'Haas-Bioroid'
                 }, {
                     id: 'jinteki',
-                    label: 'Jinteki',
-                    image: '/web/bundles/netrunnerdbbuilder/images/factions/16px/jinteki.png'
+                    label: 'Jinteki'
                 }, {
                     id: 'nbn',
-                    label: 'NBN',
-                    image: '/web/bundles/netrunnerdbbuilder/images/factions/16px/nbn.png'
+                    label: 'NBN'
                 }, {
                     id: 'shaper',
-                    label: 'Shaper',
-                    image: '/web/bundles/netrunnerdbbuilder/images/factions/16px/shaper.png'
+                    label: 'Shaper'
                 }, {
                     id: 'weyland-consortium',
-                    label: 'Weyland Consortium',
-                    image: '/web/bundles/netrunnerdbbuilder/images/factions/16px/weyland-consortium.png'
+                    label: 'Weyland Consortium'
                 }, {
                     id: 'neutral',
-                    label: 'Neutral',
-                    image: '/web/bundles/netrunnerdbbuilder/images/factions/16px/neutral.png'
+                    label: 'Neutral'
                 }, ]
             ],
             'number': [],
@@ -184,7 +176,12 @@ function process_deck_by_type() {
 	return bytype;
 }
 
-function update_deck() {
+function update_deck(options) {
+	var restrainOneColumn = false;
+	if(options) {
+		if(options.restrainOneColumn) restrainOneColumn = options.restrainOneColumn;
+	}
+	
 	Identity = NRDB.data.cards({indeck:{'gt':0},type_code:'identity'}).first();
 	if(!Identity) return;
 
@@ -209,6 +206,9 @@ function update_deck() {
 		});
 		displayDescription.push(rows);
 	}
+	if(restrainOneColumn && displayDescription.length == 2) {
+		displayDescription = [ displayDescription[0].concat(displayDescription[1]) ];
+	}
 	
 	$('#deck-content').empty();
 	var cols_size = 12/displayDescription.length;
@@ -220,6 +220,8 @@ function update_deck() {
 			var item = $('<h5> '+row.label+' (<span></span>)</h5>').hide();
 			if(row.image) {
 				$('<img>').addClass(DisplaySort+'-icon').attr('src', row.image).prependTo(item);
+			} else if(DisplaySort == "faction") {
+				$('<span class="icon icon-'+row.id+' '+row.id+'"></span>').prependTo(item);
 			}
 			var content = $('<div class="deck-'+row.id+'"></div>')
 			div.append(item).append(content);
@@ -229,7 +231,7 @@ function update_deck() {
 	InfluenceLimit = 0;
 	var cabinet = {};
 	var parts = Identity.title.split(/: /);
-	$('#identity').html('<a href="'+Url_CardPage.replace('00000', Identity.code)+'" data-target="#cardModal" data-remote="false" class="card" data-toggle="modal" data-index="'+Identity.code+'">'+parts[0]+' <small>'+parts[1]+'</small></a>');
+	$('#identity').html('<a href="'+Routing.generate('netrunnerdb_netrunner_cards_zoom', {card_code:Identity.code})+'" data-target="#cardModal" data-remote="false" class="card" data-toggle="modal" data-index="'+Identity.code+'">'+parts[0]+' <small>'+parts[1]+'</small></a>');
 	$('#img_identity').prop('src', Identity.imagesrc);
 	InfluenceLimit = Identity.influencelimit;
 	if(typeof InfluenceLimit === "undefined") InfluenceLimit = Number.POSITIVE_INFINITY;
@@ -280,12 +282,12 @@ function update_deck() {
 			criteria = 'cards';
 		}
 
-		var item = $('<div>'+record.indeck+'x <a href="'+Url_CardPage.replace('00000', record.code)+'" class="card" data-toggle="modal" data-remote="false" data-target="#cardModal" data-index="'+record.code+'">'+record.title+'</a> '+additional_info+'</div>');
+		var item = $('<div>'+record.indeck+'x <a href="'+Routing.generate('netrunnerdb_netrunner_cards_zoom', {card_code:record.code})+'" class="card" data-toggle="modal" data-remote="false" data-target="#cardModal" data-index="'+record.code+'">'+record.title+'</a> '+additional_info+'</div>');
 		item.appendTo($('#deck-content .deck-'+criteria));
 		
 		cabinet[criteria] |= 0;
 		cabinet[criteria] = cabinet[criteria] + record.indeck;
-		$('#deck-content .deck-'+criteria).prev().show().find('span').html(cabinet[criteria]);
+		$('#deck-content .deck-'+criteria).prev().show().find('span:last').html(cabinet[criteria]);
 		
 	});
 	$('#latestpack').html('Cards up to <i>'+latestpack.name+'</i>');
@@ -393,9 +395,8 @@ var FactionColors = {
 	"weyland-consortium": "#006400"
 };
 
-function export_bbcode() {
+function build_bbcode() {
 	var deck = process_deck_by_type(SelectedDeck);
-	
 	var lines = [];
 	lines.push("[b]"+SelectedDeck.name+"[/b]");
 	lines.push("");
@@ -448,12 +449,15 @@ function export_bbcode() {
 	} else {
 		lines.push("Deck built on [url=http://netrunnerdb.com]NetrunnerDB[/url].");
 	}
-	
-	$('#export-deck').html(lines.join("\n"));
+	return lines;
+}
+
+function export_bbcode() {
+	$('#export-deck').html(build_bbcode().join("\n"));
 	$('#exportModal').modal('show');
 }
 
-function export_markdown() {
+function build_markdown() {
 	var deck = process_deck_by_type(SelectedDeck);
 	var lines = [];
 	lines.push("# "+SelectedDeck.name);
@@ -510,12 +514,15 @@ function export_markdown() {
 	} else {
 		lines.push("Deck built on [NetrunnerDB](http://netrunnerdb.com).");
 	}
-	
-	$('#export-deck').html(lines.join("\n"));
+	return lines;
+}
+
+function export_markdown() {
+	$('#export-deck').html(build_markdown().join("\n"));
 	$('#exportModal').modal('show');
 }
 
-function export_plaintext() {
+function build_plaintext() {
 	var deck = process_deck_by_type(SelectedDeck);
 	var lines = [];
 	lines.push(SelectedDeck.name);
@@ -565,7 +572,11 @@ function export_plaintext() {
 	} else {
 		lines.push("Deck built on http://netrunnerdb.com.");
 	}
-	$('#export-deck').html(lines.join("\n"));
+	return lines;
+}
+
+function export_plaintext() {
+	$('#export-deck').html(build_plaintext().join("\n"));
 	$('#exportModal').modal('show');
 }
 

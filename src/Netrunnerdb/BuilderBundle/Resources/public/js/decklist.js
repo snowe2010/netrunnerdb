@@ -65,7 +65,7 @@ $(function() {
 						},
 						replace : function(value) {
 							return '[' + value.title + ']('
-									+ Url_CardPage.replace('00000', value.code)
+									+ Routing.generate('netrunnerdb_netrunner_cards_zoom', {card_code:value.code})
 									+ ')';
 						},
 						index : 1
@@ -102,13 +102,13 @@ function do_action_decklist(event) {
 		return;
 	switch (action_id) {
 	case 'btn-copy':
-		location.href = Url_Copy;
+		location.href = Routing.generate('deck_copy', {decklist_id:Decklist.id});
 		break;
 	case 'btn-download-text':
-		location.href = Url_TextExport;
+		location.href = Routing.generate('decklist_export_text', {decklist_id:Decklist.id});
 		break;
 	case 'btn-download-octgn':
-		location.href = Url_OctgnExport;
+		location.href = Routing.generate('decklist_export_octgn', {decklist_id:Decklist.id});
 		break;
 	case 'btn-export-bbcode':
 		export_bbcode();
@@ -124,7 +124,7 @@ function do_action_decklist(event) {
 
 function send_like() {
 	var obj = $(this);
-	$.post(Url_Like, {
+	$.post(Routing.generate('decklist_like'), {
 		id : Decklist.id
 	}, function(data, textStatus, jqXHR) {
 		obj.find('.num').text(data);
@@ -133,7 +133,7 @@ function send_like() {
 
 function send_favorite() {
 	var obj = $(this);
-	$.post(Url_Favorite, {
+	$.post(Routing.generate('decklist_favorite'), {
 		id : Decklist.id
 	}, function(data, textStatus, jqXHR) {
 		obj.find('.num').text(data);
