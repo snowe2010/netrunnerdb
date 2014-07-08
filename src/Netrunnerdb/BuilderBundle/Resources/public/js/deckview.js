@@ -20,7 +20,8 @@ NRDB.data_loaded.add(function() {
 		});
 	});
 	update_deck();
-
+	NRDB.deck_gallery.update();
+	
 	$('html,body').css('height', 'auto');
 	$('.container').show();
 });
@@ -113,6 +114,6 @@ function confirm_delete() {
 
 
 function switch_to_web_view() {
-	$('#deck').html('<div class="row"><div class="col-sm-3 hidden-xs"><img id="img_identity" src="" class="img-responsive"></div><div class="col-sm-9"><h3 id="identity"></h3><div id="influence"></div><div id="agendapoints"></div><div id="cardcount"></div><div id="latestpack"></div></div></div><div class="row" id="deck-content" style="margin-bottom:10px"></div>');
+	$('#deck').html('<div class="row"><div class="col-sm-12"><h3 id="identity"></h3><div id="influence"></div><div id="agendapoints"></div><div id="cardcount"></div><div id="latestpack"></div></div></div><div class="row" id="deck-content" style="margin-bottom:10px"></div>');
 	update_deck();
 }

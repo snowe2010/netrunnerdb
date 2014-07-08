@@ -2,19 +2,23 @@
 
 {% block head %}
 
+<script src="{{ asset('/web/bundles/netrunnerdbbuilder/js/nrdb.deck_gallery.js') }}"></script>
 <script src="{{ asset('/web/bundles/netrunnerdbbuilder/js/nrdb.draw_simulator.js') }}"></script>
 <script src="{{ asset('/web/bundles/netrunnerdbbuilder/js/nrdb.card_modal.js') }}"></script>
 <script src="{{ asset('/web/bundles/netrunnerdbbuilder/js/deckview.js') }}"></script>
 <script type="text/javascript">
 
-var DisplaySort = "type", 
+var Identity = null,
+Deck = {{ deck|json_encode|raw }},
+DeckDB = TAFFY([Deck]),
+SelectedDeck = DeckDB().first(),
+DisplaySort = 'type', 
 	Order = 1,
 	Identity = null,
 	InfluenceSpent = 0,
 	InfluenceLimit = 0,
 	MinimumDeckSize = 0,
 	DeckSize = 0,
-	SelectedDeck = {{ deck|json_encode|raw }},
 	DisplaySort = 'type',
 	HideDisabled = true,
 	ShowOnlyDeck = false;
@@ -34,6 +38,15 @@ var DisplaySort = "type",
     </div>
 </div>
 
+<div class="row hidden-xs" style="margin-bottom: 20px">
+    <div class="col-sm-12" >
+        <table id="deck_gallery">
+            <tr>
+            </tr>
+        </table>
+    </div>
+</div>
+
 <div class="row">
 
 <!-- Left-side Column -->
@@ -41,10 +54,7 @@ var DisplaySort = "type",
 
 <!-- Identity and Stats -->
 <div class="row">
-	<div class="col-sm-3 hidden-xs">
-		<img id="img_identity" src="" class="img-responsive">
-	</div><!-- /.col-sm-3 -->
-	<div class="col-sm-9">
+	<div class="col-sm-12">
 		<h3 id="identity"></h3>
 		<div id="influence"></div>
 		<div id="agendapoints"></div>
@@ -89,7 +99,7 @@ var DisplaySort = "type",
 <div class="btn-group">
   <div class="btn-group">
     <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-      Web
+      Sort
       <span class="caret"></span>
     </button>
     <ul class="dropdown-menu" role="menu" id="menu-sort">

@@ -808,8 +808,8 @@ function display_notification()
 {
 	if(!localStorage) return;
 	var Notification = {
-		version: '1.6.3',
-		message: "<strong>New!</strong> Decklist publishers can now set the 'Derived From' reference with the 'Edit' action."
+		version: '1.6.4',
+		message: "<strong>New!</strong> \"View\" your decks in full page mode, with display options.</strong>"
 	};
 	var localStorageNotification = localStorage.getItem('notification');
 	if(localStorageNotification === Notification.version) return;
