@@ -348,10 +348,15 @@ class Card
      * @param string $title
      * @return Card
      */
-    public function setTitle($title)
+    public function setTitle($title, $locale = "en")
     {
-        $this->title = $title;
-
+        if($locale == "en") $this->title = $title;
+        if($locale == "fr") $this->titleFr = $title;
+        if($locale == "de") $this->titleDe = $title;
+        if($locale == "es") $this->titleEs = $title;
+        if($locale == "pl") $this->titlePl = $title;
+        if($locale == "it") $this->titleIt = $title;
+        
         return $this;
     }
 
@@ -360,13 +365,14 @@ class Card
      *
      * @return string 
      */
-    public function getTitle($locale = "en")
+    public function getTitle($locale = "en", $strict = false)
     {
         $res = $this->title;
-        if($locale == "fr") $res = $this->titleFr ?: $res;
-        if($locale == "de") $res = $this->titleDe ?: $res;
-        if($locale == "es") $res = $this->titleEs ?: $res;
-        if($locale == "pl") $res = $this->titlePl ?: $res;
+        if($locale == "fr") $res = $this->titleFr || $strict ? $this->titleFr : $res;
+        if($locale == "de") $res = $this->titleDe || $strict ? $this->titleDe : $res;
+        if($locale == "es") $res = $this->titleEs || $strict ? $this->titleEs : $res;
+        if($locale == "pl") $res = $this->titlePl || $strict ? $this->titlePl : $res;
+        if($locale == "it") $res = $this->titleIt || $strict ? $this->titleIt : $res;
         return $res;
     }
 
@@ -491,10 +497,15 @@ class Card
      * @param string $keywords
      * @return Card
      */
-    public function setKeywords($keywords)
+    public function setKeywords($keywords, $locale = "en")
     {
-        $this->keywords = $keywords;
-
+        if($locale == "en") $this->keywords = $keywords;
+        if($locale == "fr") $this->keywordsFr = $keywords;
+        if($locale == "de") $this->keywordsDe = $keywords;
+        if($locale == "es") $this->keywordsEs = $keywords;
+        if($locale == "pl") $this->keywordsPl = $keywords;
+        if($locale == "it") $this->keywordsIt = $keywords;
+        
         return $this;
     }
 
@@ -503,13 +514,14 @@ class Card
      *
      * @return string 
      */
-    public function getKeywords($locale = "en")
+    public function getKeywords($locale = "en", $strict = false)
     {
         $res = $this->keywords;
-        if($locale == "fr") $res = $this->keywordsFr ?: $res;
-        if($locale == "de") $res = $this->keywordsDe ?: $res;
-        if($locale == "es") $res = $this->keywordsEs ?: $res;
-        if($locale == "pl") $res = $this->keywordsPl ?: $res;
+        if($locale == "fr") $res = $this->keywordsFr || $strict ? $this->keywordsFr : $res;
+        if($locale == "de") $res = $this->keywordsDe || $strict ? $this->keywordsDe : $res;
+        if($locale == "es") $res = $this->keywordsEs || $strict ? $this->keywordsEs : $res;
+        if($locale == "pl") $res = $this->keywordsPl || $strict ? $this->keywordsPl : $res;
+        if($locale == "it") $res = $this->keywordsIt || $strict ? $this->keywordsIt : $res;
         return $res;
     }
 
@@ -634,10 +646,15 @@ class Card
      * @param string $text
      * @return Card
      */
-    public function setText($text)
+    public function setText($text, $locale = "en")
     {
-        $this->text = $text;
-
+        if($locale == "en") $this->text = $text;
+        if($locale == "fr") $this->textFr = $text;
+        if($locale == "de") $this->textDe = $text;
+        if($locale == "es") $this->textEs = $text;
+        if($locale == "pl") $this->textPl = $text;
+        if($locale == "it") $this->textIt = $text;
+        
         return $this;
     }
 
@@ -646,13 +663,14 @@ class Card
      *
      * @return string 
      */
-    public function getText($locale = "en")
+    public function getText($locale = "en", $strict = false)
     {
         $res = $this->text;
-        if($locale == "fr") $res = $this->textFr ?: $res;
-        if($locale == "de") $res = $this->textDe ?: $res;
-        if($locale == "es") $res = $this->textEs ?: $res;
-        if($locale == "pl") $res = $this->textPl ?: $res;
+        if($locale == "fr") $res = $this->textFr || $strict ? $this->textFr : $res;
+        if($locale == "de") $res = $this->textDe || $strict ? $this->textDe : $res;
+        if($locale == "es") $res = $this->textEs || $strict ? $this->textEs : $res;
+        if($locale == "pl") $res = $this->textPl || $strict ? $this->textPl : $res;
+        if($locale == "it") $res = $this->textIt || $strict ? $this->textIt : $res;
         return $res;
     }
 
@@ -892,9 +910,14 @@ class Card
      * @param string $flavor
      * @return Card
      */
-    public function setFlavor($flavor)
+    public function setFlavor($flavor, $locale = "en")
     {
-        $this->flavor = $flavor;
+        if($locale == "en") $this->flavor = $flavor;
+        if($locale == "fr") $this->flavorFr = $flavor;
+        if($locale == "de") $this->flavorDe = $flavor;
+        if($locale == "es") $this->flavorEs = $flavor;
+        if($locale == "pl") $this->flavorPl = $flavor;
+        if($locale == "it") $this->flavorIt = $flavor;
 
         return $this;
     }
@@ -904,13 +927,14 @@ class Card
      *
      * @return string 
      */
-    public function getFlavor($locale = "en")
+    public function getFlavor($locale = "en", $strict = false)
     {
         $res = $this->flavor;
-        if($locale == "fr") $res = $this->flavorFr ?: $res;
-        if($locale == "de") $res = $this->flavorDe ?: $res;
-        if($locale == "es") $res = $this->flavorEs ?: $res;
-        if($locale == "pl") $res = $this->flavorPl ?: $res;
+        if($locale == "fr") $res = $this->flavorFr || $strict ? $this->flavorFr : $res;
+        if($locale == "de") $res = $this->flavorDe || $strict ? $this->flavorDe : $res;
+        if($locale == "es") $res = $this->flavorEs || $strict ? $this->flavorEs : $res;
+        if($locale == "pl") $res = $this->flavorPl || $strict ? $this->flavorPl : $res;
+        if($locale == "it") $res = $this->flavorIt || $strict ? $this->flavorIt : $res;
         return $res;
     }
 

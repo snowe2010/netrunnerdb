@@ -147,3 +147,23 @@ ffg:
     pattern: /ffg
     defaults:
         _controller: NetrunnerdbCardsBundle:Default:ffg
+
+
+trad_upload_form:
+    pattern: /admin/trad_upload_form
+    defaults:
+        _controller: NetrunnerdbCardsBundle:Trad:uploadForm
+
+trad_upload:
+    pattern: /admin/trad_upload
+    defaults:
+        _controller: NetrunnerdbCardsBundle:Trad:upload
+
+trad_upload_confirm:
+    pattern: /admin/trad_upload_confirm
+    defaults:
+        _controller: NetrunnerdbCardsBundle:Trad:confirm
+
+
+
+        
