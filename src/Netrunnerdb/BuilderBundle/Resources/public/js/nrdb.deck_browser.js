@@ -1,8 +1,8 @@
 if (typeof NRDB != "object")
-	var NRDB = { data_loaded: $.Callbacks() };
+	var NRDB = { data_loaded: jQuery.Callbacks() };
 
 NRDB.deck_browser = {};
-(function(deck_browser) {
+(function(deck_browser, $) {
 	var codes = null;
 
 	function switch_left() {
@@ -72,8 +72,4 @@ NRDB.deck_browser = {};
 		focus_index(0);
 	}
 
-})(NRDB.deck_browser);
-
-$(function() {
-
-});
+})(NRDB.deck_browser, jQuery);

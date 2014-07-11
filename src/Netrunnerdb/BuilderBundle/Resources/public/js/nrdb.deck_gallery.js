@@ -1,8 +1,8 @@
 if (typeof NRDB != "object")
-	var NRDB = { data_loaded: $.Callbacks() };
+	var NRDB = { data_loaded: jQuery.Callbacks() };
 
 NRDB.deck_gallery = {};
-(function(deck_gallery) {
+(function(deck_gallery, $) {
 	var codes = null;
 
 	deck_gallery.update = function() {
@@ -26,8 +26,4 @@ NRDB.deck_gallery = {};
 		}
 	}
 
-})(NRDB.deck_gallery);
-
-$(function() {
-
-});
+})(NRDB.deck_gallery, jQuery);

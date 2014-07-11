@@ -1,8 +1,8 @@
 if (typeof NRDB != "object")
-	var NRDB = { data_loaded: $.Callbacks() };
+	var NRDB = { data_loaded: jQuery.Callbacks() };
 
 NRDB.tip = {};
-(function(tip) {
+(function(tip, $) {
 	
 	tip.display = function(event) {
 		var code = $(this).data('index')
@@ -53,15 +53,16 @@ NRDB.tip = {};
 				}, event);
 	};
 
-})(NRDB.tip);
+	$(function() {
 
-$(function() {
+		if(typeof Modernizr == 'undefined' || !Modernizr.touch ) {
+			$('body').on({
+				mouseover : tip.display,
+				focus : tip.display
+			}, 'a');
+		}
 
-	if(typeof Modernizr == 'undefined' || !Modernizr.touch ) {
-		$('body').on({
-			mouseover : NRDB.tip.display,
-			focus : NRDB.tip.display
-		}, 'a');
-	}
+	});
 
-});
+})(NRDB.tip, jQuery);
+

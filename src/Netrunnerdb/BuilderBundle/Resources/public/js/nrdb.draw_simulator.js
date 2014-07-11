@@ -1,8 +1,8 @@
 if (typeof NRDB != "object")
-	var NRDB = { data_loaded: $.Callbacks() };
+	var NRDB = { data_loaded: jQuery.Callbacks() };
 
 NRDB.draw_simulator = {};
-(function( draw_simulator ) {
+(function(draw_simulator, $) {
 	var deck = null, initial_size = 0, draw_count = 0, container = null;
 	
 	draw_simulator.reset = function() {
@@ -74,10 +74,9 @@ NRDB.draw_simulator = {};
 		$(this).css('opacity', 1.5 - parseFloat($(this).css('opacity')));
 	};
 
+	$(function () {
+		$('#table-draw-simulator').on({click: draw_simulator.handle_click}, 'a.btn');
+		$('#table-draw-simulator').on({click: draw_simulator.toggle_opacity}, 'img.card');
+	});
 	
-})(NRDB.draw_simulator);
-
-$(function () {
-	$('#table-draw-simulator').on({click: NRDB.draw_simulator.handle_click}, 'a.btn');
-	$('#table-draw-simulator').on({click: NRDB.draw_simulator.toggle_opacity}, 'img.card');
-});
+})(NRDB.draw_simulator, jQuery);

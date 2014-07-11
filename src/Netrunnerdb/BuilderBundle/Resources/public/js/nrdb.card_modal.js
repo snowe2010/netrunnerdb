@@ -1,8 +1,8 @@
 if (typeof NRDB != "object")
-	var NRDB = { data_loaded: $.Callbacks() };
+	var NRDB = { data_loaded: jQuery.Callbacks() };
 
 NRDB.card_modal = {};
-(function( card_modal ) {
+(function(card_modal, $) {
 	var modal = null;
 	
 	card_modal.create_element = function() {
@@ -61,11 +61,10 @@ NRDB.card_modal = {};
 		}
 	}
 
+
+	$(function () {
+		card_modal.create_element();
+		$('body').on({click: card_modal.display_modal}, '.card');
+	});
 	
-})(NRDB.card_modal);
-
-$(function () {
-	NRDB.card_modal.create_element();
-	$('body').on({click: NRDB.card_modal.display_modal}, '.card');
-});
-
+})(NRDB.card_modal, jQuery);

@@ -1,5 +1,5 @@
 if (typeof NRDB != "object")
-	var NRDB = { data_loaded: $.Callbacks() };
+	var NRDB = { data_loaded: jQuery.Callbacks() };
 
 function debounce(fn, delay) {
 	var timer = null;

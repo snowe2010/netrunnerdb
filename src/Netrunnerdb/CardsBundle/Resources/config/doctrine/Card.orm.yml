@@ -59,6 +59,7 @@ Netrunnerdb\CardsBundle\Entity\Card:
             type: datetime
         opinionsTs:
             type: datetime
+            nullable: true
         code:
             type: string
             length: '5'

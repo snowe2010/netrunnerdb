@@ -1,7 +1,7 @@
 if (typeof NRDB != "object")
-	var NRDB = { data_loaded: $.Callbacks() };
+	var NRDB = { data_loaded: jQuery.Callbacks() };
 NRDB.format = {};
-(function(format) {
+(function(format, $) {
 	
 	format.type = function(card) {
 		var type = '<span class="card-type">'+card.type+'</span>';
@@ -31,4 +31,4 @@ NRDB.format = {};
 		return '<p>'+text+'</p>';
 	}
 
-})(NRDB.format);
+})(NRDB.format, jQuery);
