@@ -1,16 +1,6 @@
 NRDB.data_loaded.add(function() {
 	NRDB.data.sets({code:"alt"}).remove();
 	NRDB.data.cards({set_code:"alt"}).remove();
-
-	$('#faction_filter').empty();
-	$.each(NRDB.data.cards().distinct("faction_code").sort(function (a, b) { return b === "neutral" ? -1 : a === "neutral" ? 1 : a < b ? -1 : a > b ? 1 : 0; }), function (index, record) {
-		$('#faction_filter').append('<label class="btn btn-default btn-sm" data-code="'+record+'"><input type="checkbox" name="'+record+'" value="'+record+'">'+(record == 'neutral' ? 'Neutral' : '<span class="icon icon-'+record+' '+record+'"></span>')+'</label>')
-	});
-	$('#faction_filter').button();
-	$('#faction_filter').children('label').each(function (index, elt) {
-		$(elt).button('toggle');
-	});
-	
 });
 
 $(function() {
@@ -20,9 +10,6 @@ $(function() {
 	$('#btn-group-deck').on({
 		click: do_action_deck
 	}, 'button[id],a[id]');
-	$('#faction_filter').on({
-		change: filter_decks
-	}, 'input[type=checkbox]');
 	$('#menu-sort').on({
 		change: function(event) {
 			if($(this).attr('id').match(/btn-sort-(\w+)/)) {
@@ -31,13 +18,28 @@ $(function() {
 			}
 		}
 	}, 'a');
+	
+	//
+	// tags is an object where key is tag and value is array of deck ids
+	var tag_dict = Decks.reduce(function (p, c) {
+		c.tags.forEach(function (t) {
+			if(!p[t]) p[t] = [];
+			p[t].push(c.id);
+		});
+		return p;
+	}, {});
+	var tags = [];
+	for(var tag in tag_dict) {
+		tags.push(tag);
+	}
+	tags.sort().forEach(function (tag) {
+		$('#tag_toggles').append('<a href="#" class="label label-default tag-'+tag+'">'+tag+'</a>');
+	});
+	
 });
 
 function filter_decks(event) {
 	var display = {};
-	$('#faction_filter input[type=checkbox').each(function (n, elt) {
-		display[$(elt).val()] = $(elt).prop("checked");
-	})
 	$('#decks tr').each(function (n, row) {
 		$(row)[display[$(row).data('faction')] ? "show" : "hide"]();
 	});

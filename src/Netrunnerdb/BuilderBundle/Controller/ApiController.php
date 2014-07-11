@@ -200,6 +200,7 @@ class ApiController extends Controller
         $name = filter_var($request->get('name'), FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
         $decklist_id = filter_var($request->get('decklist_id'), FILTER_SANITIZE_NUMBER_INT);
         $description = filter_var($request->get('description'), FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
+        $tags = filter_var($request->get('tags'), FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
         $content = json_decode($request->get('content'), true);
         if (! count($content)) 
         {
@@ -230,7 +231,7 @@ class ApiController extends Controller
             $slots[$arr['card_code']] = intval($arr['qty']);
         }
         
-        $deck_id = $this->get('decks')->save($this->getUser(), $deck, $decklist_id, $name, $description, $slots);
+        $deck_id = $this->get('decks')->save($this->getUser(), $deck, $decklist_id, $name, $description, $tags, $slots);
         
         if(isset($deck_id)) 
         {

@@ -140,11 +140,12 @@ var Identity = null,
 </div><!-- /#deck -->
 
 </div>
-<!-- Left-side Column -->
+<!-- / Left-side Column -->
 
+<!-- Right-side column -->
 <div class="col-md-7">
 
-<div class="row">
+<div class="row" style="margin-bottom:10px">
 <div class="col-md-12">
 	<a href="{{ path('deck_buildform', {side_text:'corp'}) }}" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-plus color-corp"></span> Corp</a>
 	<a href="{{ path('deck_buildform', {side_text:'runner'}) }}" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-plus color-runner"></span> Runner</a>
@@ -158,36 +159,35 @@ var Identity = null,
 			<li><a href="#" onclick="$('#meteorModal').modal('show')" id="btn-import-meteor">Meteor Decks</a></li>
 		</ul>
 	</div>
-    <div class="btn-group filter" data-toggle="buttons" id="faction_filter">
+</div>
 </div>
 
+<div class="row" style="margin-bottom:10px">
+<div class="col-md-12" id="tag_toggles">
 </div>
 </div>
+
 <div class="row">
-<div class="col-md-12">
-<table class="table table-hover">
-<thead>
-<tr>
-	<th>Name</th>
-	<th class="text-center">Faction</th>
-	<th class="hidden-xs">Identity</th>
-</tr>
-</thead>
-<tbody id="decks">
+<div class="col-md-12" id="decks">
+<div class="list-group">
 {% for deck in decks %}
-<tr data-id="{{ deck.id }}" data-problem="{{ deck.problem }}" data-faction="{{ deck.faction_code }}">
-	<td>{{ deck.name }}{% if deck.message %} <span class="glyphicon glyphicon-exclamation-sign text-danger" title="{{ deck.message }}"></span>{% endif %}</td>
-	<td class="text-center">{% if deck.faction_code %}<img class="faction-icon" src="{{ asset('/web/bundles/netrunnerdbbuilder/images/factions/38px/' ~ deck.faction_code ~ '.png') }}">{% endif %}</td>
-	<td class="hidden-xs">{% if deck.identity_title %}{{ deck.identity_title|replace({': ':'<br>'})|raw }}{% else %}No Identity{% endif %}</td>
-	</tr>
+<a href="#" class="list-group-item deck-list-group-item" data-id="{{ deck.id }}" data-problem="{{ deck.problem }}" data-faction="{{ deck.faction_code }}" style="background-image:url({{ asset('/web/bundles/netrunnerdbcards/images/cards/en/'~deck.identity_code~'.png') }})">
+    <h4><span style="background:white">{{ deck.name }}</span>{% if deck.message %} <span class="glyphicon glyphicon-exclamation-sign text-danger" title="{{ deck.message }}"></span>{% endif %}</h4>
+    <div>
+        {% if deck.identity_title %}{{ deck.identity_title }}{% else %}No Identity{% endif %}
+    </div><div>
+        {% for tag in deck.tags %}<span class="label label-default tag-{{ tag }}">{{ tag }}</span>{% endfor %}
+    </div>
+</a>
 {% endfor %}
-</tbody>
-</table>
-</div>
 </div>
 </div>
 </div>
 
+</div>
+<!-- / Right-side column -->
+
+</div>
 </div><!-- /.container -->
 
 {% else %}

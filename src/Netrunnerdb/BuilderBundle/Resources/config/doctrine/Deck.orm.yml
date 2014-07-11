@@ -80,4 +80,8 @@ Netrunnerdb\BuilderBundle\Entity\Deck:
             type: smallint
             column: agenda_points
             nullable: true
+        tags:
+            type: string
+            length: 4000
+            nullable: true
     lifecycleCallbacks: {  }

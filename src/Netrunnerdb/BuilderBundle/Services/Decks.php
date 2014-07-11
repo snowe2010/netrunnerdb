@@ -25,8 +25,10 @@ class Decks
 				d.name,
 				d.creation,
 				d.description,
+                d.tags,
 				d.problem,
 				c.title identity_title,
+                c.code identity_code,
 				f.code faction_code,
 				s.name side
 				from deck d
@@ -65,6 +67,7 @@ class Decks
         
         foreach ($decks as $i => $deck) {
             $decks[$i]['cards'] = $cards[$deck['id']];
+            $decks[$i]['tags'] = explode(' ', $deck['tags'] ?: '') ?: array();
             $problem = $deck['problem'];
             $decks[$i]['message'] = isset($problem) ? $this->judge->problem($problem) : '';
         }
@@ -82,8 +85,10 @@ class Decks
 				d.name,
 				d.creation,
 				d.description,
+                d.tags,
 				d.problem,
 				c.title identity_title,
+                c.code identity_code,
 				f.code faction_code,
 				s.name side
 				from deck d
@@ -117,6 +122,7 @@ class Decks
         }
         
         $deck['cards'] = $cards;
+        $deck['tags'] = explode(' ', $deck['tags'] ?: '') ?: array();
         $problem = $deck['problem'];
         $deck['message'] = isset($problem) ? $this->judge->problem($problem) : '';
         
@@ -124,7 +130,7 @@ class Decks
     }
     
 
-    public function save ($user, $deck, $decklist_id, $name, $description, $content)
+    public function save ($user, $deck, $decklist_id, $name, $description, $tags, $content)
     {
         $deck_content = array();
         
@@ -133,6 +139,7 @@ class Decks
             if ($decklist)
                 $deck->setParent($decklist);
         }
+        
         $deck->setName($name);
         $deck->setDescription($description);
         $deck->setUser($user);
@@ -177,6 +184,16 @@ class Decks
             $content[$identity->getCode()] = 1;
             $deck->setIdentity($identity);
         }
+        if(empty($tags)) { 
+            // tags can never be empty. if it is we put faction and side in
+            $faction_code = $identity->getFaction()->getCode();
+            $side_code = strtolower($identity->getSide()->getName());
+            $tags = array($faction_code, $side_code);
+        }
+        if(is_array($tags)) {
+            $tags = implode(' ', $tags);
+        }
+        $deck->setTags($tags);
         foreach ($content as $card_code => $qty) {
             $card = $cards[$card_code];
             if ($card->getSide()->getId() != $deck->getSide()->getId())

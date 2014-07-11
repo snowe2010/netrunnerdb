@@ -274,9 +274,17 @@ class BuilderController extends Controller
         }
         
         foreach ($meteor_data as $meteor_deck) {
-            
+            // add a tag for side and faction of deck
+            $identity_code = $glossary[$meteor_deck['identity']];
+            /* @var $identity \Netrunnerdb\CardsBundle\Entity\Card */
+            $identity = $em->getRepository('NetrunnerdbCardsBundle:Card')->findOneBy(array('code' => $identity_code));
+            if(!$identity) continue;
+            $faction_code = $identity->getFaction()->getCode();
+            $side_code = strtolower($identity->getSide()->getName());
+            $tags = array($faction_code, $side_code);
+
             $content = array(
-                    $glossary[$meteor_deck['identity']] => 1
+                    $identity_code => 1
             );
             foreach ($meteor_deck['entries'] as $entry => $qty) {
                 if (! isset($glossary[$entry])) {
@@ -290,7 +298,7 @@ class BuilderController extends Controller
             
             /* @var $deck Deck */
             $deck = new Deck();
-            $this->get('decks')->save($this->getUser(), $deck, null, $meteor_deck['name'], "", $content);
+            $this->get('decks')->save($this->getUser(), $deck, null, $meteor_deck['name'], "", $tags, $content);
         }
         
         $this->get('session')
@@ -446,6 +454,7 @@ class BuilderController extends Controller
         $id = filter_var($request->get('id'), FILTER_SANITIZE_NUMBER_INT);
         $decklist_id = filter_var($request->get('decklist_id'), FILTER_SANITIZE_NUMBER_INT);
         $description = filter_var($request->get('description'), FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
+        $tags = filter_var($request->get('tags'), FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
         $content = (array) json_decode($request->get('content'));
         if (! count($content))
             return new Response('Cannot import empty deck');
@@ -469,7 +478,7 @@ class BuilderController extends Controller
             $deck = new Deck();
         }
         
-        $this->get('decks')->save($this->getUser(), $deck, $decklist_id, $name, $description, $content);
+        $this->get('decks')->save($this->getUser(), $deck, $decklist_id, $name, $description, $tags, $content);
         
         return $this->redirect($this->generateUrl('decks_list'));
     

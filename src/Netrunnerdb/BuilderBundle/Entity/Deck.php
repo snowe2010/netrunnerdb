@@ -54,6 +54,11 @@ class Deck
      */
     private $agendaPoints;
 
+    /**
+     * @var string
+     */
+    private $tags;
+    
     private $message;
     
     /**
@@ -408,6 +413,29 @@ class Deck
     public function getAgendaPoints()
     {
         return $this->agendaPoints;
+    }
+
+    /**
+     * Set tags
+     *
+     * @param string $tags
+     * @return Deck
+     */
+    public function setTags($tags)
+    {
+        $this->tags = $tags;
+    
+        return $this;
+    }
+    
+    /**
+     * Get tags
+     *
+     * @return string
+     */
+    public function getTags()
+    {
+        return $this->tags;
     }
     
     /**
