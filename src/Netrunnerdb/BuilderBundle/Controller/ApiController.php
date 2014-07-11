@@ -54,7 +54,7 @@ class ApiController extends Controller
         $decklist = $rows[0];
         $decklist['id'] = intval($decklist['id']);
         
-        $lastModified = new DateTime($decklist['ts']);
+        $lastModified = new \DateTime($decklist['ts']);
         $response->setLastModified($lastModified);
         if ($response->isNotModified($this->getRequest())) {
             return $response;
