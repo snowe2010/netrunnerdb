@@ -4,12 +4,10 @@ NRDB.data_loaded.add(function() {
 });
 
 $(function() {
-	$('#decks').on({
-		click: display_deck
-	}, 'tr');
-	$('#btn-group-deck').on({
-		click: do_action_deck
-	}, 'button[id],a[id]');
+	$('#btn-group-deck').on('click', 'button[id],a[id]', do_action_deck);
+	$('#btn-group-selection').on('click', 'button[id],a[id]', do_action_selection);
+	$('#btn-group-sort').on('click', 'button[id],a[id]', do_action_sort);
+	
 	$('#menu-sort').on({
 		change: function(event) {
 			if($(this).attr('id').match(/btn-sort-(\w+)/)) {
@@ -19,29 +17,45 @@ $(function() {
 		}
 	}, 'a');
 	
-	//
-	// tags is an object where key is tag and value is array of deck ids
-	var tag_dict = Decks.reduce(function (p, c) {
-		c.tags.forEach(function (t) {
-			if(!p[t]) p[t] = [];
-			p[t].push(c.id);
-		});
-		return p;
-	}, {});
-	var tags = [];
-	for(var tag in tag_dict) {
-		tags.push(tag);
-	}
-	tags.sort().forEach(function (tag) {
-		$('#tag_toggles').append('<a href="#" class="label label-default tag-'+tag+'">'+tag+'</a>');
+	$('#tag_toggles').on('click', 'button', function (event) {
+		var button = $(this);
+		if(!event.shiftKey) {
+			$('#tag_toggles button').each(function (index, elt) {
+				if($(elt).text() != button.text()) $(elt).removeClass('active');
+			});
+		}
+		setTimeout(filter_decks, 0);
 	});
+	update_tag_toggles();
 	
+	$('#decks').on('click', 'a.deck-list-group-item', function (event) {
+		if(!event.shiftKey) {
+			$('#decks a.deck-list-group-item.selected').removeClass('selected');
+			$(this).addClass('selected');
+		} else {
+			$(this).toggleClass('selected');
+		}
+		var deck_id = $(this).data('id').toString();
+		display_deck(deck_id);
+		return false;
+	});
+	$('#decks').on('dblclick', 'a.deck-list-group-item', function (event) {
+		
+	});
 });
 
-function filter_decks(event) {
-	var display = {};
-	$('#decks tr').each(function (n, row) {
-		$(row)[display[$(row).data('faction')] ? "show" : "hide"]();
+function filter_decks() {
+	var buttons = $('#tag_toggles button.active');
+	var list_id = [];
+	buttons.each(function (index, button) {
+		list_id = list_id.concat($(button).data('deck_id').split(/\s+/));
+	});
+	list_id = list_id.filter(function (itm,i,a) { return i==a.indexOf(itm); });
+	$('#decks a.deck-list-group-item').each(function (index, elt) {
+		$(elt).removeClass('selected');
+		var id = $(elt).attr('id').replace('deck_', '');
+		if(list_id.length && list_id.indexOf(id) === -1) $(elt).hide();
+		else $(elt).show();
 	});
 }
 
@@ -60,6 +74,158 @@ function do_action_deck(event) {
 		case 'btn-export-markdown': export_markdown(); break;
 		case 'btn-export-plaintext': export_plaintext(); break;
 	}
+}
+
+function do_action_selection(event) {
+	var action_id = $(this).attr('id');
+	if(!action_id || !SelectedDeck) return;
+	switch(action_id) {
+		case 'btn-tag-add': tag_add(); break;
+		case 'btn-tag-remove-one': tag_remove(); break;
+		case 'btn-tag-remove-all': tag_clear(); break;
+		case 'btn-delete-selected': confirm_delete_all(); break;
+	}
+}
+
+function do_action_sort(event) {
+	var action_id = $(this).attr('id');
+	if(!action_id) return;
+	switch(action_id) {
+		case 'btn-sort-update': sort_list('lastupdate desc'); break;
+		case 'btn-sort-creation': sort_list('creation desc'); break;
+		case 'btn-sort-identity': sort_list('identity_title,name'); break;
+		case 'btn-sort-faction': sort_list('faction_code,name'); break;
+		case 'btn-sort-lastpack': sort_list('cycle_id desc,pack_number desc'); break;
+		case 'btn-sort-name': sort_list('name'); break;
+	}
+}
+
+function sort_list(type)
+{
+	var sorted_list_id = DeckDB().order(type).select('id');
+	var first_id = sorted_list_id.shift();
+	var deck_elt = $('#deck_'+first_id);
+	
+	var container = $('#decks');
+	container.prepend(deck_elt);
+	sorted_list_id.forEach(function (id) {
+		deck_elt = $('#deck_'+id).insertAfter(deck_elt);
+	})
+	
+}
+
+
+function update_tag_toggles()
+{
+
+	// tags is an object where key is tag and value is array of deck ids
+	var tag_dict = Decks.reduce(function (p, c) {
+		c.tags.forEach(function (t) {
+			if(!p[t]) p[t] = [];
+			p[t].push(c.id);
+		});
+		return p;
+	}, {});
+	var tags = [];
+	for(var tag in tag_dict) {
+		tags.push(tag);
+	}
+	var container = $('#tag_toggles').empty();
+	tags.sort().forEach(function (tag) {
+		$('<button type="button" class="btn btn-default btn-xs" data-toggle="button">'+tag+'</button>').data('deck_id', tag_dict[tag].join(' ')).appendTo(container);
+	});
+	
+}
+
+function set_tags(id, tags)
+{
+	var elt = $('#deck_'+id);
+	var div = elt.find('.deck-list-tags').empty();
+	tags.forEach(function (tag) {
+		div.append($('<span class="label label-default tag-'+tag+'">'+tag+'</span>'));
+	})
+	
+	for(var i=0; i<Decks.length; i++) {
+		if(Decks[i].id == id) {
+			Decks[i].tags = tags;
+			break;
+		}
+	}
+	
+	update_tag_toggles();
+}
+
+function tag_add() {
+	var ids = [];
+	$('#decks a.deck-list-group-item.selected').each(function (index, elt) { ids.push($(elt).data('id')) });
+	var tags = window.prompt("Please enter the list of tags, separated by spaces:");
+	$.ajax(Routing.generate('tag_add'), {
+		type: 'POST',
+		data: { ids: ids, tags: tags.split(/\s+/) },
+		dataType: 'json',
+		success: function(data, textStatus, jqXHR) {
+			var response = jqXHR.responseJSON;
+			if(!response.success) {
+				alert('An error occured while updating the tags.');
+				return;
+			}
+			$.each(response.tags, function (id, tags) {
+				set_tags(id, tags);
+			});
+		},
+		error: function(jqXHR, textStatus, errorThrown) {
+			alert('An error occured while updating the tags.');
+		}
+	});
+}
+
+function tag_remove() {
+	var ids = [];
+	$('#decks a.deck-list-group-item.selected').each(function (index, elt) { ids.push($(elt).data('id')) });
+	var tags = window.prompt("Please enter the list of tags you want to remove, separated by spaces:");
+	$.ajax(Routing.generate('tag_remove'), {
+		type: 'POST',
+		data: { ids: ids, tags: tags.split(/\s+/) },
+		dataType: 'json',
+		success: function(data, textStatus, jqXHR) {
+			var response = jqXHR.responseJSON;
+			if(!response.success) {
+				alert('An error occured while updating the tags.');
+				return;
+			}
+			$.each(response.tags, function (id, tags) {
+				set_tags(id, tags);
+			});
+		},
+		error: function(jqXHR, textStatus, errorThrown) {
+			alert('An error occured while updating the tags.');
+		}
+	});
+}
+
+function tag_clear() {
+	var ids = [];
+	$('#decks a.deck-list-group-item.selected').each(function (index, elt) { ids.push($(elt).data('id')) });
+	var confirm = window.confirm("This will remove all tags on the selected decks. Are you sure?");
+	if(!confirm) return;
+	$.ajax(Routing.generate('tag_clear'), {
+		type: 'POST',
+		data: { ids: ids },
+		dataType: 'json',
+		success: function(data, textStatus, jqXHR) {
+			var response = jqXHR.responseJSON;
+			if(!response.success) {
+				alert('An error occured while updating the tags.');
+				return;
+			}
+			$.each(response.tags, function (id, tags) {
+				set_tags(id, tags);
+			});
+		},
+		error: function(jqXHR, textStatus, errorThrown) {
+			alert('An error occured while updating the tags.');
+		}
+	});
 }
 
 function confirm_publish() {
@@ -92,11 +258,11 @@ function confirm_delete() {
 	$('#deleteModal').modal('show');
 }
 
-function display_deck(event) {
+function display_deck(deck_id) {
 	NRDB.draw_simulator.reset();
 	$('#no-deck-selected').hide();
 	NRDB.data.cards().update({indeck:0});
-	var deck = DeckDB({id:$(this).data('id').toString()}).first();
+	var deck = DeckDB({id:deck_id}).first();
 	SelectedDeck = deck;
 	$(this).closest('tr').siblings().removeClass('active');
 	$(this).closest('tr').addClass('active');

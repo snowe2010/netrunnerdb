@@ -8,7 +8,7 @@ use Netrunnerdb\BuilderBundle\Services\Judge;
 use Netrunnerdb\BuilderBundle\Entity\Deck;
 use Netrunnerdb\BuilderBundle\Entity\Deckslot;
 
-class Decks 
+class Decks
 {
 	public function __construct(EntityManager $doctrine, Judge $judge) {
 		$this->doctrine = $doctrine;
@@ -24,17 +24,21 @@ class Decks
 				d.id,
 				d.name,
 				d.creation,
+                d.lastupdate,
 				d.description,
                 d.tags,
 				d.problem,
 				c.title identity_title,
                 c.code identity_code,
 				f.code faction_code,
+                p.cycle_id cycle_id,
+                p.number pack_number,
 				s.name side
 				from deck d
 				left join card c on d.identity_id=c.id
 				left join faction f on c.faction_id=f.id
 				left join side s on d.side_id=s.id
+                left join pack p on d.last_pack_id=p.id
 				where d.user_id=?
 				order by lastupdate desc", array(
                         $user->getId()
@@ -67,7 +71,7 @@ class Decks
         
         foreach ($decks as $i => $deck) {
             $decks[$i]['cards'] = $cards[$deck['id']];
-            $decks[$i]['tags'] = explode(' ', $deck['tags'] ?: '') ?: array();
+            $decks[$i]['tags'] = $deck['tags'] ? explode(' ', $deck['tags']) : array();
             $problem = $deck['problem'];
             $decks[$i]['message'] = isset($problem) ? $this->judge->problem($problem) : '';
         }
@@ -122,7 +126,7 @@ class Decks
         }
         
         $deck['cards'] = $cards;
-        $deck['tags'] = explode(' ', $deck['tags'] ?: '') ?: array();
+        $deck['tags'] = $deck['tags'] ? explode(' ', $deck['tags']) : array();
         $problem = $deck['problem'];
         $deck['message'] = isset($problem) ? $this->judge->problem($problem) : '';
         
@@ -159,10 +163,10 @@ class Decks
             $pack = $card->getPack();
             if (! $latestPack) {
                 $latestPack = $pack;
-            } else 
+            } else
                 if ($latestPack->getCycle()->getNumber() < $pack->getCycle()->getNumber()) {
                     $latestPack = $pack;
-                } else 
+                } else
                     if ($latestPack->getCycle()->getNumber() == $pack->getCycle()->getNumber() && $latestPack->getNumber() < $pack->getNumber()) {
                         $latestPack = $pack;
                     }
@@ -184,11 +188,10 @@ class Decks
             $content[$identity->getCode()] = 1;
             $deck->setIdentity($identity);
         }
-        if(empty($tags)) { 
-            // tags can never be empty. if it is we put faction and side in
+        if(empty($tags)) {
+            // tags can never be empty. if it is we put faction in
             $faction_code = $identity->getFaction()->getCode();
-            $side_code = strtolower($identity->getSide()->getName());
-            $tags = array($faction_code, $side_code);
+            $tags = array($faction_code);
         }
         if(is_array($tags)) {
             $tags = implode(' ', $tags);

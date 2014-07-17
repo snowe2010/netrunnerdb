@@ -6,7 +6,7 @@
 <script type="text/javascript">
 var Identity = null,
 	SelectedDeck = null,
-	Decks = {{ decks|json_encode|raw }}, 
+	Decks = {{ decks|json_encode|raw }},
 	DeckDB = TAFFY(Decks),
 	Url_FactionImage = '{{  asset('/web/bundles/netrunnerdbbuilder/images/factions/16px/xxx.png') }}',
 	DisplaySort = 'type';
@@ -37,7 +37,7 @@ var Identity = null,
     <h1>Your decks.</h1>
     <p>Decks are private. You can have up to {{ nbmax }} decks (increased by reputation).</p>
     <p>You can <span class="fake-inline-button text-primary"><span class="glyphicon glyphicon-pencil"></span> Edit</span> and
-     <span class="fake-inline-button text-primary"><span class="glyphicon glyphicon-share"></span> Publish</span> them. When you publish, 
+     <span class="fake-inline-button text-primary"><span class="glyphicon glyphicon-share"></span> Publish</span> them. When you publish,
      the content of your deck is copied into a new public decklist that other players can comment and add to their favorites.
       It's a great way to share your ideas.<p>
     <p>You can also <span class="fake-inline-button text-primary"><span class="glyphicon glyphicon-download"></span> Download</span>
@@ -151,7 +151,7 @@ var Identity = null,
 	<a href="{{ path('deck_buildform', {side_text:'runner'}) }}" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-plus color-runner"></span> Runner</a>
 	<div class="btn-group">
 		<button type="button" class="btn btn-default dropdown-toggle btn-sm" data-toggle="dropdown">
-			<span class="glyphicon glyphicon-import"></span> Import <span class="caret"></span>
+			<span class="glyphicon glyphicon-import"></span> Import a deck<span class="caret"></span>
 		</button>
 		<ul class="dropdown-menu" role="menu">
 			<li><a href="{{ path('deck_import') }}" id="btn-import-paste">Copy/paste</a></li>
@@ -159,6 +159,31 @@ var Identity = null,
 			<li><a href="#" onclick="$('#meteorModal').modal('show')" id="btn-import-meteor">Meteor Decks</a></li>
 		</ul>
 	</div>
+	<div class="btn-group" id="btn-group-selection">
+		<button type="button" class="btn btn-default dropdown-toggle btn-sm" data-toggle="dropdown">
+			<span class="glyphicon glyphicon-tag"></span> Edit selection <span class="caret"></span>
+		</button>
+		<ul class="dropdown-menu" role="menu">
+			<li><a href="#" id="btn-tag-add">Add one or more tags</a></li>
+			<li><a href="#" id="btn-tag-remove-one">Remove one tag</a></li>
+			<li><a href="#" id="btn-tag-remove-all">Remove all tags</a></li>
+			<li><a href="#" id="btn-delete-selected"><span style="color:red" class="glyphicon glyphicon-warning-sign"></span> Delete all decks selected</a></li>
+		</ul>
+	</div>
+	<div class="btn-group" id="btn-group-sort">
+		<button type="button" class="btn btn-default dropdown-toggle btn-sm" data-toggle="dropdown">
+			<span class="glyphicon glyphicon-sort"></span> Sort list <span class="caret"></span>
+		</button>
+		<ul class="dropdown-menu" role="menu">
+			<li><a href="#" id="btn-sort-update">By date of last update</a></li>
+			<li><a href="#" id="btn-sort-creation">By date of creation</a></li>
+			<li><a href="#" id="btn-sort-faction">By faction</a></li>
+			<li><a href="#" id="btn-sort-identity">By identity</a></li>
+			<li><a href="#" id="btn-sort-lastpack">By last datapack</a></li>
+			<li><a href="#" id="btn-sort-name">By deck name</a></li>
+		</ul>
+	</div>
+	
 </div>
 </div>
 
@@ -168,14 +193,15 @@ var Identity = null,
 </div>
 
 <div class="row">
-<div class="col-md-12" id="decks">
-<div class="list-group">
+<div class="col-md-12">
+<div class="list-group" id="decks">
 {% for deck in decks %}
-<a href="#" class="list-group-item deck-list-group-item" data-id="{{ deck.id }}" data-problem="{{ deck.problem }}" data-faction="{{ deck.faction_code }}" style="background-image:url({{ asset('/web/bundles/netrunnerdbcards/images/cards/en/'~deck.identity_code~'.png') }})">
-    <h4><span style="background:white">{{ deck.name }}</span>{% if deck.message %} <span class="glyphicon glyphicon-exclamation-sign text-danger" title="{{ deck.message }}"></span>{% endif %}</h4>
+<a href="#" class="list-group-item deck-list-group-item" id="deck_{{ deck.id }}" data-id="{{ deck.id }}" data-problem="{{ deck.problem }}" data-faction="{{ deck.faction_code }}">
+    <div class="deck-list-identity-image" title="{{ deck.identity_title }}" style="background-image:url({{ asset('/web/bundles/netrunnerdbcards/images/cards/en/'~deck.identity_code~'.png') }})"></div>
+    <h4>{{ deck.name }}{% if deck.message %} <span class="glyphicon glyphicon-exclamation-sign text-danger" title="{{ deck.message }}"></span>{% endif %}</h4>
     <div>
         {% if deck.identity_title %}{{ deck.identity_title }}{% else %}No Identity{% endif %}
-    </div><div>
+    </div><div class="deck-list-tags">
         {% for tag in deck.tags %}<span class="label label-default tag-{{ tag }}">{{ tag }}</span>{% endfor %}
     </div>
 </a>
@@ -195,12 +221,12 @@ var Identity = null,
 <div class="jumbotron" id="no-deck-available">
   <div class="container">
     <h1>What, no deck?</h1>
-    <p>Decks are awesome. You can <span class="fake-inline-button text-primary"><span class="glyphicon glyphicon-pencil"></span> Edit</span> them until you're satisfied, 
+    <p>Decks are awesome. You can <span class="fake-inline-button text-primary"><span class="glyphicon glyphicon-pencil"></span> Edit</span> them until you're satisfied,
     	then <span class="fake-inline-button text-primary"><span class="glyphicon glyphicon-share"></span> Publish</span> them for others to discuss.
     	And if you want to keep to yourself, you can still <span class="fake-inline-button text-primary"><span class="glyphicon glyphicon-download"></span> Download</span> them,
-    	<span class="fake-inline-button text-primary"><span class="glyphicon glyphicon-export"></span> Export</span> them 
+    	<span class="fake-inline-button text-primary"><span class="glyphicon glyphicon-export"></span> Export</span> them
     	or even <span class="fake-inline-button text-primary"><span class="glyphicon glyphicon-envelope"></span> Email</span> them.</p>
-    <p>So what are you waiting for? To create your first deck, you can either <span class="fake-inline-button text-primary"><span class="glyphicon glyphicon-plus"></span> Build</span> one from scratch using the Deckbuilder, 
+    <p>So what are you waiting for? To create your first deck, you can either <span class="fake-inline-button text-primary"><span class="glyphicon glyphicon-plus"></span> Build</span> one from scratch using the Deckbuilder,
     	<span class="fake-inline-button text-primary"><span class="glyphicon glyphicon-import"></span> Import</span> one from the web,
     	or <span class="fake-inline-button text-primary"><span class="glyphicon glyphicon-upload"></span> Upload</span> a deck file in Octgn or simple text format.</p>
   </div>

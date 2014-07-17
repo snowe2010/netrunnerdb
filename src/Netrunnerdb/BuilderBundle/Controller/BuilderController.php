@@ -33,11 +33,11 @@ class BuilderController extends Controller
                 "title" => "ASC"
         ));
         
-        return $this->render('NetrunnerdbBuilderBundle:Builder:initbuild.html.twig', 
+        return $this->render('NetrunnerdbBuilderBundle:Builder:initbuild.html.twig',
                 array(
                         'pagetitle' => "New deck",
                         'locales' => $this->renderView('NetrunnerdbCardsBundle:Default:langs.html.twig'),
-                        "identities" => array_filter($identities, 
+                        "identities" => array_filter($identities,
                                 function  ($iden)
                                 {
                                     return $iden->getPack()
@@ -52,6 +52,7 @@ class BuilderController extends Controller
         /* @var $em \Doctrine\ORM\EntityManager */
         $em = $this->get('doctrine')->getManager();
         
+        /* @var $card Card */
         $card = $em->getRepository('NetrunnerdbCardsBundle:Card')->findOneBy(array(
                 "code" => $card_code
         ));
@@ -61,7 +62,7 @@ class BuilderController extends Controller
         $arr = array(
                 $card_code => 1
         );
-        return $this->render('NetrunnerdbBuilderBundle:Builder:deck.html.twig', 
+        return $this->render('NetrunnerdbBuilderBundle:Builder:deck.html.twig',
                 array(
                         'pagetitle' => "Deckbuilder",
                         'locales' => $this->renderView('NetrunnerdbCardsBundle:Default:langs.html.twig'),
@@ -72,6 +73,7 @@ class BuilderController extends Controller
                                 "name" => "New " . $card->getSide()
                                     ->getName() . " Deck",
                                 "description" => "",
+                                "tags" => $card->getFaction()->getCode(),
                                 "id" => ""
                         ),
                         "published_decklists" => array()
@@ -82,7 +84,7 @@ class BuilderController extends Controller
     public function importAction ()
     {
 
-        return $this->render('NetrunnerdbBuilderBundle:Builder:directimport.html.twig', 
+        return $this->render('NetrunnerdbBuilderBundle:Builder:directimport.html.twig',
                 array(
                         'pagetitle' => "Import a deck",
                         'locales' => $this->renderView('NetrunnerdbCardsBundle:Default:langs.html.twig')
@@ -117,7 +119,7 @@ class BuilderController extends Controller
         } else {
             $parse = $this->parseTextImport(file_get_contents($filename));
         }
-        return $this->forward('NetrunnerdbBuilderBundle:Builder:save', 
+        return $this->forward('NetrunnerdbBuilderBundle:Builder:save',
                 array(
                         'name' => $origname,
                         'content' => json_encode($parse['content']),
@@ -138,11 +140,11 @@ class BuilderController extends Controller
             if (preg_match('/^\s*(\d)x?([\pLl\pLu\pN\-\.\'\!\: ]+)/u', $line, $matches)) {
                 $quantity = intval($matches[1]);
                 $name = trim($matches[2]);
-            } else 
+            } else
                 if (preg_match('/^([^\(]+).*x(\d)/', $line, $matches)) {
                     $quantity = intval($matches[2]);
                     $name = trim($matches[1]);
-                } else 
+                } else
                     if (empty($identity) && preg_match('/([^\(]+):([^\(]+)/', $line, $matches)) {
                         $quantity = 1;
                         $name = trim($matches[1] . ":" . $matches[2]);
@@ -243,7 +245,7 @@ class BuilderController extends Controller
             $str = $title . " " . $pack;
             
             $str = str_replace('\'', '', $str);
-            $str = strtr(utf8_decode($str), utf8_decode('ŠŒŽšœžŸ¥µÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝßàáâãäåæçèéêëìíîïðñòóôõöøùúûüýÿō'), 
+            $str = strtr(utf8_decode($str), utf8_decode('ŠŒŽšœžŸ¥µÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝßàáâãäåæçèéêëìíîïðñòóôõöøùúûüýÿō'),
                     'SOZsozYYuAAAAAAACEEEEIIIIDNOOOOOOUUUUYsaaaaaaaceeeeiiiionoooooouuuuyyo');
             $str = strtolower($str);
             $str = preg_replace('~\W+~', '-', $str);
@@ -268,7 +270,7 @@ class BuilderController extends Controller
         if ($slots_required > $slots_left) {
             $this->get('session')
                 ->getFlashBag()
-                ->set('error', 
+                ->set('error',
                     "You don't have enough available deck slots to import the $slots_required decks from Meteor (only $slots_left slots left). You must either delete some decks here or on Meteor Decks.");
             return $this->redirect($this->generateUrl('decks_list'));
         }
@@ -424,7 +426,7 @@ class BuilderController extends Controller
     public function octgnexport ($filename, $identity, $rd, $description)
     {
 
-        $content = $this->renderView('NetrunnerdbBuilderBundle::octgn.xml.twig', 
+        $content = $this->renderView('NetrunnerdbBuilderBundle::octgn.xml.twig',
                 array(
                         "identity" => $identity,
                         "rd" => $rd,
@@ -519,6 +521,7 @@ class BuilderController extends Controller
 				d.id,
 				d.name,
 				d.description,
+                d.tags,
 				s.name side_name
 				from deck d
 				left join side s on d.side_id=s.id
@@ -559,7 +562,7 @@ class BuilderController extends Controller
                         $deck_id
                 ))->fetchAll();
         
-        return $this->render('NetrunnerdbBuilderBundle:Builder:deck.html.twig', 
+        return $this->render('NetrunnerdbBuilderBundle:Builder:deck.html.twig',
                 array(
                         'pagetitle' => "Deckbuilder",
                         'locales' => $this->renderView('NetrunnerdbCardsBundle:Default:langs.html.twig'),
@@ -625,7 +628,7 @@ class BuilderController extends Controller
 		$problem = $deck['problem'];
 		$deck['message'] = isset($problem) ? $this->get('judge')->problem($problem) : '';
 		
-        return $this->render('NetrunnerdbBuilderBundle:Builder:deckview.html.twig', 
+        return $this->render('NetrunnerdbBuilderBundle:Builder:deckview.html.twig',
                 array(
                         'pagetitle' => "Deckbuilder",
                         'locales' => $this->renderView('NetrunnerdbCardsBundle:Default:langs.html.twig'),
@@ -640,7 +643,7 @@ class BuilderController extends Controller
         /* @var $user \Netrunnerdb\UserBundle\Entity\User */
         $user = $this->getUser();
         
-        return $this->render('NetrunnerdbBuilderBundle:Builder:decks.html.twig', 
+        return $this->render('NetrunnerdbBuilderBundle:Builder:decks.html.twig',
                 array(
                         'pagetitle' => "My Decks",
                         'locales' => $this->renderView('NetrunnerdbCardsBundle:Default:langs.html.twig'),
@@ -663,7 +666,7 @@ class BuilderController extends Controller
         foreach ($decklist->getSlots() as $slot) {
             $content[$slot->getCard()->getCode()] = $slot->getQuantity();
         }
-        return $this->forward('NetrunnerdbBuilderBundle:Builder:save', 
+        return $this->forward('NetrunnerdbBuilderBundle:Builder:save',
                 array(
                         'name' => $decklist->getName(),
                         'content' => json_encode($content),

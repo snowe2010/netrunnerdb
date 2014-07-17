@@ -35,8 +35,9 @@ h1,h2,h3,h4,h5,h6{font-family:exoregular,sans-serif}
 .background-nbn-20{background-color:#ffe8cc}
 .background-weyland-consortium-20{background-color:#cce0cc}
 
-.label {margin:0 1px}
-
+#tag_toggles button {margin:0 1px 1px 0}
+.label {margin:0 1px 1px 0}
+/*
 .tag-anarch{background-color:orangered}
 .tag-criminal{background-color:royalblue}
 .tag-shaper{background-color:limegreen}
@@ -48,7 +49,7 @@ h1,h2,h3,h4,h5,h6{font-family:exoregular,sans-serif}
 
 .tag-corp{color:blue;background-color:#ddd}
 .tag-runner{color:red;background-color:#ddd}
-
+*/
 .anarch, .icon-bg.icon-anarch:before{stroke:orangered;color:orangered !important;border-color:orangered}
 .criminal, .icon-bg.icon-criminal:before{stroke:royalblue;color:royalblue !important;border-color:royalblue}
 .shaper, .icon-bg.icon-shaper:before{stroke:limegreen;color:limegreen !important;border-color:limegreen}
@@ -235,10 +236,21 @@ font-family: serif;
 	
 }
 .deck-list-group-item {
+	box-sizing: content-box;
+	min-height: 80px;
+}
+.deck-list-group-item.selected {
+	background: #eee !important;
+}
+.deck-list-group-item div.deck-list-identity-image {
+	width: 80px;
+	height: 80px;
+	border-radius: 40px;
 	background-repeat: no-repeat;
 	background-size: 100px;
-	background-position: 95% 25%;
-	background-clip: content-box;
+	background-position: 50% 25%;
+	position: absolute;
+	right: 15px;
 }
 #deck_browser {
 	margin: 10px 0;

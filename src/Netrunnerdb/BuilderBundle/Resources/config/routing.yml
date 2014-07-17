@@ -327,3 +327,19 @@ api_oauth2_publish_deck:
         _controller: NetrunnerdbBuilderBundle:Api:publish
     requirements:
         id: \d+
+
+tag_add:
+    pattern: /tag/add
+    defaults:
+        _controller: NetrunnerdbBuilderBundle:Tag:add
+
+tag_remove:
+    pattern: /tag/remove
+    defaults:
+        _controller: NetrunnerdbBuilderBundle:Tag:remove
+
+tag_clear:
+    pattern: /tag/clear
+    defaults:
+        _controller: NetrunnerdbBuilderBundle:Tag:clear
+

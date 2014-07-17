@@ -10,8 +10,8 @@
 
 var Filters = {},
 	FilterQuery = {},
-	CardDivs = [null, {}, {}, {}], 
-	Sort = "type", 
+	CardDivs = [null, {}, {}, {}],
+	Sort = "type",
 	Order = 1,
 	Identity = null,
 	InfluenceSpent = 0,
@@ -53,7 +53,7 @@ var Filters = {},
 <!-- Identity and Stats -->
 
 <!-- Deck Content -->
-<div class="row" id="deck-content" style="margin-bottom:10px">
+<div class="row" id="deck-content" style="margin-bottom:10px;min-height:300px">
 </div><!-- /#deck-content -->
 <!-- Deck Content -->
 
@@ -67,6 +67,10 @@ var Filters = {},
 					<div class="form-group">
 						<label for="name">Name</label>
 						<input type="text" class="form-control" name="name" value="{{ deck.name }}"></input>
+					</div>
+					<div class="form-group">
+						<label for="tags">Tags</label>
+						<input type="text" class="form-control" name="tags" value="{{ deck.tags }}"></input>
 					</div>
 					<div class="form-group">
 						<label for="name">Notes</label>
