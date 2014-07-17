@@ -258,6 +258,13 @@ function confirm_delete() {
 	$('#deleteModal').modal('show');
 }
 
+function confirm_delete_all() {
+	var ids = [];
+	$('#decks a.deck-list-group-item.selected').each(function (index, elt) { ids.push($(elt).data('id')) });
+	$('#delete-deck-list-id').val(ids.join('-'));
+	$('#deleteListModal').modal('show');
+}
+
 function display_deck(deck_id) {
 	NRDB.draw_simulator.reset();
 	$('#no-deck-selected').hide();

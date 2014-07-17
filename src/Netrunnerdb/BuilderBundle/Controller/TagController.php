@@ -24,6 +24,7 @@ class TagController extends Controller
             /* @var $deck Deck */
             $deck = $em->getRepository('NetrunnerdbBuilderBundle:Deck')->find($id);
             if(!$deck) continue;
+            if ($this->getUser()->getId() != $deck->getUser()->getId()) continue;
             $tags = array_values(array_filter(array_unique(array_merge(explode(' ', $deck->getTags()), $list_tag)), function ($tag) { return $tag != ""; }));
             $response['tags'][$deck->getId()] = $tags;
             $deck->setTags(implode(' ', $tags));
@@ -48,6 +49,7 @@ class TagController extends Controller
             /* @var $deck Deck */
             $deck = $em->getRepository('NetrunnerdbBuilderBundle:Deck')->find($id);
             if(!$deck) continue;
+            if ($this->getUser()->getId() != $deck->getUser()->getId()) continue;
             $tags = array_values(array_diff(explode(' ', $deck->getTags()), $list_tag));
             $response['tags'][$deck->getId()] = $tags;
             $deck->setTags(implode(' ', $tags));
@@ -71,6 +73,7 @@ class TagController extends Controller
             /* @var $deck Deck */
             $deck = $em->getRepository('NetrunnerdbBuilderBundle:Deck')->find($id);
             if(!$deck) continue;
+            if ($this->getUser()->getId() != $deck->getUser()->getId()) continue;
             $response['tags'][$deck->getId()] = array();
             $deck->setTags('');
         }

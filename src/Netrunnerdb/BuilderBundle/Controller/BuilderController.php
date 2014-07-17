@@ -92,10 +92,9 @@ class BuilderController extends Controller
     
     }
 
-    public function fileimportAction ()
+    public function fileimportAction (Request $request)
     {
 
-        $request = $this->getRequest();
         $filetype = filter_var($request->get('type'), FILTER_SANITIZE_STRING);
         $uploadedFile = $request->files->get('upfile');
         if (! isset($uploadedFile))
@@ -205,7 +204,7 @@ class BuilderController extends Controller
     
     }
 
-    public function meteorimportAction ()
+    public function meteorimportAction (Request $request)
     {
         /* @var $em \Doctrine\ORM\EntityManager */
         $em = $this->get('doctrine')->getManager();
@@ -252,7 +251,7 @@ class BuilderController extends Controller
             $glossary[$str] = $card->getCode();
         }
         
-        $url = $this->getRequest()->request->get('urlmeteor');
+        $url = $request->request->get('urlmeteor');
         if (! preg_match('~http://netrunner.meteor.com/users/([^/]+)~', $url, $matches)) {
             $this->get('session')
                 ->getFlashBag()
@@ -443,14 +442,13 @@ class BuilderController extends Controller
     
     }
 
-    public function saveAction ()
+    public function saveAction (Request $request)
     {
 
         $user = $this->getUser();
         if (count($user->getDecks()) > $user->getMaxNbDecks())
             return new Response('You have reached the maximum number of decks allowed. Delete some decks or increase your reputation.');
         
-        $request = $this->getRequest();
         $is_copy = (boolean) filter_var($request->get('copy'), FILTER_SANITIZE_NUMBER_INT);
         $name = filter_var($request->get('name'), FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
         $id = filter_var($request->get('id'), FILTER_SANITIZE_NUMBER_INT);
@@ -486,12 +484,11 @@ class BuilderController extends Controller
     
     }
 
-    public function deleteAction ()
+    public function deleteAction (Request $request)
     {
         /* @var $em \Doctrine\ORM\EntityManager */
         $em = $this->get('doctrine')->getManager();
         
-        $request = $this->getRequest();
         $deck_id = filter_var($request->get('deck_id'), FILTER_SANITIZE_NUMBER_INT);
         $deck = $em->getRepository('NetrunnerdbBuilderBundle:Deck')->find($deck_id);
         if (! $deck)
@@ -511,6 +508,34 @@ class BuilderController extends Controller
         
         return $this->redirect($this->generateUrl('decks_list'));
     
+    }
+
+    public function deleteListAction (Request $request)
+    {
+        /* @var $em \Doctrine\ORM\EntityManager */
+        $em = $this->get('doctrine')->getManager();
+        
+        $list_id = explode('-', $request->get('ids'));
+
+        foreach($list_id as $id)
+        {
+            /* @var $deck Deck */
+            $deck = $em->getRepository('NetrunnerdbBuilderBundle:Deck')->find($id);
+            if(!$deck) continue;
+            if ($this->getUser()->getId() != $deck->getUser()->getId()) continue;
+            
+            foreach ($deck->getChildren() as $decklist) {
+                $decklist->setParent(null);
+            }
+            $em->remove($deck);
+        }
+        $em->flush();
+        
+        $this->get('session')
+            ->getFlashBag()
+            ->set('notice', "Decks deleted.");
+        
+        return $this->redirect($this->generateUrl('decks_list'));
     }
 
     public function editAction ($deck_id)

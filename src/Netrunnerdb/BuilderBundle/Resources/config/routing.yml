@@ -67,6 +67,13 @@ deck_delete:
     requirements:
         _locale: en|fr|de|es|it|pl
 
+deck_delete_list:
+    pattern: /{_locale}/deck/delete_list
+    defaults:
+        _controller: NetrunnerdbBuilderBundle:Builder:deleteList
+        _locale: en
+    requirements:
+        _locale: en|fr|de|es|it|pl
 
 deck_import:
     pattern: /{_locale}/deck/import
