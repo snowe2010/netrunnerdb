@@ -101,9 +101,6 @@ function do_action_decklist(event) {
 	if (!action_id || !SelectedDeck)
 		return;
 	switch (action_id) {
-	case 'btn-copy':
-		location.href = Routing.generate('deck_copy', {decklist_id:Decklist.id});
-		break;
 	case 'btn-download-text':
 		location.href = Routing.generate('decklist_export_text', {decklist_id:Decklist.id});
 		break;

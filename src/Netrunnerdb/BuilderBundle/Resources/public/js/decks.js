@@ -78,12 +78,16 @@ function do_action_deck(event) {
 
 function do_action_selection(event) {
 	var action_id = $(this).attr('id');
-	if(!action_id || !SelectedDeck) return;
+	var ids = [];
+	$('#decks a.deck-list-group-item.selected').each(function (index, elt) { ids.push($(elt).data('id')) });
+	if(!action_id || !ids.length) return;
 	switch(action_id) {
-		case 'btn-tag-add': tag_add(); break;
-		case 'btn-tag-remove-one': tag_remove(); break;
-		case 'btn-tag-remove-all': tag_clear(); break;
-		case 'btn-delete-selected': confirm_delete_all(); break;
+		case 'btn-tag-add': tag_add(ids); break;
+		case 'btn-tag-remove-one': tag_remove(ids); break;
+		case 'btn-tag-remove-all': tag_clear(ids); break;
+		case 'btn-delete-selected': confirm_delete_all(ids); break;
+		case 'btn-download-text': download_text_selection(ids); break;
+		case 'btn-download-octgn': download_octgn_selection(ids); break;
 	}
 }
 
@@ -98,6 +102,16 @@ function do_action_sort(event) {
 		case 'btn-sort-lastpack': sort_list('cycle_id desc,pack_number desc'); break;
 		case 'btn-sort-name': sort_list('name'); break;
 	}
+}
+
+function download_text_selection(ids) 
+{
+	window.location = Routing.generate('deck_export_text_list', { ids: ids });
+}
+
+function download_octgn_selection(ids)
+{
+	window.location = Routing.generate('deck_export_octgn_list', { ids: ids });
 }
 
 function sort_list(type)
@@ -155,9 +169,7 @@ function set_tags(id, tags)
 	update_tag_toggles();
 }
 
-function tag_add() {
-	var ids = [];
-	$('#decks a.deck-list-group-item.selected').each(function (index, elt) { ids.push($(elt).data('id')) });
+function tag_add(ids) {
 	var tags = window.prompt("Please enter the list of tags, separated by spaces:");
 	$.ajax(Routing.generate('tag_add'), {
 		type: 'POST',
@@ -179,9 +191,7 @@ function tag_add() {
 	});
 }
 
-function tag_remove() {
-	var ids = [];
-	$('#decks a.deck-list-group-item.selected').each(function (index, elt) { ids.push($(elt).data('id')) });
+function tag_remove(ids) {
 	var tags = window.prompt("Please enter the list of tags you want to remove, separated by spaces:");
 	$.ajax(Routing.generate('tag_remove'), {
 		type: 'POST',
@@ -203,9 +213,7 @@ function tag_remove() {
 	});
 }
 
-function tag_clear() {
-	var ids = [];
-	$('#decks a.deck-list-group-item.selected').each(function (index, elt) { ids.push($(elt).data('id')) });
+function tag_clear(ids) {
 	var confirm = window.confirm("This will remove all tags on the selected decks. Are you sure?");
 	if(!confirm) return;
 	$.ajax(Routing.generate('tag_clear'), {
@@ -258,9 +266,7 @@ function confirm_delete() {
 	$('#deleteModal').modal('show');
 }
 
-function confirm_delete_all() {
-	var ids = [];
-	$('#decks a.deck-list-group-item.selected').each(function (index, elt) { ids.push($(elt).data('id')) });
+function confirm_delete_all(ids) {
 	$('#delete-deck-list-id').val(ids.join('-'));
 	$('#deleteListModal').modal('show');
 }
@@ -284,4 +290,5 @@ function display_deck(deck_id) {
 	$('#deck-description').html(converter.makeHtml(deck.description));
 	update_deck();
 	$('#btn-publish').prop('disabled', !!$(this).closest('tr').data('problem'));
+	location.href = "#top";
 }

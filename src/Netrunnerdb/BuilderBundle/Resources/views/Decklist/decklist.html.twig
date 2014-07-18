@@ -73,7 +73,9 @@ var Identity = null,
 	<div class="col-sm-9">
 		<h3 id="identity"></h3>
 		<div id="btn-group-decklist">
-			<button type="button" id="btn-copy" class="btn btn-default  btn-xs"><span class="glyphicon glyphicon-save"></span> Copy</button>
+		    <form action="{{ path('deck_copy', {decklist_id:decklist.id}) }}" method="POST" style="display:inline">
+			     <button type="submit" id="btn-copy" class="btn btn-default  btn-xs"><span class="glyphicon glyphicon-save"></span> Copy</button>
+			</form>
 			<div class="btn-group">
 				<button type="button" class="btn btn-default dropdown-toggle btn-xs" data-toggle="dropdown">
 					<span class="glyphicon glyphicon-download"></span> Download <span class="caret"></span>
@@ -209,7 +211,7 @@ var Identity = null,
     <a href="{{ path('user_profile_view', {user_id:decklist.user_id,user_name:decklist.username|e('url')}) }}" class="{{ decklist.usercolor }}">{{ decklist.username }}</a>
     {% if decklist.donation > 0 %}<span class="glyphicon glyphicon-gift donator" title="NetrunnerDB Gracious Donator"></span>{% endif %}
     <small title="User Reputation">{{ decklist.reputation }}</small>
-</h3>  
+</h3>
 <div id="deck-description">{{ decklist.description|raw }}</div>
 
 <table class="table">
@@ -228,7 +230,7 @@ var Identity = null,
 {% endfor %}
 </tbody>
 </table>
-{% if app.user %} 
+{% if app.user %}
 <a name="comment-form"></a>
 <form method="POST" action="{{ path('decklist_comment') }}">
 	<input type="hidden" name="id" value="{{ decklist.id }}">
@@ -236,7 +238,7 @@ var Identity = null,
 		<textarea id="comment-form-text" class="form-control" rows="4" name="comment" placeholder="Enter your comment in Markdown format. Type # to enter a card name. Type @ to enter a user name."></textarea>
 	</div>
 	<div class="well text-muted" id="comment-form-preview"><small>Preview. Look <a href="http://daringfireball.net/projects/markdown/dingus">here</a> for a Markdown syntax reference.</small></div>
-	<button type="submit" class="btn btn-success">Submit comment</button> 
+	<button type="submit" class="btn btn-success">Submit comment</button>
 	</form>
 {% else %}
 <p>You must be logged in to post comments.</p>

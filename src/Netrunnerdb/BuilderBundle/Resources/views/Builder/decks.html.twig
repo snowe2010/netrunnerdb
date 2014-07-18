@@ -161,12 +161,14 @@ var Identity = null,
 	</div>
 	<div class="btn-group" id="btn-group-selection">
 		<button type="button" class="btn btn-default dropdown-toggle btn-sm" data-toggle="dropdown">
-			<span class="glyphicon glyphicon-tag"></span> Edit selection <span class="caret"></span>
+			<span class="glyphicon glyphicon-briefcase"></span> With selection <span class="caret"></span>
 		</button>
 		<ul class="dropdown-menu" role="menu">
-			<li><a href="#" id="btn-tag-add">Add one or more tags</a></li>
+		    <li class="dropdown-header"><span class="glyphicon glyphicon-tag"></span> Tags</li>
+		    <li><a href="#" id="btn-tag-add">Add one or more tags</a></li>
 			<li><a href="#" id="btn-tag-remove-one">Remove one tag</a></li>
 			<li><a href="#" id="btn-tag-remove-all">Remove all tags</a></li>
+			<li class="dropdown-header"><span class="glyphicon glyphicon-trash"></span> Delete</li>
 			<li><a href="#" id="btn-delete-selected"><span style="color:red" class="glyphicon glyphicon-warning-sign"></span> Delete all decks selected</a></li>
 		</ul>
 	</div>

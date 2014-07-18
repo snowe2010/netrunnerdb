@@ -183,7 +183,7 @@ class ApiController extends Controller
         return $response;
     }
  
-    public function saveDeckAction($id)
+    public function saveDeckAction($deck_id)
     {
         $response = new Response();
         $response->setPrivate();
@@ -202,7 +202,7 @@ class ApiController extends Controller
         $description = filter_var($request->get('description'), FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
         $tags = filter_var($request->get('tags'), FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
         $content = json_decode($request->get('content'), true);
-        if (! count($content)) 
+        if (! count($content))
         {
             $response->setContent(json_encode(array('success' => false, 'message' => 'Cannot import empty deck')));
             return $response;
@@ -210,9 +210,9 @@ class ApiController extends Controller
         
         $em = $this->getDoctrine()->getManager();
         
-        if ($id) {
-            $deck = $em->getRepository('NetrunnerdbBuilderBundle:Deck')->find($id);
-            if ($user->getId() != $deck->getUser()->getId()) 
+        if ($deck_id) {
+            $deck = $em->getRepository('NetrunnerdbBuilderBundle:Deck')->find($deck_id);
+            if ($user->getId() != $deck->getUser()->getId())
             {
                 $response->setContent(json_encode(array('success' => false, 'message' => 'Wrong user')));
                 return $response;
@@ -233,12 +233,12 @@ class ApiController extends Controller
         
         $deck_id = $this->get('decks')->save($this->getUser(), $deck, $decklist_id, $name, $description, $tags, $slots);
         
-        if(isset($deck_id)) 
+        if(isset($deck_id))
         {
             $response->setContent(json_encode(array('success' => true, 'message' => $this->get('decks')->getById($deck_id))));
             return $response;
         }
-        else 
+        else
         {
             $response->setContent(json_encode(array('success' => false, 'message' => 'Unknown error')));
             return $response;

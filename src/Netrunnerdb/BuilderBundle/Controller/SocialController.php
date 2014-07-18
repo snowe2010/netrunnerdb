@@ -126,7 +126,7 @@ class SocialController extends Controller
         }
         if (count($deck->getChildren())) {
             $decklist->setPrecedent($deck->getChildren()[0]);
-        } else 
+        } else
             if ($deck->getParent()) {
                 $decklist->setPrecedent($deck->getParent());
             }
@@ -175,7 +175,7 @@ class SocialController extends Controller
 					join user u on d.user_id=u.id
 					join card c on d.identity_id=c.id
 					join favorite f on f.decklist_id=d.id
-					where f.user_id=? 
+					where f.user_id=?
 					order by creation desc
 					limit $start, $limit", array(
                         $this->getUser()
@@ -221,7 +221,7 @@ class SocialController extends Controller
 					from decklist d
 					join user u on d.user_id=u.id
 					join card c on d.identity_id=c.id
-					where d.user_id=? 
+					where d.user_id=?
 					order by creation desc
 					limit $start, $limit", array(
                         $user_id
@@ -265,7 +265,7 @@ class SocialController extends Controller
 					from decklist d
 					join user u on d.user_id=u.id
 					join card c on d.identity_id=c.id
-				    where d.creation > DATE_SUB(CURRENT_DATE, INTERVAL 1 MONTH) 
+				    where d.creation > DATE_SUB(CURRENT_DATE, INTERVAL 1 MONTH)
 				    order by 2*nbvotes/(1+nbjours*nbjours) DESC, nbvotes desc, nbcomments desc
 					limit $start, $limit")->fetchAll(\PDO::FETCH_ASSOC);
         
@@ -306,7 +306,7 @@ class SocialController extends Controller
 				from decklist d
 				join user u on d.user_id=u.id
 				join card c on d.identity_id=c.id
-				where nbvotes > 10 
+				where nbvotes > 10
 		        order by nbvotes desc, creation desc
 				limit $start, $limit")->fetchAll(\PDO::FETCH_ASSOC);
         
@@ -706,7 +706,7 @@ class SocialController extends Controller
             );
         }
         
-        return $this->render('NetrunnerdbBuilderBundle:Decklist:decklists.html.twig', 
+        return $this->render('NetrunnerdbBuilderBundle:Decklist:decklists.html.twig',
                 array(
                         'pagetitle' => $pagetitle,
                         'locales' => $this->renderView('NetrunnerdbCardsBundle:Default:langs.html.twig'),
@@ -873,7 +873,7 @@ class SocialController extends Controller
                         $decklist_id
                 ))->fetchAll();
         
-        return $this->render('NetrunnerdbBuilderBundle:Decklist:decklist.html.twig', 
+        return $this->render('NetrunnerdbBuilderBundle:Decklist:decklist.html.twig',
                 array(
                         'pagetitle' => $decklist['name'],
                         'locales' => $this->renderView('NetrunnerdbCardsBundle:Default:langs.html.twig'),
@@ -962,7 +962,7 @@ class SocialController extends Controller
         $comment_text = trim(filter_var($request->get('comment'), FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES));
         if ($decklist && ! empty($comment_text)) {
             $comment_text = preg_replace(
-                    '%(?<!\()\b(?:(?:https?|ftp)://)(?:((?:(?:[a-z\d\x{00a1}-\x{ffff}]+-?)*[a-z\d\x{00a1}-\x{ffff}]+)(?:\.(?:[a-z\d\x{00a1}-\x{ffff}]+-?)*[a-z\d\x{00a1}-\x{ffff}]+)*(?:\.[a-z\x{00a1}-\x{ffff}]{2,6}))(?::\d+)?)(?:[^\s]*)?%iu', 
+                    '%(?<!\()\b(?:(?:https?|ftp)://)(?:((?:(?:[a-z\d\x{00a1}-\x{ffff}]+-?)*[a-z\d\x{00a1}-\x{ffff}]+)(?:\.(?:[a-z\d\x{00a1}-\x{ffff}]+-?)*[a-z\d\x{00a1}-\x{ffff}]+)*(?:\.[a-z\x{00a1}-\x{ffff}]{2,6}))(?::\d+)?)(?:[^\s]*)?%iu',
                     '[$1]($0)', $comment_text);
             
             $mentionned_usernames = array();
@@ -1022,7 +1022,7 @@ class SocialController extends Controller
                 'decklist_name' => $decklist->getName(),
                 'url' => $this->generateUrl('decklist_detail', array('decklist_id' => $decklist->getId(), 'decklist_name' => $decklist->getPrettyname()), TRUE) . '#' . $comment->getId(),
                 'comment' => $comment_html,
-                'profile' => $this->generateUrl('user_profile', TRUE)
+                'profile' => $this->generateUrl('user_profile', array(), TRUE)
             );
             foreach($spool as $email => $view) {
                 $message = \Swift_Message::newInstance()
@@ -1092,29 +1092,29 @@ class SocialController extends Controller
         $dbh = $this->get('doctrine')->getConnection();
         
         $list = $dbh->executeQuery(
-                "SELECT 
-    			l.id, 
+                "SELECT
+    			l.id,
     			(
-    				SELECT COUNT(s.id) 
-    				FROM decklistslot s 
+    				SELECT COUNT(s.id)
+    				FROM decklistslot s
     				WHERE (
-    					s.decklist_id=l.id 
+    					s.decklist_id=l.id
     					AND s.card_id NOT IN (
-    						SELECT t.card_id 
+    						SELECT t.card_id
     						FROM decklistslot t
     						WHERE t.decklist_id=?
     					)
     				)
     				OR
     				(
-    					s.decklist_id=? 
+    					s.decklist_id=?
     					AND s.card_id NOT IN (
-    						SELECT t.card_id 
+    						SELECT t.card_id
     						FROM decklistslot t
     						WHERE t.decklist_id=l.id
     					)
 			    	)
-    			) difference 
+    			) difference
      			FROM decklist l
     			WHERE l.id!=?
     			ORDER BY difference ASC
@@ -1307,7 +1307,7 @@ class SocialController extends Controller
             $decklist = json_decode($rows[0]['decklist']);
         }
         
-        return $this->render('NetrunnerdbBuilderBundle:Default:index.html.twig', 
+        return $this->render('NetrunnerdbBuilderBundle:Default:index.html.twig',
                 array(
                         'pagetitle' => "Android:Netrunner Cards and Deckbuilder",
                         'locales' => $this->renderView('NetrunnerdbCardsBundle:Default:langs.html.twig'),
@@ -1467,7 +1467,7 @@ class SocialController extends Controller
             );
         }
         
-        return $this->render('NetrunnerdbBuilderBundle:Default:profile.html.twig', 
+        return $this->render('NetrunnerdbBuilderBundle:Default:profile.html.twig',
                 array(
                         'pagetitle' => $user->getUsername(),
                         'user' => $user,
@@ -1549,7 +1549,7 @@ class SocialController extends Controller
             );
         }
         
-        return $this->render('NetrunnerdbBuilderBundle:Default:usercomments.html.twig', 
+        return $this->render('NetrunnerdbBuilderBundle:Default:usercomments.html.twig',
                 array(
                         'user' => $user,
                         'locales' => $this->renderView('NetrunnerdbCardsBundle:Default:langs.html.twig'),
@@ -1620,7 +1620,7 @@ class SocialController extends Controller
             );
         }
         
-        return $this->render('NetrunnerdbBuilderBundle:Default:allcomments.html.twig', 
+        return $this->render('NetrunnerdbBuilderBundle:Default:allcomments.html.twig',
                 array(
                         'locales' => $this->renderView('NetrunnerdbCardsBundle:Default:langs.html.twig'),
                         'comments' => $comments,
@@ -1663,7 +1663,7 @@ class SocialController extends Controller
 				order by p.released desc")
             ->fetchAll();
         
-        return $this->render('NetrunnerdbBuilderBundle:Search:form.html.twig', 
+        return $this->render('NetrunnerdbBuilderBundle:Search:form.html.twig',
                 array(
                         'pagetitle' => 'Decklist Search',
                         'url' => $this->getRequest()
@@ -1742,7 +1742,7 @@ class SocialController extends Controller
         
         $users = $dbh->executeQuery("SELECT * FROM user WHERE donation>0 ORDER BY donation DESC, username", array())->fetchAll(\PDO::FETCH_ASSOC);
         
-        return $this->render('NetrunnerdbBuilderBundle:Default:donators.html.twig', 
+        return $this->render('NetrunnerdbBuilderBundle:Default:donators.html.twig',
                 array(
                         'pagetitle' => 'The Gracious Donators',
                         'donators' => $users
