@@ -176,7 +176,7 @@ function tag_add(ids) {
 }
 function tag_add_process(event) {
     event.preventDefault();
-    var ids = $('#tag_add_ids').val().split(/\s+/);
+    var ids = $('#tag_add_ids').val().split(/,/);
     var tags = $('#tag_add_tags').val().split(/\s+/);
     if(!ids.length || !tags.length) return;
 	$.ajax(Routing.generate('tag_add'), {
@@ -206,7 +206,7 @@ function tag_remove(ids) {
 }
 function tag_remove_process(event) {
     event.preventDefault();
-    var ids = $('#tag_remove_ids').val().split(/\s+/);
+    var ids = $('#tag_remove_ids').val().split(/,/);
     var tags = $('#tag_remove_tags').val().split(/\s+/);
     if(!ids.length || !tags.length) return;
 	$.ajax(Routing.generate('tag_remove'), {
@@ -235,7 +235,7 @@ function tag_clear(ids) {
 }
 function tag_clear_process(event) {
     event.preventDefault();
-    var ids = $('#tag_clear_ids').val().split(/\s+/);
+    var ids = $('#tag_clear_ids').val().split(/,/);
     if(!ids.length) return;
 	$.ajax(Routing.generate('tag_clear'), {
 		type: 'POST',
