@@ -808,8 +808,8 @@ function display_notification()
 {
 	if(!localStorage) return;
 	var Notification = {
-		version: '1.6.4',
-		message: "<strong>New!</strong> \"View\" your decks in full page mode, with display options.</strong>"
+		version: '1.7.0',
+		message: "<strong>New!</strong> Tag and sort your decks.</strong>"
 	};
 	var localStorageNotification = localStorage.getItem('notification');
 	if(localStorageNotification === Notification.version) return;

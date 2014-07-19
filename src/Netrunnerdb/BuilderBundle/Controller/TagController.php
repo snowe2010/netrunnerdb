@@ -11,7 +11,10 @@ class TagController extends Controller
     public function addAction(Request $request)
     {
         $list_id = $request->get('ids');
+        if(!is_array($list_id)) $list_id = explode(' ', $list_id);
         $list_tag = $request->get('tags');
+        if(!is_array($list_tag)) $list_tag = explode(' ', $list_tag);
+        
         $list_tag = array_map(function ($tag) { return preg_replace('/[^a-zA-Z0-9-]/', '', $tag); }, $list_tag);
         
         /* @var $em \Doctrine\ORM\EntityManager */

@@ -170,10 +170,18 @@ function set_tags(id, tags)
 }
 
 function tag_add(ids) {
-	var tags = window.prompt("Please enter the list of tags, separated by spaces:");
+    $('#tag_add_ids').val(ids);
+	$('#tagAddModal').modal('show');
+    setTimeout(function() { $('#tag_add_tags').focus() }, 500);
+}
+function tag_add_process(event) {
+    event.preventDefault();
+    var ids = $('#tag_add_ids').val().split(/\s+/);
+    var tags = $('#tag_add_tags').val().split(/\s+/);
+    if(!ids.length || !tags.length) return;
 	$.ajax(Routing.generate('tag_add'), {
 		type: 'POST',
-		data: { ids: ids, tags: tags.split(/\s+/) },
+		data: { ids: ids, tags: tags },
 		dataType: 'json',
 		success: function(data, textStatus, jqXHR) {
 			var response = jqXHR.responseJSON;
@@ -192,10 +200,18 @@ function tag_add(ids) {
 }
 
 function tag_remove(ids) {
-	var tags = window.prompt("Please enter the list of tags you want to remove, separated by spaces:");
+    $('#tag_remove_ids').val(ids);
+	$('#tagRemoveModal').modal('show');
+    setTimeout(function() { $('#tag_remove_tags').focus() }, 500);
+}
+function tag_remove_process(event) {
+    event.preventDefault();
+    var ids = $('#tag_remove_ids').val().split(/\s+/);
+    var tags = $('#tag_remove_tags').val().split(/\s+/);
+    if(!ids.length || !tags.length) return;
 	$.ajax(Routing.generate('tag_remove'), {
 		type: 'POST',
-		data: { ids: ids, tags: tags.split(/\s+/) },
+		data: { ids: ids, tags: tags },
 		dataType: 'json',
 		success: function(data, textStatus, jqXHR) {
 			var response = jqXHR.responseJSON;
@@ -214,8 +230,13 @@ function tag_remove(ids) {
 }
 
 function tag_clear(ids) {
-	var confirm = window.confirm("This will remove all tags on the selected decks. Are you sure?");
-	if(!confirm) return;
+    $('#tag_clear_ids').val(ids);
+	$('#tagClearModal').modal('show');
+}
+function tag_clear_process(event) {
+    event.preventDefault();
+    var ids = $('#tag_clear_ids').val().split(/\s+/);
+    if(!ids.length) return;
 	$.ajax(Routing.generate('tag_clear'), {
 		type: 'POST',
 		data: { ids: ids },

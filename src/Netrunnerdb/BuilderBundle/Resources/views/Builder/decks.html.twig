@@ -167,7 +167,7 @@ var Identity = null,
 		    <li class="dropdown-header"><span class="glyphicon glyphicon-tag"></span> Tags</li>
 		    <li><a href="#" id="btn-tag-add">Add one or more tags</a></li>
 			<li><a href="#" id="btn-tag-remove-one">Remove one tag</a></li>
-			<li><a href="#" id="btn-tag-remove-all">Remove all tags</a></li>
+			<li><a href="#" id="btn-tag-remove-all">Clear all tags</a></li>
 			<li class="dropdown-header"><span class="glyphicon glyphicon-trash"></span> Delete</li>
 			<li><a href="#" id="btn-delete-selected"><span style="color:red" class="glyphicon glyphicon-warning-sign"></span> Delete all decks selected</a></li>
 		</ul>
@@ -190,7 +190,7 @@ var Identity = null,
 </div>
 
 <div class="row" style="margin-bottom:10px">
-<div class="col-md-12" id="tag_toggles">
+<div class="col-md-12" id="tag_toggles" title="Click to switch to this tag. Shift-click to toggle this tag.">
 </div>
 </div>
 
@@ -457,6 +457,95 @@ var Identity = null,
 								<button type="submit" class="btn btn-success">Import</button>
 								<button type="button" class="btn btn-default" onclick="$('#meteorModal').modal('hide')">Cancel</button>
 							</div>
+						</form>
+					</div><!-- /#modal-info -->
+				</div><!-- /.row -->
+			</div><!-- /.modal-body -->
+		</div><!-- /.modal-content -->
+	</div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+<!-- Modal -->
+
+<!-- Modal -->
+<div class="modal fade" id="tagAddModal" tabindex="-1" role="dialog" aria-labelledby="tagAddModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				<h3 class="modal-title">Add one or more tags</h3>
+			</div>
+			<div class="modal-body">
+				<div class="row">
+					<div class="col-md-12">
+						<form>
+						<div class="form-group">
+							<label for="tags">Please enter the list of tags, separated by spaces</label>
+							<input class="form-control" type="text" name="tags" id="tag_add_tags" placeholder="a-tag another">
+						</div>
+						<div class="pull-right">
+							<input type="hidden" name="ids" id="tag_add_ids">
+							<button type="submit" class="btn btn-success" onclick="$('#tagAddModal').modal('hide');tag_add_process(event)">Add</button>
+							<button type="button" class="btn btn-default" onclick="$('#tagAddModal').modal('hide')">Cancel</button>
+						</div>
+						</form>
+					</div><!-- /#modal-info -->
+				</div><!-- /.row -->
+			</div><!-- /.modal-body -->
+		</div><!-- /.modal-content -->
+	</div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+<!-- Modal -->
+
+<!-- Modal -->
+<div class="modal fade" id="tagRemoveModal" tabindex="-1" role="dialog" aria-labelledby="tagRemoveModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				<h3 class="modal-title">Delete one or more tags</h3>
+			</div>
+			<div class="modal-body">
+				<div class="row">
+					<div class="col-md-12">
+						<form>
+						<div class="form-group">
+							<label for="tags">Please enter the list of tags you want to remove, separated by spaces</label>
+							<input class="form-control" type="text" name="tags" id="tag_remove_tags" placeholder="a-tag another">
+						</div>
+						<div class="pull-right">
+							<input type="hidden" name="ids" id="tag_remove_ids">
+							<button type="submit" class="btn btn-success" onclick="$('#tagRemoveModal').modal('hide');tag_remove_process(event)">Remove</button>
+							<button type="button" class="btn btn-default" onclick="$('#tagRemoveModal').modal('hide')">Cancel</button>
+						</div>
+						</form>
+					</div><!-- /#modal-info -->
+				</div><!-- /.row -->
+			</div><!-- /.modal-body -->
+		</div><!-- /.modal-content -->
+	</div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+<!-- Modal -->
+
+<!-- Modal -->
+<div class="modal fade" id="tagClearModal" tabindex="-1" role="dialog" aria-labelledby="tagClearModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				<h3 class="modal-title">Clear all tags</h3>
+			</div>
+			<div class="modal-body">
+				<div class="row">
+					<div class="col-md-12">
+						<form>
+						<div class="form-group">
+							<label for="tags">Are you sure you want to clear all tags from the selected decks?</label>
+						</div>
+						<div class="pull-right">
+							<input type="hidden" name="ids" id="tag_clear_ids">
+							<button type="submit" class="btn btn-success" onclick="$('#tagClearModal').modal('hide');tag_clear_process(event)">Yes, clear</button>
+							<button type="button" class="btn btn-default" onclick="$('#tagClearModal').modal('hide')">Cancel</button>
+						</div>
 						</form>
 					</div><!-- /#modal-info -->
 				</div><!-- /.row -->
