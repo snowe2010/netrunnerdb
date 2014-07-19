@@ -36,7 +36,7 @@ $(function() {
 			$(this).toggleClass('selected');
 		}
 		var deck_id = $(this).data('id').toString();
-		display_deck(deck_id);
+		display_deck(deck_id, !event.shiftKey);
 		return false;
 	});
 	$('#decks').on('dblclick', 'a.deck-list-group-item', function (event) {
@@ -292,7 +292,7 @@ function confirm_delete_all(ids) {
 	$('#deleteListModal').modal('show');
 }
 
-function display_deck(deck_id) {
+function display_deck(deck_id, backTop) {
 	NRDB.draw_simulator.reset();
 	$('#no-deck-selected').hide();
 	NRDB.data.cards().update({indeck:0});
@@ -311,5 +311,5 @@ function display_deck(deck_id) {
 	$('#deck-description').html(converter.makeHtml(deck.description));
 	update_deck();
 	$('#btn-publish').prop('disabled', !!$(this).closest('tr').data('problem'));
-	location.href = "#top";
+	if(backTop) location.href = "#top";
 }
