@@ -809,7 +809,7 @@ function display_notification()
 	if(!localStorage) return;
 	var Notification = {
 		version: '1.7.0',
-		message: "<strong>New!</strong> Tag and sort your decks.</strong>"
+		message: "<strong>New!</strong> Tag and sort your decks. Shift-click to select more than one and do bulk operations.</strong>"
 	};
 	var localStorageNotification = localStorage.getItem('notification');
 	if(localStorageNotification === Notification.version) return;
