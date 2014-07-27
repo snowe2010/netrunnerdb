@@ -95,11 +95,11 @@ function do_action_sort(event) {
 	var action_id = $(this).attr('id');
 	if(!action_id) return;
 	switch(action_id) {
-		case 'btn-sort-update': sort_list('lastupdate desc'); break;
-		case 'btn-sort-creation': sort_list('creation desc'); break;
+		case 'btn-sort-update': sort_list('lastupdate'); break;
+		case 'btn-sort-creation': sort_list('creation'); break;
 		case 'btn-sort-identity': sort_list('identity_title,name'); break;
 		case 'btn-sort-faction': sort_list('faction_code,name'); break;
-		case 'btn-sort-lastpack': sort_list('cycle_id desc,pack_number desc'); break;
+		case 'btn-sort-lastpack': sort_list('cycle_id,pack_number'); break;
 		case 'btn-sort-name': sort_list('name'); break;
 	}
 }
@@ -116,11 +116,20 @@ function download_octgn_selection(ids)
 
 function sort_list(type)
 {
-	var sorted_list_id = DeckDB().order(type).select('id');
+	var container = $('#decks');
+    var current_sort = container.data('sort-type');
+    var current_order = container.data('sort-order');
+    var order = current_order || 1;
+    if(current_sort && current_sort == type) {
+        order = -order;
+    }
+    container.data('sort-type', type);
+    container.data('sort-order', order);
+    var sort = type.split(/,/).map(function (t) { return t+' '+(order > 0 ? 'desc' : 'asec') }).join(',');
+	var sorted_list_id = DeckDB().order(sort).select('id');
 	var first_id = sorted_list_id.shift();
 	var deck_elt = $('#deck_'+first_id);
 	
-	var container = $('#decks');
 	container.prepend(deck_elt);
 	sorted_list_id.forEach(function (id) {
 		deck_elt = $('#deck_'+id).insertAfter(deck_elt);

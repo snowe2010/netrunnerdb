@@ -196,7 +196,7 @@ var Identity = null,
 
 <div class="row">
 <div class="col-md-12">
-<div class="list-group" id="decks">
+<div class="list-group" id="decks" data-sort-type="lastupdate" data-sort-order="1">
 {% for deck in decks %}
 <a href="#" class="list-group-item deck-list-group-item" id="deck_{{ deck.id }}" data-id="{{ deck.id }}" data-problem="{{ deck.problem }}" data-faction="{{ deck.faction_code }}">
     <div class="deck-list-identity-image" title="{{ deck.identity_title }}" style="background-image:url({{ asset('/web/bundles/netrunnerdbcards/images/cards/en/'~deck.identity_code~'.png') }})"></div>
