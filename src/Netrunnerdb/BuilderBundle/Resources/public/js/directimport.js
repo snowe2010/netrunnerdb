@@ -29,6 +29,7 @@ function do_import() {
 }
 function import_one_line(line, lineNumber) {
     var result = NRDB.fuzzy_search.lookup(line);
+    if(!result) return;
 	var options = result.cards, qty = result.qty;
 	var qty_text = "", qty_int = qty;
 	if(qty == null) {
