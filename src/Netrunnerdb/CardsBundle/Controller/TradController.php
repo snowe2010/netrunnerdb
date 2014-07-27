@@ -31,7 +31,7 @@ class TradController extends Controller
         foreach($objWorksheet ->getRowIterator() as $row)
         {
             // dismiss first row (titles)
-            if($firstRow) 
+            if($firstRow)
             {
                 $firstRow = false;
                 continue;
@@ -48,6 +48,7 @@ class TradController extends Controller
                 	case 'E': $card['title'] = $cell->getValue(); break;
                 	case 'H': $card['keywords'] = $cell->getValue(); break;
                 	case 'I': $card['text'] = str_replace("\n", "\r\n", $cell->getValue()); break;
+                	case 'U': $card['illustrator'] = $cell->getValue(); break;
                 	case 'V': $card['flavor'] = $cell->getValue(); break;
                 }
                 
@@ -70,11 +71,13 @@ class TradController extends Controller
             $cards[$i]['oldtitle'] = $dbcard->getTitle($locale, true);
             $cards[$i]['oldkeywords'] = $dbcard->getKeywords($locale, true);
             $cards[$i]['oldtext'] = $dbcard->getText($locale, true);
+            $cards[$i]['oldillustrator'] = $dbcard->getIllustrator();
             $cards[$i]['oldflavor'] = $dbcard->getFlavor($locale, true);
             
-            $cards[$i]['warning'] = ($cards[$i]['oldtitle'] && $cards[$i]['oldtitle'] != $cards[$i]['title']) || 
+            $cards[$i]['warning'] = ($cards[$i]['oldtitle'] && $cards[$i]['oldtitle'] != $cards[$i]['title']) ||
             ($cards[$i]['oldkeywords'] && $cards[$i]['oldkeywords'] != $cards[$i]['keywords']) ||
             ($cards[$i]['oldtext'] && $cards[$i]['oldtext'] != $cards[$i]['text']) ||
+            ($cards[$i]['oldillustrator'] && $cards[$i]['oldillustrator'] != $cards[$i]['illustrator']) ||
             ($cards[$i]['oldflavor'] && $cards[$i]['oldflavor'] != $cards[$i]['flavor']);
         }
         
@@ -101,6 +104,7 @@ class TradController extends Controller
             $dbcard->setTitle($card['title'], $locale);
             $dbcard->setKeywords($card['keywords'], $locale);
             $dbcard->setText($card['text'], $locale);
+            $dbcard->setIllustrator($card['illustrator']);
             $dbcard->setFlavor($card['flavor'], $locale);
         }
         $em->flush();
