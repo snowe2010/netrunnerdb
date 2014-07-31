@@ -28,12 +28,12 @@
     <script src="{{ asset('/web/bundles/netrunnerdbbuilder/js/taffy.js') }}"></script>
     <script src="{{ asset('/web/bundles/netrunnerdbbuilder/js/jquery.textcomplete.min.js') }}"></script>
     <script type="text/javascript">
-	var NRDB = { 
-		data_loaded: $.Callbacks(), 
+	var NRDB = {
+		data_loaded: $.Callbacks(),
 		api_url: {
 			sets: '{{ path('api_sets')|raw }}',
 			cards: '{{ path('api_cards')|raw }}'
-		}, 
+		},
 		locale: '{{ app.request.locale }}'
 	};
 {% if app.environment == 'prod' %}
@@ -123,7 +123,7 @@
     
     <div class="row">
     <p>
-    Designed and built by <a href="//twitter.com/alsciende">@alsciende</a> 
+    Designed and built by <a href="//twitter.com/alsciende">@alsciende</a>
     </p>
     
     </div>
@@ -145,18 +145,13 @@
     The information presented on this site about Android:Netrunner, both literal and graphical, is copyrighted by Fantasy Flight Games and/or Wizards of the Coast.
     </p>
     <p>
-    This website is not produced, endorsed, supported, or affiliated with Fantasy Flight Games and/or Wizards of the Coast. 
+    This website is not produced, endorsed, supported, or affiliated with Fantasy Flight Games and/or Wizards of the Coast.
     </p>
     </div>
     <svg width="0" height="0" viewBox="0 0 677 601" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" id="nrdb_svg_hex">
  		<defs>
-			<symbol id="hex">
-				<polygon points="623,302.91412353515625 480,550.5973510742188 194,550.5973510742188 51,302.91412353515625 194,55.23085021972656 480,55.23085021972656 623,302.91412353515625 "/>
-			</symbol>
-	 		<mask id="mask">
-	            <rect x="0" y="0" width="677" height="601" fill="white" />
-	            <use xlink:href="#hex" style="fill:black"/>
-	        </mask>
+			<symbol id="hex"><polygon points="623,302.91412353515625 480,550.5973510742188 194,550.5973510742188 51,302.91412353515625 194,55.23085021972656 480,55.23085021972656 623,302.91412353515625 "/></symbol>
+			<symbol id="rect"><rect x="0" y="0" width="677" height="601" fill="white" /></symbol>
 		</defs>
     </svg>
     {% endblock %}
