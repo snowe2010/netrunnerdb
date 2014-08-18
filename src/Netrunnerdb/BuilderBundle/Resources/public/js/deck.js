@@ -186,7 +186,7 @@ $(function() {
 			}, 'label');
 
 	$('#filter-text').on({
-		change : function (event) {
+		input : function (event) {
 			NRDB.smart_filter.handler($(this).val(), refresh_collection);
 		}
 	});
