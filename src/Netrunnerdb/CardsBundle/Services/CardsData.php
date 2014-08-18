@@ -8,7 +8,7 @@ use Doctrine\Bundle\DoctrineBundle\Registry;
 use Symfony\Bundle\FrameworkBundle\Routing\Router;
 
 /*
- * 
+ *
  */
 class CardsData
 {
@@ -81,7 +81,7 @@ class CardsData
 			}
 			if(count($packs) == 1 && $packs[0]["name"] == $cycle->getName($this->request_stack->getCurrentRequest()->getLocale())) {
 				$cycles[] = $packs[0];
-			} 
+			}
 			else {
 				$cycles[] = array(
 						"name" => $cycle->getName($this->request_stack->getCurrentRequest()->getLocale()),
@@ -124,7 +124,7 @@ class CardsData
 			->leftJoin('c.type', 't')
 			->leftJoin('c.faction', 'f')
 			->leftJoin('c.side', 's');
-
+		
 		foreach($conditions as $condition)
 		{
 			$type = array_shift($condition);
@@ -180,6 +180,18 @@ class CardsData
 						switch($operator) {
 							case ':': $or[] = "(p.code = ?$i)"; break;
 							case '!': $or[] = "(p.code != ?$i)"; break;
+							case '<':
+							    if(!isset($qb2)) {
+							        $qb2 = $this->doctrine->getRepository('NetrunnerdbCardsBundle:Pack')->createQueryBuilder('p2');
+							        $or[] = $qb->expr()->lt('p.released', '(' . $qb2->select('p2.released')->where("p2.code = ?$i")->getDql() . ')');
+							    }
+							    break;
+							case '>':
+							    if(!isset($qb3)) {
+							        $qb3 = $this->doctrine->getRepository('NetrunnerdbCardsBundle:Pack')->createQueryBuilder('p3');
+							        $or[] = $qb->expr()->gt('p.released', '(' . $qb3->select('p3.released')->where("p3.code = ?$i")->getDql() . ')');
+							    }
+							    break;
 						}
 						$qb->setParameter($i++, $arg);
 					}
@@ -224,15 +236,15 @@ class CardsData
 					$or = array();
 					foreach($condition as $arg) {
 						switch($operator) {
-							case ':': 
-								$or[] = "((c.keywords = ?$i) or (c.keywords like ?".($i+1).") or (c.keywords like ?".($i+2).") or (c.keywords like ?".($i+3)."))"; 
+							case ':':
+								$or[] = "((c.keywords = ?$i) or (c.keywords like ?".($i+1).") or (c.keywords like ?".($i+2).") or (c.keywords like ?".($i+3)."))";
 								$qb->setParameter($i++, "$arg");
 								$qb->setParameter($i++, "$arg %");
 								$qb->setParameter($i++, "% $arg");
 								$qb->setParameter($i++, "% $arg %");
 								break;
-							case '!': 
-								$or[] = "(c.keywords is null or ((c.keywords != ?$i) and (c.keywords not like ?".($i+1).") and (c.keywords not like ?".($i+2).") and (c.keywords not like ?".($i+3).")))"; 
+							case '!':
+								$or[] = "(c.keywords is null or ((c.keywords != ?$i) and (c.keywords not like ?".($i+1).") and (c.keywords not like ?".($i+2).") and (c.keywords not like ?".($i+3).")))";
 								$qb->setParameter($i++, "$arg");
 								$qb->setParameter($i++, "$arg %");
 								$qb->setParameter($i++, "% $arg");
@@ -392,7 +404,7 @@ class CardsData
 	}
 	
 	/**
-	 * 
+	 *
 	 * @param \Netrunnerdb\CardsBundle\Entity\Card $card
 	 * @param string $api
 	 * @return multitype:multitype: string number mixed NULL unknown
@@ -441,28 +453,28 @@ class CardsData
 
 		$cardinfo['url'] = $this->router->generate('netrunnerdb_netrunner_cards_zoom', array('card_code' => $card->getCode(), '_locale' => $locale), true);
 		
-		if(file_exists($this->dir . DIRECTORY_SEPARATOR . $locale . DIRECTORY_SEPARATOR . $card->getCode() . ".png")) 
+		if(file_exists($this->dir . DIRECTORY_SEPARATOR . $locale . DIRECTORY_SEPARATOR . $card->getCode() . ".png"))
 		{
 			$cardinfo['imagesrc'] = "/web/bundles/netrunnerdbcards/images/cards/$locale/". $card->getCode() . ".png";
 		}
-		else if(file_exists($this->dir . DIRECTORY_SEPARATOR . "en" . DIRECTORY_SEPARATOR . $card->getCode() . ".png")) 
+		else if(file_exists($this->dir . DIRECTORY_SEPARATOR . "en" . DIRECTORY_SEPARATOR . $card->getCode() . ".png"))
 		{
 			$cardinfo['imagesrc'] = "/web/bundles/netrunnerdbcards/images/cards/en/". $card->getCode() . ".png";
 		}
-		else 
+		else
 		{
 		    $cardinfo['imagesrc'] = "";
 		}
 		
-		if(file_exists($this->dir . DIRECTORY_SEPARATOR . "$locale-large" . DIRECTORY_SEPARATOR . $card->getCode() . ".png")) 
+		if(file_exists($this->dir . DIRECTORY_SEPARATOR . "$locale-large" . DIRECTORY_SEPARATOR . $card->getCode() . ".png"))
 		{
 			$cardinfo['largeimagesrc'] = "/web/bundles/netrunnerdbcards/images/cards/$locale-large/". $card->getCode() . ".png";
-		} 
-		else if(file_exists($this->dir . DIRECTORY_SEPARATOR . "en-large" . DIRECTORY_SEPARATOR . $card->getCode() . ".png")) 
+		}
+		else if(file_exists($this->dir . DIRECTORY_SEPARATOR . "en-large" . DIRECTORY_SEPARATOR . $card->getCode() . ".png"))
 		{
 		    $cardinfo['largeimagesrc'] = "/web/bundles/netrunnerdbcards/images/cards/en-large/". $card->getCode() . ".png";
 		}
-		else 
+		else
 		{
 			$cardinfo['largeimagesrc'] = "";
 		}
@@ -507,7 +519,7 @@ class CardsData
 
 		$list = array();
 		$cond;
-		// l'automate a 3 états : 
+		// l'automate a 3 états :
 		// 1:recherche de type
 		// 2:recherche d'argument principal
 		// 3:recherche d'argument supplémentaire
@@ -568,7 +580,7 @@ class CardsData
 	public function validateConditions(&$conditions)
 	{
 		// suppression des conditions invalides
-		$canDoNumeric = array('o', 'n', 'p', 'r', 'y');
+		$canDoNumeric = array('o', 'n', 'p', 'r', 'y', 'e');
 		$numeric = array('<', '>');
 		$factions = array('h','w','a','s','c','j','n','-');
 		foreach($conditions as $i => $l)
