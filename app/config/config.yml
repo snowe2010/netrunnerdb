@@ -96,7 +96,8 @@ fos_oauth_server:
     auth_code_class:     Netrunnerdb\UserBundle\Entity\AuthCode
     service:
         user_provider: fos_user.user_provider.username
-#        options:
+        options:
+            refresh_token_lifetime: 5184000
 #            supported_scopes: user
 
 # FOSJsRoutingBundle Configuration
