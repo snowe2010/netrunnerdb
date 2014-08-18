@@ -34,8 +34,8 @@ NRDB.tip = {};
 								+ (card.uniqueness ? "&diams; " : "")
 								+ card.title + '</h4>' + type
 								+ '<div class="card-text">' + NRDB.format.text(card) + '</div>'
-								+ '<p class="card-faction" style="text-align:right">' + influence
-								+ ' ' + card.faction + '</p>'
+								+ '<p class="card-faction" style="text-align:right;clear:right">' + influence
+								+ ' ' + card.faction + ' &ndash; ' + card.setname + '</p>'
 					},
 					style : {
 						classes : 'qtip-bootstrap qtip-nrdb'
