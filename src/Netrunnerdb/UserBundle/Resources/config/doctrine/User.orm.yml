@@ -15,10 +15,6 @@ Netrunnerdb\UserBundle\Entity\User:
             targetEntity: Netrunnerdb\BuilderBundle\Entity\Comment
             orderBy: {'creation':'DESC'}
             mappedBy: author
-        opinions:
-            targetEntity: Netrunnerdb\CardsBundle\Entity\Opinion
-            orderBy: {'creation':'DESC'}
-            mappedBy: author
     manyToMany:
         favorites:
             targetEntity: Netrunnerdb\BuilderBundle\Entity\Decklist

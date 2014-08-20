@@ -411,8 +411,19 @@ class CardsData
 	 */
 	public function getCardInfo($card, $api = false)
 	{
+	    static $cache = array();
+	    static $cacheApi = array();
+
+	    $locale = $this->request_stack->getCurrentRequest()->getLocale();
+	    
+	    if(!$api && isset($cache[$card->getId()]) && isset($cache[$card->getId()][$locale])) {
+	        return $cache[$card->getId()][$locale];
+	    }
+	    if($api && isset($cacheApi[$card->getId()]) && isset($cacheApi[$card->getId()][$locale])) {
+	        return $cacheApi[$card->getId()][$locale];
+	    }
+	    
 		$dbh = $this->doctrine->getConnection();
-		$locale = $this->request_stack->getCurrentRequest()->getLocale();
 		
 		$cardinfo = array(
 				"id" => $card->getId(),
@@ -453,20 +464,21 @@ class CardsData
 
 		$cardinfo['url'] = $this->router->generate('netrunnerdb_netrunner_cards_zoom', array('card_code' => $card->getCode(), '_locale' => $locale), true);
 		
-		if(file_exists($this->dir . DIRECTORY_SEPARATOR . $locale . DIRECTORY_SEPARATOR . $card->getCode() . ".png"))
+		if($locale != 'en' && file_exists($this->dir . DIRECTORY_SEPARATOR . $locale . DIRECTORY_SEPARATOR . $card->getCode() . ".png"))
 		{
 			$cardinfo['imagesrc'] = "/web/bundles/netrunnerdbcards/images/cards/$locale/". $card->getCode() . ".png";
 		}
-		else if(file_exists($this->dir . DIRECTORY_SEPARATOR . "en" . DIRECTORY_SEPARATOR . $card->getCode() . ".png"))
-		{
-			$cardinfo['imagesrc'] = "/web/bundles/netrunnerdbcards/images/cards/en/". $card->getCode() . ".png";
-		}
 		else
 		{
-		    $cardinfo['imagesrc'] = "";
+		    $filepath = $this->dir . DIRECTORY_SEPARATOR . "en" . DIRECTORY_SEPARATOR . $card->getCode() . ".png";
+		    if(!file_exists($filepath))
+		    {
+		        @touch($filepath);
+		    }
+		    $cardinfo['imagesrc'] = "/web/bundles/netrunnerdbcards/images/cards/en/". $card->getCode() . ".png";
 		}
 		
-		if(file_exists($this->dir . DIRECTORY_SEPARATOR . "$locale-large" . DIRECTORY_SEPARATOR . $card->getCode() . ".png"))
+		if($locale != 'en' && file_exists($this->dir . DIRECTORY_SEPARATOR . "$locale-large" . DIRECTORY_SEPARATOR . $card->getCode() . ".png"))
 		{
 			$cardinfo['largeimagesrc'] = "/web/bundles/netrunnerdbcards/images/cards/$locale-large/". $card->getCode() . ".png";
 		}
@@ -483,28 +495,12 @@ class CardsData
 			unset($cardinfo['id']);
 			unset($cardinfo['id_set']);
 			$cardinfo = array_filter($cardinfo, function ($var) { return isset($var); });
+			$cacheApi[$card->getId()][$locale] = $cardinfo;
 		} else {
 			$cardinfo['cssfaction'] = str_replace(" ", "-", mb_strtolower($card->getFaction()->getName()));
+			$cache[$card->getId()][$locale] = $cardinfo;
 		}
-		
-		/* looking up Opinions */
-		$cardinfo['nbopinions'] = 0;
-		$cardinfo['opinions'] = array();
-		
-		$opinions = $dbh->executeQuery(
-				"SELECT
-				o.creation,
-				o.user_id,
-				u.username author,
-				u.faction authorcolor,
-				o.text
-				from opinion o
-				join user u on o.user_id=u.id
-				where o.card_id=?
-				order by creation asc", array($card->getId()))->fetchAll();
-		
-		$cardinfo['opinions'] = $opinions;
-		
+		 
 		return $cardinfo;
 	}
 	

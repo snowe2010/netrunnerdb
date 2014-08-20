@@ -348,12 +348,6 @@ $(function () {
 	
 	if(Modernizr.touch) $('#svg').remove();
 		
-	if($('#opinion-form-text').size()) {
-		var converter = new Markdown.Converter();
-		$('#opinion-form-text').on('keyup', function () {
-			$('#opinion-form-preview').html(converter.makeHtml($('#opinion-form-text').val()));
-		});
-	}
 	display_notification();
 	
 	$.each([ 'table-graph-costs', 'table-graph-strengths', 'table-predecessor', 'table-successor', 'table-draw-simulator' ], function (i, table_id) {

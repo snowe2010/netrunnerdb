@@ -132,8 +132,6 @@ tbody .btn-group{white-space:nowrap}
 .decklists .decklist-name{font-family:'exoregular',sans-serif}
 .decklists .decklist-identity-image img{height:64px}
 .table-striped>tbody>tr:nth-child(odd)>td,.table-striped>tbody>tr:nth-child(odd)>th{background-color:rgba(0,0,0,0.05)}
-.card-info .opinion-date{color:lightgray;float:right}
-.card-info .opinion-text{clear:right;font-size:93%}
 .card-info .username{font-family:'exolight',sans-serif}
 #collection-grid .col-sm-6 .media {margin-bottom:10px;padding-bottom:10px;border-bottom:1px dashed lightgray}
 #collection-grid .col-sm-6 .media-object {height:100px}

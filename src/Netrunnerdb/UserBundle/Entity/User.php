@@ -73,11 +73,6 @@ class User extends BaseUser
      * @var Comments[]
      */
     private $comments;
-
-    /**
-     * @var Opinions[]
-     */
-    private $opinions;
     
     /**
      * @var Decklist[]
@@ -102,7 +97,7 @@ class User extends BaseUser
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -125,7 +120,7 @@ class User extends BaseUser
     /**
      * Get reputation
      *
-     * @return integer 
+     * @return integer
      */
     public function getReputation()
     {
@@ -148,7 +143,7 @@ class User extends BaseUser
     /**
      * Get creation
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getCreation()
     {
@@ -171,7 +166,7 @@ class User extends BaseUser
     /**
      * Get resume
      *
-     * @return string 
+     * @return string
      */
     public function getResume()
     {
@@ -194,7 +189,7 @@ class User extends BaseUser
     /**
      * Get role
      *
-     * @return integer 
+     * @return integer
      */
     public function getRole()
     {
@@ -227,7 +222,7 @@ class User extends BaseUser
     /**
      * Get status
      *
-     * @return integer 
+     * @return integer
      */
     public function getStatus()
     {
@@ -273,7 +268,7 @@ class User extends BaseUser
     /**
      * Get avatar
      *
-     * @return string 
+     * @return string
      */
     public function getAvatar()
     {
@@ -372,29 +367,6 @@ class User extends BaseUser
     	return $this->comments;
     }
 
-    /**
-     * Set opinions
-     *
-     * @param string $opinions
-     * @return Deck
-     */
-    public function setOpinions($opinions)
-    {
-    	$this->opinions = $opinions;
-    
-    	return $this;
-    }
-    
-    /**
-     * Get opinions
-     *
-     * @return string
-     */
-    public function getOpinions()
-    {
-    	return $this->opinions;
-    }
-    
     /**
      * Add to favorites
      *
@@ -515,7 +487,6 @@ class User extends BaseUser
     	$this->decks = new ArrayCollection();
     	$this->decklists = new ArrayCollection();
        	$this->comments = new ArrayCollection();
-       	$this->opinions = new ArrayCollection();
        	$this->favorites = new ArrayCollection();
        	$this->votes = new ArrayCollection();
        	$this->following = new ArrayCollection();
@@ -569,7 +540,7 @@ class User extends BaseUser
     /**
      * Get notif_author
      *
-     * @return boolean 
+     * @return boolean
      */
     public function getNotifAuthor()
     {
@@ -592,7 +563,7 @@ class User extends BaseUser
     /**
      * Get notif_commenter
      *
-     * @return boolean 
+     * @return boolean
      */
     public function getNotifCommenter()
     {
@@ -615,7 +586,7 @@ class User extends BaseUser
     /**
      * Get notif_mention
      *
-     * @return boolean 
+     * @return boolean
      */
     public function getNotifMention()
     {
@@ -638,7 +609,7 @@ class User extends BaseUser
     /**
      * Get notif_follow
      *
-     * @return boolean 
+     * @return boolean
      */
     public function getNotifFollow()
     {
@@ -661,7 +632,7 @@ class User extends BaseUser
     /**
      * Get notif_successor
      *
-     * @return boolean 
+     * @return boolean
      */
     public function getNotifSuccessor()
     {
@@ -735,29 +706,6 @@ class User extends BaseUser
     public function removeComment(\Netrunnerdb\BuilderBundle\Entity\Comment $comments)
     {
         $this->comments->removeElement($comments);
-    }
-
-    /**
-     * Add opinions
-     *
-     * @param \Netrunnerdb\CardsBundle\Entity\Opinion $opinions
-     * @return User
-     */
-    public function addOpinion(\Netrunnerdb\CardsBundle\Entity\Opinion $opinions)
-    {
-        $this->opinions[] = $opinions;
-    
-        return $this;
-    }
-
-    /**
-     * Remove opinions
-     *
-     * @param \Netrunnerdb\CardsBundle\Entity\Opinion $opinions
-     */
-    public function removeOpinion(\Netrunnerdb\CardsBundle\Entity\Opinion $opinions)
-    {
-        $this->opinions->removeElement($opinions);
     }
 
     /**

@@ -8,7 +8,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Netrunnerdb\CardsBundle\Controller\DefaultController;
 use \Michelf\Markdown;
 use Netrunnerdb\CardsBundle\NetrunnerdbCardsBundle;
-use Netrunnerdb\CardsBundle\Entity\Opinion;
 
 class SearchController extends Controller
 {
@@ -20,10 +19,10 @@ class SearchController extends Controller
 		if(!$card) throw $this->createNotFoundException('Sorry, this card is not in the database (yet?)');
 		$meta = $card->getTitle().", a ".$card->getFaction()->getName()." ".$card->getType()->getName()." card for Android:Netrunner from the set ".$card->getPack()->getName()." published by Fantasy Flight Games.";
 		return $this->forward(
-			'NetrunnerdbCardsBundle:Search:display', 
+			'NetrunnerdbCardsBundle:Search:display',
 			array(
-				'q' => $card->getCode(), 
-				'view' => 'card', 
+				'q' => $card->getCode(),
+				'view' => 'card',
 				'sort' => 'set',
 				'title' => $card->getTitle(),
 				'mode' => $mode,
@@ -44,7 +43,7 @@ class SearchController extends Controller
 				.($pack->getReleased() ? " published on ".$pack->getReleased()->format('Y/m/d') : "")
 				." by Fantasy Flight Games.";
 		return $this->forward(
-			'NetrunnerdbCardsBundle:Search:display', 
+			'NetrunnerdbCardsBundle:Search:display',
 			array(
 				'q' => 'e:'.$pack_code,
 				'view' => $view,
@@ -135,12 +134,12 @@ class SearchController extends Controller
 		$request->setLocale($locale);
 
 		return $this->forward(
-			'NetrunnerdbCardsBundle:Search:display', 
+			'NetrunnerdbCardsBundle:Search:display',
 			array(
-				'q' => $q, 
-				'view' => $view, 
+				'q' => $q,
+				'view' => $view,
 				'sort' => $sort,
-				'page' => $page, 
+				'page' => $page,
 				'mode' => $mode,
 				'locale' => $locale,
 				'locales' => $this->renderView('NetrunnerdbCardsBundle:Default:langs.html.twig'),
@@ -159,7 +158,7 @@ class SearchController extends Controller
 				$cycle = $this->getDoctrine()->getRepository('NetrunnerdbCardsBundle:Cycle')->findOneBy(array("code" => $conditions[0][2]));
 				if($cycle) $title = $cycle->getName($this->getRequest()->getLocale());
 			}
-		} 
+		}
 		return $title;
 	}
 	
@@ -186,7 +185,7 @@ class SearchController extends Controller
 			'short' => 1000,
 		);
 		
-		if(!array_key_exists($view, $pagesizes)) 
+		if(!array_key_exists($view, $pagesizes))
 		{
 			$view = 'list';
 		}
@@ -200,7 +199,7 @@ class SearchController extends Controller
 		$last_modified = null;
 		if($q && $rows = $this->get('cards_data')->get_search_rows($conditions, $sort))
 		{
-			if(count($rows) == 1) 
+			if(count($rows) == 1)
 			{
 				$view = "card";
 			}
@@ -219,7 +218,6 @@ class SearchController extends Controller
 			
 			for($rowindex = $first; $rowindex < $last && $rowindex < count($rows); $rowindex++) {
 				if(empty($last_modified) || $last_modified < $rows[$rowindex]->getTs()) $last_modified = $rows[$rowindex]->getTs();
-				if($last_modified < $rows[$rowindex]->getOpinionsTs()) $last_modified = $rows[$rowindex]->getOpinionsTs();
 			}
 			$user = $this->getUser();
 			$response->setLastModified($user && $user->getLastLogin() > $last_modified ? $user->getLastLogin() : $last_modified);
@@ -282,8 +280,8 @@ class SearchController extends Controller
 		}
 		
 		$searchbar = $this->renderView('NetrunnerdbCardsBundle:Search:searchbar.html.twig', array(
-			"q" => $q, 
-			"view" => $view, 
+			"q" => $q,
+			"view" => $view,
 			"sort" => $sort,
 		));
 		
@@ -306,11 +304,11 @@ class SearchController extends Controller
 		
 		// attention si $s="short", $cards est un tableau à 2 niveaux au lieu de 1 seul
 		return $this->render('NetrunnerdbCardsBundle:Search:display-'.$view.'.html.twig', array(
-			"view" => $view, 
-			"sort" => $sort, 
-			"cards" => $cards, 
-			"first"=> $first, 
-			"last" => $last, 
+			"view" => $view,
+			"sort" => $sort,
+			"cards" => $cards,
+			"first"=> $first,
+			"last" => $last,
 			"searchbar" => $searchbar,
 			"pagination" => $pagination,
 			"pagetitle" => $title,
@@ -396,104 +394,4 @@ class SearchController extends Controller
 		));
 	}
 
-	/*
-	 * records a user's opinion
-	*/
-	public function opinionAction() {
-		$user = $this->getUser();
-		$request = $this->getRequest();
-	
-		$card_id = filter_var($request->get('id'),
-				FILTER_SANITIZE_NUMBER_INT);
-		$card = $this->getDoctrine()
-		->getRepository('NetrunnerdbCardsBundle:Card')
-		->find($card_id);
-	
-		$now = new \DateTime();
-		
-		$opinion_text = trim(filter_var($request->get('opinion'),
-				FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES));
-		if($card && !empty($opinion_text)) {
-			$opinion_html = Markdown::defaultTransform($opinion_text);
-				
-			$opinion = new \Netrunnerdb\CardsBundle\Entity\Opinion;
-			$opinion->setText($opinion_html);
-			
-			$opinion->setCreation($now);
-			$opinion->setAuthor($user);
-			$opinion->setCard($card);
-				
-			$this->get('doctrine')->getManager()->persist($opinion);
-			
-			$card->setOpinionsTs($now);
-			
-			$this->get('doctrine')->getManager()->flush();
-		}
-	
-		return $this
-		->redirect($this->generateUrl('netrunnerdb_netrunner_cards_zoom', array('card_code' => $card->getCode())));
-	}
-	
-	public function opinionsAction($page)
-	{
-		$limit = 100;
-		if($page<1) $page=1;
-		$start = ($page-1)*$limit;
-	
-		/* @var $dbh \Doctrine\DBAL\Driver\PDOConnection */
-		$dbh = $this->get('doctrine')->getConnection();
-		/* @var $stmt \Doctrine\DBAL\Driver\PDOStatement */
-		$maxcount = $dbh->executeQuery("SELECT
-				count(*)
-				from opinion o", array())->fetch(\PDO::FETCH_NUM)[0];
-	
-		$opinions = $dbh
-		->executeQuery(
-				"SELECT
-				o.id,
-				o.text,
-				o.creation,
-				c.id card_id,
-				c.code card_code,
-				c.title card_title,
-				u.id user_id,
-				u.username author
-				from opinion o
-				join card c on o.card_id=c.id
-				join user u on o.user_id=u.id
-				order by creation desc
-				limit $start, $limit", array())->fetchAll(\PDO::FETCH_ASSOC);
-	
-		$count = count($opinions);
-	
-		// pagination : calcul de nbpages // currpage // prevpage // nextpage
-		// à partir de $start, $limit, $count, $maxcount, $page
-	
-		$currpage = $page;
-		$prevpage = max(1, $currpage-1);
-		$nbpages = min(10, ceil($maxcount / $limit));
-		$nextpage = min($nbpages, $currpage+1);
-	
-		$route = $this->getRequest()->get('_route');
-	
-		$pages = array();
-		for($page=1; $page<=$nbpages; $page++) {
-			$pages[] = array(
-					"numero" => $page,
-					"url" => $this->generateUrl($route, array("page" => $page)),
-					"current" => $page == $currpage,
-			);
-		}
-	
-		return $this->render('NetrunnerdbCardsBundle:Default:allopinions.html.twig', array(
-				'locales' => $this->renderView('NetrunnerdbCardsBundle:Default:langs.html.twig'),
-				'opinions' => $opinions,
-				'url' => $this->getRequest()->getRequestUri(),
-				'route' => $route,
-				'pages' => $pages,
-				'prevurl' => $currpage == 1 ? null : $this->generateUrl($route, array("page" => $prevpage)),
-				'nexturl' => $currpage == $nbpages ? null : $this->generateUrl($route, array("page" => $nextpage))
-		));
-	}
-	
 }

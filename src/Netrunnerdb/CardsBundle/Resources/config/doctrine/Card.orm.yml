@@ -45,10 +45,6 @@ Netrunnerdb\CardsBundle\Entity\Card:
         decklists:
             targetEntity: Netrunnerdb\BuilderBundle\Entity\Decklist
             mappedBy: identity
-        opinions:
-            targetEntity: Opinion
-            mappedBy: card
-            cascade: ["persist"]
     fields:
         id:
             type: integer
@@ -57,9 +53,6 @@ Netrunnerdb\CardsBundle\Entity\Card:
                 strategy: AUTO
         ts:
             type: datetime
-        opinionsTs:
-            type: datetime
-            nullable: true
         code:
             type: string
             length: '5'

@@ -20,11 +20,6 @@ class Card
     private $ts;
 
     /**
-     * @var \DateTime
-     */
-    private $opinionsTs;
-
-    /**
      * @var string
      */
     private $code;
@@ -230,11 +225,6 @@ class Card
     private $decklists;
 
     /**
-     * @var \Doctrine\Common\Collections\Collection
-     */
-    private $opinions;
-
-    /**
      * @var \Netrunnerdb\CardsBundle\Entity\Pack
      */
     private $pack;
@@ -260,13 +250,12 @@ class Card
     public function __construct()
     {
         $this->decklists = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->opinions = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -289,34 +278,11 @@ class Card
     /**
      * Get ts
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getTs()
     {
         return $this->ts;
-    }
-
-    /**
-     * Set opinionsTs
-     *
-     * @param \DateTime $opinionsTs
-     * @return Card
-     */
-    public function setOpinionsTs($opinionsTs)
-    {
-        $this->opinionsTs = $opinionsTs;
-
-        return $this;
-    }
-
-    /**
-     * Get opinionsTs
-     *
-     * @return \DateTime 
-     */
-    public function getOpinionsTs()
-    {
-        return $this->opinionsTs;
     }
 
     /**
@@ -335,7 +301,7 @@ class Card
     /**
      * Get code
      *
-     * @return string 
+     * @return string
      */
     public function getCode()
     {
@@ -363,7 +329,7 @@ class Card
     /**
      * Get title
      *
-     * @return string 
+     * @return string
      */
     public function getTitle($locale = "en", $strict = false)
     {
@@ -392,7 +358,7 @@ class Card
     /**
      * Get titleFr
      *
-     * @return string 
+     * @return string
      */
     public function getTitleFr()
     {
@@ -415,7 +381,7 @@ class Card
     /**
      * Get titleDe
      *
-     * @return string 
+     * @return string
      */
     public function getTitleDe()
     {
@@ -438,7 +404,7 @@ class Card
     /**
      * Get titleEs
      *
-     * @return string 
+     * @return string
      */
     public function getTitleEs()
     {
@@ -461,7 +427,7 @@ class Card
     /**
      * Get titlePl
      *
-     * @return string 
+     * @return string
      */
     public function getTitlePl()
     {
@@ -484,7 +450,7 @@ class Card
     /**
      * Get titleIt
      *
-     * @return string 
+     * @return string
      */
     public function getTitleIt()
     {
@@ -512,7 +478,7 @@ class Card
     /**
      * Get keywords
      *
-     * @return string 
+     * @return string
      */
     public function getKeywords($locale = "en", $strict = false)
     {
@@ -541,7 +507,7 @@ class Card
     /**
      * Get keywordsFr
      *
-     * @return string 
+     * @return string
      */
     public function getKeywordsFr()
     {
@@ -564,7 +530,7 @@ class Card
     /**
      * Get keywordsDe
      *
-     * @return string 
+     * @return string
      */
     public function getKeywordsDe()
     {
@@ -587,7 +553,7 @@ class Card
     /**
      * Get keywordsEs
      *
-     * @return string 
+     * @return string
      */
     public function getKeywordsEs()
     {
@@ -610,7 +576,7 @@ class Card
     /**
      * Get keywordsPl
      *
-     * @return string 
+     * @return string
      */
     public function getKeywordsPl()
     {
@@ -633,7 +599,7 @@ class Card
     /**
      * Get keywordsIt
      *
-     * @return string 
+     * @return string
      */
     public function getKeywordsIt()
     {
@@ -661,7 +627,7 @@ class Card
     /**
      * Get text
      *
-     * @return string 
+     * @return string
      */
     public function getText($locale = "en", $strict = false)
     {
@@ -690,7 +656,7 @@ class Card
     /**
      * Get textFr
      *
-     * @return string 
+     * @return string
      */
     public function getTextFr()
     {
@@ -713,7 +679,7 @@ class Card
     /**
      * Get textDe
      *
-     * @return string 
+     * @return string
      */
     public function getTextDe()
     {
@@ -736,7 +702,7 @@ class Card
     /**
      * Get textEs
      *
-     * @return string 
+     * @return string
      */
     public function getTextEs()
     {
@@ -759,7 +725,7 @@ class Card
     /**
      * Get textPl
      *
-     * @return string 
+     * @return string
      */
     public function getTextPl()
     {
@@ -782,7 +748,7 @@ class Card
     /**
      * Get textIt
      *
-     * @return string 
+     * @return string
      */
     public function getTextIt()
     {
@@ -805,7 +771,7 @@ class Card
     /**
      * Get advancementCost
      *
-     * @return integer 
+     * @return integer
      */
     public function getAdvancementCost()
     {
@@ -828,7 +794,7 @@ class Card
     /**
      * Get agendaPoints
      *
-     * @return integer 
+     * @return integer
      */
     public function getAgendaPoints()
     {
@@ -851,7 +817,7 @@ class Card
     /**
      * Get baseLink
      *
-     * @return integer 
+     * @return integer
      */
     public function getBaseLink()
     {
@@ -874,7 +840,7 @@ class Card
     /**
      * Get cost
      *
-     * @return integer 
+     * @return integer
      */
     public function getCost()
     {
@@ -897,7 +863,7 @@ class Card
     /**
      * Get factionCost
      *
-     * @return integer 
+     * @return integer
      */
     public function getFactionCost()
     {
@@ -925,7 +891,7 @@ class Card
     /**
      * Get flavor
      *
-     * @return string 
+     * @return string
      */
     public function getFlavor($locale = "en", $strict = false)
     {
@@ -954,7 +920,7 @@ class Card
     /**
      * Get flavorFr
      *
-     * @return string 
+     * @return string
      */
     public function getFlavorFr()
     {
@@ -977,7 +943,7 @@ class Card
     /**
      * Get flavorDe
      *
-     * @return string 
+     * @return string
      */
     public function getFlavorDe()
     {
@@ -1000,7 +966,7 @@ class Card
     /**
      * Get flavorEs
      *
-     * @return string 
+     * @return string
      */
     public function getFlavorEs()
     {
@@ -1023,7 +989,7 @@ class Card
     /**
      * Get flavorPl
      *
-     * @return string 
+     * @return string
      */
     public function getFlavorPl()
     {
@@ -1046,7 +1012,7 @@ class Card
     /**
      * Get flavorIt
      *
-     * @return string 
+     * @return string
      */
     public function getFlavorIt()
     {
@@ -1069,7 +1035,7 @@ class Card
     /**
      * Get illustrator
      *
-     * @return string 
+     * @return string
      */
     public function getIllustrator()
     {
@@ -1092,7 +1058,7 @@ class Card
     /**
      * Get influenceLimit
      *
-     * @return integer 
+     * @return integer
      */
     public function getInfluenceLimit()
     {
@@ -1115,7 +1081,7 @@ class Card
     /**
      * Get memoryUnits
      *
-     * @return integer 
+     * @return integer
      */
     public function getMemoryUnits()
     {
@@ -1138,7 +1104,7 @@ class Card
     /**
      * Get minimumDeckSize
      *
-     * @return integer 
+     * @return integer
      */
     public function getMinimumDeckSize()
     {
@@ -1161,7 +1127,7 @@ class Card
     /**
      * Get number
      *
-     * @return integer 
+     * @return integer
      */
     public function getNumber()
     {
@@ -1184,7 +1150,7 @@ class Card
     /**
      * Get quantity
      *
-     * @return integer 
+     * @return integer
      */
     public function getQuantity()
     {
@@ -1207,7 +1173,7 @@ class Card
     /**
      * Get strength
      *
-     * @return integer 
+     * @return integer
      */
     public function getStrength()
     {
@@ -1230,7 +1196,7 @@ class Card
     /**
      * Get trashCost
      *
-     * @return integer 
+     * @return integer
      */
     public function getTrashCost()
     {
@@ -1253,7 +1219,7 @@ class Card
     /**
      * Get uniqueness
      *
-     * @return boolean 
+     * @return boolean
      */
     public function getUniqueness()
     {
@@ -1276,7 +1242,7 @@ class Card
     /**
      * Get limited
      *
-     * @return boolean 
+     * @return boolean
      */
     public function getLimited()
     {
@@ -1309,44 +1275,11 @@ class Card
     /**
      * Get decklists
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getDecklists()
     {
         return $this->decklists;
-    }
-
-    /**
-     * Add opinions
-     *
-     * @param \Netrunnerdb\CardsBundle\Entity\Opinion $opinions
-     * @return Card
-     */
-    public function addOpinion(\Netrunnerdb\CardsBundle\Entity\Opinion $opinions)
-    {
-        $this->opinions[] = $opinions;
-
-        return $this;
-    }
-
-    /**
-     * Remove opinions
-     *
-     * @param \Netrunnerdb\CardsBundle\Entity\Opinion $opinions
-     */
-    public function removeOpinion(\Netrunnerdb\CardsBundle\Entity\Opinion $opinions)
-    {
-        $this->opinions->removeElement($opinions);
-    }
-
-    /**
-     * Get opinions
-     *
-     * @return \Doctrine\Common\Collections\Collection 
-     */
-    public function getOpinions()
-    {
-        return $this->opinions;
     }
 
     /**
@@ -1365,7 +1298,7 @@ class Card
     /**
      * Get pack
      *
-     * @return \Netrunnerdb\CardsBundle\Entity\Pack 
+     * @return \Netrunnerdb\CardsBundle\Entity\Pack
      */
     public function getPack()
     {
@@ -1388,7 +1321,7 @@ class Card
     /**
      * Get type
      *
-     * @return \Netrunnerdb\CardsBundle\Entity\Type 
+     * @return \Netrunnerdb\CardsBundle\Entity\Type
      */
     public function getType()
     {
@@ -1411,7 +1344,7 @@ class Card
     /**
      * Get faction
      *
-     * @return \Netrunnerdb\CardsBundle\Entity\Faction 
+     * @return \Netrunnerdb\CardsBundle\Entity\Faction
      */
     public function getFaction()
     {
@@ -1434,7 +1367,7 @@ class Card
     /**
      * Get side
      *
-     * @return \Netrunnerdb\CardsBundle\Entity\Side 
+     * @return \Netrunnerdb\CardsBundle\Entity\Side
      */
     public function getSide()
     {
