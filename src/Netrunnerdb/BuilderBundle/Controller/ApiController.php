@@ -8,6 +8,7 @@ use Netrunnerdb\BuilderBundle\Entity\Deck;
 use Netrunnerdb\BuilderBundle\Entity\Deckslot;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use \Michelf\Markdown;
 use Netrunnerdb\BuilderBundle\Entity\Decklist;
 use Netrunnerdb\BuilderBundle\Entity\Decklistslot;
