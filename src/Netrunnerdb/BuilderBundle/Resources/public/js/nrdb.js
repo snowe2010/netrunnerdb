@@ -802,8 +802,8 @@ function display_notification()
 {
 	if(!localStorage) return;
 	var Notification = {
-		version: '1.7.0',
-		message: "<strong>New!</strong> Tag and sort your decks. Shift-click to select more than one and do bulk operations.</strong>"
+		version: '1.7.3',
+		message: "<strong>New!</strong> 'My decks' is improved. No more scrolling madness.</strong>"
 	};
 	var localStorageNotification = localStorage.getItem('notification');
 	if(localStorageNotification === Notification.version) return;
