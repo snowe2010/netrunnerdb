@@ -35,12 +35,28 @@ $(function() {
 		} else {
 			$(this).toggleClass('selected');
 		}
-		var deck_id = $(this).data('id').toString();
-		display_deck(deck_id, !event.shiftKey);
+		if($(this).hasClass('selected')) {
+			var deck_id = $(this).data('id').toString();
+			select_deck(deck_id);
+			if(!event.shiftKey) {
+				show_deck();
+			}
+		} else {
+			hide_deck();
+		}
 		return false;
 	});
-	$('#decks').on('dblclick', 'a.deck-list-group-item', function (event) {
-		
+	$('#decks').on('click', '#close_deck', function (event) {
+		hide_deck();
+		return false;
+	});
+	$(document).keyup(function (event) {
+		if(event.which == 27) {
+			hide_deck();
+	    }
+		if(event.which == 13) {
+			show_deck();
+	    }
 	});
 });
 
@@ -67,7 +83,6 @@ function do_action_deck(event) {
 		case 'btn-edit': location.href=Routing.generate('deck_edit', {deck_id:SelectedDeck.id}); break;
 		case 'btn-publish': confirm_publish(); break;
 		case 'btn-delete': confirm_delete(); break;
-		//case 'btn-mail': confirm_mail(); break;
 		case 'btn-download-text': location.href=Routing.generate('deck_export_text', {deck_id:SelectedDeck.id}); break;
 		case 'btn-download-octgn': location.href=Routing.generate('deck_export_octgn', {deck_id:SelectedDeck.id}); break;
 		case 'btn-export-bbcode': export_bbcode(); break;
@@ -301,24 +316,38 @@ function confirm_delete_all(ids) {
 	$('#deleteListModal').modal('show');
 }
 
-function display_deck(deck_id, backTop) {
-	NRDB.draw_simulator.reset();
-	$('#no-deck-selected').hide();
+function hide_deck() {
+	$('#deck').hide();
+	$('#close_deck').remove();
+}
+
+function unselect_deck() {
+	SelectedDeck.id = null;
+}
+
+function select_deck(deck_id) {
 	NRDB.data.cards().update({indeck:0});
 	var deck = DeckDB({id:deck_id}).first();
 	SelectedDeck = deck;
+}
+
+function show_deck() {
+	var container = $('#deck_'+SelectedDeck.id);
+	$('#no-deck-selected').hide();
+	$('#deck').appendTo(container);
+	$('#deck').show();
+
+	$('#close_deck').remove();
+	$('<button type="button" class="close" id="close_deck"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>').prependTo(container);
+	
 	$(this).closest('tr').siblings().removeClass('active');
 	$(this).closest('tr').addClass('active');
-	for(var i=0; i<deck.cards.length; i++) {
-		var slot = deck.cards[i];
+	for(var i=0; i<SelectedDeck.cards.length; i++) {
+		var slot = SelectedDeck.cards[i];
 		NRDB.data.cards({code:slot.card_code}).update({indeck:parseInt(slot.qty,10)});
 	}
-	$('#deck-name').text(deck.name);
+	$('#deck-name').text(SelectedDeck.name);
 	
-
-	var converter = new Markdown.Converter();
-	$('#deck-description').html(converter.makeHtml(deck.description));
 	update_deck();
 	$('#btn-publish').prop('disabled', !!$(this).closest('tr').data('problem'));
-	if(backTop) location.href = "#top";
 }

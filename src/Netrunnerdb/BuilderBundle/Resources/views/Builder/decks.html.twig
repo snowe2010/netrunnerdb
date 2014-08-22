@@ -29,139 +29,31 @@ var Identity = null,
 
 <div class="row">
 
-<!-- Left-side Column -->
-<div class="col-md-5">
-
-<div class="row" id="no-deck-selected">
-<div class="jumbotron">
-    <h1>Your decks.</h1>
-    <p>Decks are private. You can have up to {{ nbmax }} decks (increased by reputation).</p>
-    <p>You can <span class="fake-inline-button text-primary"><span class="glyphicon glyphicon-pencil"></span> Edit</span> and
-     <span class="fake-inline-button text-primary"><span class="glyphicon glyphicon-share"></span> Publish</span> them. When you publish,
-     the content of your deck is copied into a new public decklist that other players can comment and add to their favorites.
-      It's a great way to share your ideas.<p>
-    <p>You can also <span class="fake-inline-button text-primary"><span class="glyphicon glyphicon-download"></span> Download</span>
-    	 your decks (plain text for storage or octgn for online play) and
-    	<span class="fake-inline-button text-primary"><span class="glyphicon glyphicon-export"></span> Export</span> them in various formats{#
-    	and even <span class="fake-inline-button text-primary"><span class="glyphicon glyphicon-envelope"></span> Email</span> them to yourself#}.</p>
-    <p>Click on a deck in the list to see its content and manage it.</p>
-  </div>
-</div>
-
-<div id="deck" style="display:none">
-
-<div class="" id="btn-group-deck">
-	<button type="button" id="btn-view" class="btn btn-info"><span class="glyphicon glyphicon-fullscreen"></span> View</button>
-
-	<button type="button" id="btn-edit" class="btn btn-primary"><span class="glyphicon glyphicon-pencil"></span> Edit</button>
-	
-	<button type="button" id="btn-publish" disabled="disabled" class="btn btn-success"><span class="glyphicon glyphicon-share"></span> Publish</button>
-	
-	<button type="button" id="btn-delete" class="btn btn-danger"><span class="glyphicon glyphicon-remove"></span> Delete</button>
-	
-	<div class="btn-group">
-		<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-			More <span class="caret"></span>
-		</button>
-		<ul class="dropdown-menu" role="menu">
-			{#<li><a href="#" id="btn-mail"><span class="glyphicon glyphicon-envelope"></span> Mail</a></li>#}
-			<li class="dropdown-header"><span class="glyphicon glyphicon-download"></span> Download</li>
-			<li><a href="#" id="btn-download-text">Text file</a></li>
-			<li><a href="#" id="btn-download-octgn">Octgn file</a></li>
-			<li class="dropdown-header"><span class="glyphicon glyphicon-export"></span> Export</li>
-			<li><a href="#" id="btn-export-bbcode">bbCode</a></li>
-			<li><a href="#" id="btn-export-markdown">Markdown (Reddit)</a></li>
-			<li><a href="#" id="btn-export-plaintext">plain text</a></li>
-		</ul>
-	</div>
-</div>
-	
-<h3 id="deck-name"></h3>
-
-<!-- Identity and Stats -->
-<div class="row">
-	<div class="col-sm-3">
-		<img id="img_identity" src="" class="img-responsive  hidden-xs">
-	</div><!-- /.col-md-3 -->
-	<div class="col-sm-9">
-		<h4 id="identity"></h4>
-		<div id="influence"></div>
-		<div id="agendapoints"></div>
-		<div id="cardcount"></div>
-		<div id="latestpack"></div>
-	</div><!-- /.col-md-9 -->
-</div><!-- /.row -->
-<!-- Identity and Stats -->
-
-<!-- Deck Content -->
-<div class="row" id="deck-content" style="margin-bottom:10px">
-</div><!-- /#deck-content -->
-<!-- Deck Content -->
-
-<p><small id="deck-description"></small></p>
-
-<!-- Draw Simulator -->
-<table class="table table-condensed" id="table-draw-simulator">
-<thead>
-<tr><th colspan="1"><span class="glyphicon glyphicon-repeat"></span> Card draw simulator</th></tr>
-</thead>
-<tbody>
-<tr><td class="text-center" title="Click to draw; Shift-click to reset and draw">
-    <div class="btn-group"><a href="#" role="button" class="btn btn-default btn-sm" disabled="disabled">Draw:</a><a href="#" role="button" class="btn btn-default btn-sm" id="draw-simulator-1">1</a><a href="#" role="button" class="btn btn-default btn-sm" id="draw-simulator-2">2</a><a href="#" role="button" class="btn btn-default btn-sm" id="draw-simulator-3">3</a><a href="#" role="button" class="btn btn-default btn-sm" id="draw-simulator-4">4</a><a href="#" role="button" class="btn btn-default btn-sm" id="draw-simulator-5">5</a><a href="#" role="button" class="btn btn-default btn-sm" id="draw-simulator-6">6</a><a href="#" role="button" class="btn btn-default btn-sm" id="draw-simulator-9">9</a><a href="#" role="button" class="btn btn-default btn-sm" id="draw-simulator-all">all</a><a href="#" role="button" class="btn btn-default btn-sm"  disabled="disabled" id="draw-simulator-clear">Reset</a></div>
-    <div title="Odds to have at least 1 copy of a desired card, after having drawn that many cards from the deck, depending of the number of copies in the deck (1 - 2 - 3)"><span class="small">Odds: <span id="draw-simulator-odds-1">0</span>% &ndash; <span id="draw-simulator-odds-2">0</span>% &ndash; <span id="draw-simulator-odds-3">0</span>% <a href="#oddsModal" id="draw-simulator-more" data-toggle="modal" style="margin:0 10px">more</a></span>
-</td></tr>
-<tr><td id="table-draw-simulator-content"></td></tr>
-</tbody>
-</table>
-
-<!-- Graphs -->
-<table class="table table-condensed" id="table-graph-costs">
-<thead>
-<tr><th colspan="1"><span class="glyphicon glyphicon-stats"></span> Repartition by Cost</th></tr>
-</thead>
-<tbody>
-<tr>
-	<td><div id="costChart" width="100%" height="200"><button type="button" class="btn btn-link" onclick="make_cost_graph()">Display graph</button></div></td>
-</tr>
-</tbody>
-</table>
-
-<table class="table table-condensed" id="table-graph-strengths">
-<thead>
-<tr><th colspan="1"><span class="glyphicon glyphicon-stats"></span> Repartition by Strength</th></tr>
-</thead>
-<tbody>
-<tr>
-	<td><div id="strengthChart" width="100%" height="200"><button type="button" class="btn btn-link" onclick="make_strength_graph()">Display graph</button></div></td>
-</tr>
-</tbody>
-</table>
-
-</div><!-- /#deck -->
-
-</div>
-<!-- / Left-side Column -->
-
 <!-- Right-side column -->
-<div class="col-md-7">
+<div class="col-md-5 col-md-push-7">
 
 <div class="row" style="margin-bottom:10px">
 <div class="col-md-12">
-	<a href="{{ path('deck_buildform', {side_text:'corp'}) }}" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-plus color-corp"></span> Corp</a>
-	<a href="{{ path('deck_buildform', {side_text:'runner'}) }}" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-plus color-runner"></span> Runner</a>
+	<a href="{{ path('deck_buildform', {side_text:'corp'}) }}" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-plus color-corp"></span> New Corp Deck</a>
+	<a href="{{ path('deck_buildform', {side_text:'runner'}) }}" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-plus color-runner"></span> New Runner Deck</a>
 	<div class="btn-group">
 		<button type="button" class="btn btn-default dropdown-toggle btn-sm" data-toggle="dropdown">
-			<span class="glyphicon glyphicon-import"></span> Import a deck<span class="caret"></span>
+			<span class="glyphicon glyphicon-import"></span> Import Deck <span class="caret"></span>
 		</button>
 		<ul class="dropdown-menu" role="menu">
-			<li><a href="{{ path('deck_import') }}" id="btn-import-paste">Copy/paste</a></li>
+			<li><a href="{{ path('deck_import') }}" id="btn-import-paste">Copy/paste</button>
 			<li><a href="#" onclick="$('#fileModal').modal('show')" id="btn-import-file">File</a></li>
 			<li><a href="#" onclick="$('#meteorModal').modal('show')" id="btn-import-meteor">Meteor Decks</a></li>
 		</ul>
 	</div>
+</div>
+</div>
+
+<div class="row" style="margin-bottom:10px">
+<div class="col-md-12">
 	<div class="btn-group" id="btn-group-selection">
 		<button type="button" class="btn btn-default dropdown-toggle btn-sm" data-toggle="dropdown">
-			<span class="glyphicon glyphicon-briefcase"></span> With selection <span class="caret"></span>
+			<span class="glyphicon glyphicon-briefcase"></span> With Selection <span class="caret"></span>
 		</button>
 		<ul class="dropdown-menu" role="menu">
 		    <li class="dropdown-header"><span class="glyphicon glyphicon-tag"></span> Tags</li>
@@ -174,7 +66,7 @@ var Identity = null,
 	</div>
 	<div class="btn-group" id="btn-group-sort">
 		<button type="button" class="btn btn-default dropdown-toggle btn-sm" data-toggle="dropdown">
-			<span class="glyphicon glyphicon-sort"></span> Sort list <span class="caret"></span>
+			<span class="glyphicon glyphicon-sort"></span> Sort List <span class="caret"></span>
 		</button>
 		<ul class="dropdown-menu" role="menu">
 			<li><a href="#" id="btn-sort-update">By date of last update</a></li>
@@ -194,6 +86,12 @@ var Identity = null,
 </div>
 </div>
 
+</div>
+<!-- / Right-side column -->
+
+<!-- Left-side column -->
+<div class="col-md-7 col-md-pull-5">
+
 <div class="row">
 <div class="col-md-12">
 <div class="list-group" id="decks" data-sort-type="lastupdate" data-sort-order="1">
@@ -209,14 +107,49 @@ var Identity = null,
 </a>
 {% endfor %}
 </div>
+
+<p><small><kbd>Shift</kbd> to select multiple decks. <kbd>Enter</kbd> to open the last selected deck. <kbd>Esc</kbd> to close it.</small></p>
+
 </div>
 </div>
 
 </div>
-<!-- / Right-side column -->
+<!-- / Left-side column -->
 
 </div>
 </div><!-- /.container -->
+
+<div id="deck" style="display:none;margin-top:10px">
+	
+	<!-- Identity and Stats -->
+	<div id="influence"></div>
+	<div id="agendapoints"></div>
+	<div id="cardcount"></div>
+	<div id="latestpack"></div>
+	<!-- Identity and Stats -->
+	
+	<!-- Deck Content -->
+	<div class="row" id="deck-content" style="margin-bottom:10px">
+	</div><!-- /#deck-content -->
+	<!-- Deck Content -->
+	
+	<div id="btn-group-deck">
+	<div style="margin-bottom:10px">
+		<button type="button" id="btn-view" class="btn btn-info btn-sm"><span class="glyphicon glyphicon-fullscreen"></span> View</button>
+		<button type="button" id="btn-edit" class="btn btn-primary btn-sm"><span class="glyphicon glyphicon-pencil"></span> Edit</button>
+		<button type="button" id="btn-publish" disabled="disabled" class="btn btn-success btn-sm"><span class="glyphicon glyphicon-share"></span> Publish</button>
+		<button type="button" id="btn-delete" class="btn btn-danger btn-sm"><span class="glyphicon glyphicon-remove"></span> Delete</button>
+	</div>
+	<div style="margin-bottom:10px">
+		<button type="button" class="btn btn-default btn-xs" id="btn-download-text">Text file</button>
+		<button type="button" class="btn btn-default btn-xs" id="btn-download-octgn">Octgn file</button>
+		<button type="button" class="btn btn-default btn-xs" id="btn-export-bbcode">bbCode</button>
+		<button type="button" class="btn btn-default btn-xs" id="btn-export-markdown">Markdown (Reddit)</button>
+		<button type="button" class="btn btn-default btn-xs" id="btn-export-plaintext">plain text</button>
+	</div>
+	</div>
+		
+</div><!-- /#deck -->
 
 {% else %}
 

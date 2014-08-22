@@ -249,6 +249,9 @@ font-family: serif;
 	background-position: 50% 25%;
 	position: absolute;
 	right: 15px;
+	top: 0;
+	bottom: 0;
+	margin: auto;
 }
 #deck_browser {
 	margin: 10px 0;
