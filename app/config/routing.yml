@@ -7,6 +7,11 @@ fos_user_security:
 fos_user_profile:
     resource: "@FOSUserBundle/Resources/config/routing/profile.xml"
     prefix: /profile
+    
+fos_user_registration_confirm_override:
+    pattern: /register/confirm/{token}
+    defaults:
+        _controller: NetrunnerdbUserBundle:Registration:confirm
 
 fos_user_register:
     resource: "@FOSUserBundle/Resources/config/routing/registration.xml"
