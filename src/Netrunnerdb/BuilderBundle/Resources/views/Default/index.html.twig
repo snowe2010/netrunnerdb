@@ -118,11 +118,11 @@ var Identity = null,
 <div class="row">
 <div class="col-sm-12">
 <h4 class="decklist-author author">
-    Description by the author: 
+    Description by the author:
     <a href="{{ path('user_profile_view', {user_id:decklist.user_id,user_name:decklist.username|e('url')}) }}" class="{{ decklist.usercolor }}">{{ decklist.username }}</a>
     {% if decklist.donation > 0 %}<span class="glyphicon glyphicon-gift donator" title="NetrunnerDB Gracious Donator"></span>{% endif %}
     <small title="User Reputation">{{ decklist.reputation }}</small>
-</h4>  
+</h4>
 {{ decklist.description|raw }}
 </div>
 </div>

@@ -1,3 +1,0 @@
-netrunnerdb_user_homepage:
-    pattern:  /hello/{name}
-    defaults: { _controller: NetrunnerdbUserBundle:Default:index }

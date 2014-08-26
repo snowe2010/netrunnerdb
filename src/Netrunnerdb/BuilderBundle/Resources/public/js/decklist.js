@@ -20,35 +20,40 @@ NRDB.data_loaded.add(function() {
 	update_deck();
 });
 
-$(function() {
-	$('#decklist-social-icons>a').tooltip();
-	$('#decklist-edit').on('click', edit_form);
-	$('#decklist-delete').on('click', delete_form);
-	$('#decklist-social-icon-like').on('click', send_like);
-	$('#decklist-social-icon-favorite').on('click', send_favorite);
+function setup_comment_form() {
+	
+	var form = $('<form method="POST" action="'+Routing.generate('decklist_comment')+'"><input type="hidden" name="id" value="'+Decklist.id+'"><div class="form-group">'
+			+ '<textarea id="comment-form-text" class="form-control" rows="4" name="comment" placeholder="Enter your comment in Markdown format. Type # to enter a card name. Type @ to enter a user name."></textarea>'
+			+ '</div><div class="well text-muted" id="comment-form-preview"><small>Preview. Look <a href="http://daringfireball.net/projects/markdown/dingus">here</a> for a Markdown syntax reference.</small></div>'
+			+ '<button type="submit" class="btn btn-success">Submit comment</button></form>').insertAfter('#comment-form');
+	form.on('submit', function (event) {
+		var data = $(this).serialize();
+		$.ajax(Routing.generate('decklist_comment'), {
+			data: data,
+			type: 'POST',
+			success: function(data, textStatus, jqXHR) {
+				form.replaceWith('<div class="alert alert-success" role="alert">Your comment has been posted. It will appear on the site in a few minutes.</div>');
+			},
+			error: function(jqXHR, textStatus, errorThrown) {
+				form.replaceWith('<div class="alert alert-danger" role="alert">An error occured while posting your comment ('+jqXHR.statusText+'). Reload the page and try again.</div>');
+			}
+		});
+		event.preventDefault();
+	});
+	
 	$('#decklist-social-icon-comment').on('click', function() {
 		$('#comment-form-text').trigger('focus');
 	});
 
+
 	var converter = new Markdown.Converter();
 	$('#comment-form-text').on(
-			'keyup',
-			function() {
-				$('#comment-form-preview').html(
-						converter.makeHtml($('#comment-form-text').val()));
-			});
-	$('#btn-group-decklist').on({
-		click : do_action_decklist
-	}, 'button[id],a[id]');
-	$('#menu-sort').on({
-		change : function(event) {
-			if ($(this).attr('id').match(/btn-sort-(\w+)/)) {
-				DisplaySort = RegExp.$1;
-				update_deck();
-			}
+		'keyup',
+		function() {
+			$('#comment-form-preview').html(converter.makeHtml($('#comment-form-text').val()));
 		}
-	}, 'a');
-
+	);
+	
 	$('#comment-form-text').textcomplete(
 			[
 					{
@@ -86,6 +91,72 @@ $(function() {
 						index : 1
 					} ]);
 
+}
+
+function setup_social_icons() {
+	
+	if(!NRDB.user.data || NRDB.user.data.is_author || NRDB.user.data.is_liked) {
+		var element = $('#decklist-social-icon-like');
+		element.replaceWith($('<span class="social-icon-like"></span').html(element.html()));
+	}
+	
+	if(!NRDB.user.data) {
+		var element = $('#decklist-social-icon-favorite');
+		element.replaceWith($('<span class="social-icon-favorite"></span').html(element.html()));
+	} else if(NRDB.user.data.is_favorite) {
+		var element = $('#decklist-social-icon-favorite');
+		element.attr('title', "Remove from favorites");
+	} else {
+		var element = $('#decklist-social-icon-favorite');
+		element.attr('title', "Add to favorites");
+	}
+	
+	if(!NRDB.user.data) {
+		var element = $('#decklist-social-icon-comment');
+		element.replaceWith($('<span class="social-icon-comment"></span').html(element.html()));
+	}
+	
+	$('#decklist-social-icons>a').tooltip();
+
+}
+
+function setup_title() {
+	var title = $('#decklist_title');
+	if(NRDB.user.data && NRDB.user.data.is_author && NRDB.user.data.can_delete) {
+		title.prepend('<a href="#" title="Delete decklist" id="decklist-delete"><span class="glyphicon glyphicon-trash pull-right text-danger"></span></a>');
+	}
+	if(NRDB.user.data && NRDB.user.data.is_author) {
+		title.prepend('<a href="#" title="Edit decklist name / description" id="decklist-edit"><span class="glyphicon glyphicon-pencil pull-right"></span></a>');
+	}
+}
+
+$(function() {
+
+	$.when(NRDB.user.deferred).then(function() {
+		if(NRDB.user.data) {
+			setup_comment_form();
+			setup_title();
+		} else {
+			$('<p>You must be logged in to post comments.</p>').insertAfter('#comment-form');
+		}
+		setup_social_icons();
+	})
+	
+	$(document).on('click', '#decklist-edit', edit_form);
+	$(document).on('click', '#decklist-delete', delete_form);
+	$(document).on('click', '#decklist-social-icon-like', send_like);
+	$(document).on('click', '#decklist-social-icon-favorite', send_favorite);
+	$(document).on('click', '#btn-group-decklist button[id],a[id]', do_action_decklist);
+	
+	$('#menu-sort').on({
+		change : function(event) {
+			if ($(this).attr('id').match(/btn-sort-(\w+)/)) {
+				DisplaySort = RegExp.$1;
+				update_deck();
+			}
+		}
+	}, 'a');
+	
 });
 
 function edit_form() {

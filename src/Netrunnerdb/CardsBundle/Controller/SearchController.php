@@ -8,12 +8,12 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Netrunnerdb\CardsBundle\Controller\DefaultController;
 use \Michelf\Markdown;
 use Netrunnerdb\CardsBundle\NetrunnerdbCardsBundle;
+use Symfony\Component\HttpFoundation\Request;
 
 class SearchController extends Controller
 {
-	public function zoomAction($card_code)
+	public function zoomAction($card_code, Request $request)
 	{
-		$request  = $this->getRequest();
 		$mode = $request->query->get('mode');
 		$card = $this->getDoctrine()->getRepository('NetrunnerdbCardsBundle:Card')->findOneBy(array("code" => $card_code));
 		if(!$card) throw $this->createNotFoundException('Sorry, this card is not in the database (yet?)');
@@ -33,9 +33,8 @@ class SearchController extends Controller
 		);
 	}
 	
-	public function listAction($pack_code, $view, $sort)
+	public function listAction($pack_code, $view, $sort, Request $request)
 	{
-		$request  = $this->getRequest();
 		$mode = $request->query->get('mode');
 		$pack = $this->getDoctrine()->getRepository('NetrunnerdbCardsBundle:Pack')->findOneBy(array("code" => $pack_code));
 		if(!$pack) throw $this->createNotFoundException('This pack does not exist');
@@ -57,9 +56,8 @@ class SearchController extends Controller
 		);
 	}
 
-	public function cycleAction($cycle_code, $view, $sort)
+	public function cycleAction($cycle_code, $view, $sort, Request $request)
 	{
-		$request  = $this->getRequest();
 		$mode = $request->query->get('mode');
 		$cycle = $this->getDoctrine()->getRepository('NetrunnerdbCardsBundle:Cycle')->findOneBy(array("code" => $cycle_code));
 		if(!$cycle) throw $this->createNotFoundException('This cycle does not exist');
@@ -79,9 +77,9 @@ class SearchController extends Controller
 		);
 	}
 	
-	public function processAction()
+	// target of the search form
+	public function processAction(Request $request)
 	{
-		$request  = $this->getRequest();
 		$view = $request->query->get('view') ?: 'list';
 		$sort = $request->query->get('sort') ?: 'name';
 		$locale = $request->query->get('_locale') ?: $this->getRequest()->getLocale();
@@ -121,7 +119,8 @@ class SearchController extends Controller
 		return $this->redirect($this->generateUrl('netrunnerdb_netrunner_cards_find').'?'.http_build_query($find));
 	}
 
-	public function findAction()
+	// target of the search input
+	public function findAction(Request $request)
 	{
 		$request  = $this->getRequest();
 		$q = $request->query->get('q');
@@ -133,6 +132,13 @@ class SearchController extends Controller
 		
 		$request->setLocale($locale);
 
+		// we may be able to redirect to a better url if the search is on a single set
+		$conditions = $this->get('cards_data')->syntax($q);
+		if(count($conditions) == 1 && $conditions[0][1] == ":" && $conditions[0][0] == "e") {
+	        $url = $this->get('router')->generate('netrunnerdb_netrunner_cards_list', array('pack_code' => $conditions[0][2], 'view' => $view, 'sort' => $sort, '_locale' => $request->getLocale()));
+	        return $this->redirect($url);
+	    }
+		
 		return $this->forward(
 			'NetrunnerdbCardsBundle:Search:display',
 			array(
@@ -164,14 +170,15 @@ class SearchController extends Controller
 	
 	public function displayAction($q, $view="card", $sort, $page=1, $title="", $mode="full", $meta="", $locale=null, $locales=null)
 	{
-		static $availability = array();
+		$response = new Response();
+		$response->setPublic();
+		$response->setMaxAge($this->container->getParameter('long_cache'));
+		
+	    static $availability = array();
 
 		if(empty($locale)) $locale = $this->getRequest()->getLocale();
 		$this->getRequest()->setLocale($locale);
 		
-		$response = new Response();
-		$response->setPrivate();
-
 		$cards = array();
 		$first = 0;
 		$last = 0;
@@ -196,7 +203,6 @@ class SearchController extends Controller
 
 		// reconstruction de la bonne chaine de recherche pour affichage
 		$q = $this->get('cards_data')->buildQueryFromConditions($conditions);
-		$last_modified = null;
 		if($q && $rows = $this->get('cards_data')->get_search_rows($conditions, $sort))
 		{
 			if(count($rows) == 1)
@@ -216,14 +222,6 @@ class SearchController extends Controller
 			}
 			$last = $first + $nb_per_page;
 			
-			for($rowindex = $first; $rowindex < $last && $rowindex < count($rows); $rowindex++) {
-				if(empty($last_modified) || $last_modified < $rows[$rowindex]->getTs()) $last_modified = $rows[$rowindex]->getTs();
-			}
-			$user = $this->getUser();
-			$response->setLastModified($user && $user->getLastLogin() > $last_modified ? $user->getLastLogin() : $last_modified);
-			if ($response->isNotModified($this->getRequest())) {
-				return $response;
-			}
 			// data à passer à la view
 			for($rowindex = $first; $rowindex < $last && $rowindex < count($rows); $rowindex++) {
 				$card = $rows[$rowindex];
