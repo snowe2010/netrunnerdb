@@ -15,6 +15,10 @@ class BuilderController extends Controller
 
     public function buildformAction ($side_text, Request $request)
     {
+        $response = new Response();
+        $response->setPublic();
+        $response->setMaxAge($this->container->getParameter('long_cache'));
+        
         /* @var $em \Doctrine\ORM\EntityManager */
         $em = $this->get('doctrine')->getManager();
         
@@ -43,12 +47,16 @@ class BuilderController extends Controller
                                     return $iden->getPack()
                                         ->getCode() != "alt";
                                 })
-                ));
+                ), $response);
     
     }
 
     public function initbuildAction ($card_code)
     {
+        $response = new Response();
+        $response->setPublic();
+        $response->setMaxAge($this->container->getParameter('long_cache'));
+        
         /* @var $em \Doctrine\ORM\EntityManager */
         $em = $this->get('doctrine')->getManager();
         
@@ -77,18 +85,21 @@ class BuilderController extends Controller
                                 "id" => ""
                         ),
                         "published_decklists" => array()
-                ));
+                ), $response);
     
     }
 
     public function importAction ()
     {
-
+        $response = new Response();
+        $response->setPublic();
+        $response->setMaxAge($this->container->getParameter('long_cache'));
+        
         return $this->render('NetrunnerdbBuilderBundle:Builder:directimport.html.twig',
                 array(
                         'pagetitle' => "Import a deck",
                         'locales' => $this->renderView('NetrunnerdbCardsBundle:Default:langs.html.twig')
-                ));
+                ), $response);
     
     }
 

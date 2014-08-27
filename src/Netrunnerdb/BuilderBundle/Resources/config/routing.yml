@@ -259,24 +259,6 @@ decklist_delete:
     requirements:
         decklist_id: \d+
 
-user_favorites:
-    pattern: /user/favorites
-    methods: [GET]
-    defaults:
-        _controller: NetrunnerdbBuilderBundle:Social:listfavorites
-    
-user_follow:
-    pattern: /user/follow
-    methods: [POST]
-    defaults:
-        _controller: NetrunnerdbBuilderBundle:Social:follow
-
-user_following:
-    pattern: /user/following
-    methods: [GET]
-    defaults:
-        _controller: NetrunnerdbBuilderBundle:Social:following
-    
 user_profile:
     pattern: /{_locale}/user/profile
     methods: [GET]
@@ -397,3 +379,7 @@ tag_clear:
     defaults:
         _controller: NetrunnerdbBuilderBundle:Tag:clear
 
+user_info:
+    pattern: /user/info
+    defaults: { _controller: NetrunnerdbUserBundle:Default:info }
+    

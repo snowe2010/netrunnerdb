@@ -50,6 +50,7 @@
   {% endif %}
     </script>
     <script src="{{ asset('/web/bundles/netrunnerdbbuilder/js/nrdb.js') }}"></script>
+    <script src="{{ asset('/web/bundles/netrunnerdbbuilder/js/nrdb.user.js') }}"></script>
     <script src="{{ asset('/web/bundles/netrunnerdbbuilder/js/nrdb.data.js') }}"></script>
     <script src="{{ asset('/web/bundles/netrunnerdbbuilder/js/nrdb.format.js') }}"></script>
     <script src="{{ asset('/web/bundles/netrunnerdbbuilder/js/nrdb.tip.js') }}"></script>
@@ -76,19 +77,9 @@
 			<li><a href="{{ path('netrunnerdb_netrunner_cards_rulings') }}">Rules</a></li>
           </ul>
           <ul class="nav navbar-nav navbar-right">
-          {% if app.user %}
-            <li class="dropdown">
-              <a href="#" class="dropdown-toggle {{ app.user.faction }} loginname" data-toggle="dropdown">{{ app.user.username }} <b class="caret"></b></a>
-              <ul class="dropdown-menu">
-                <li><a href="{{ path('user_profile') }}">Profile page</a></li>
-                <li><a href="{{ path('user_profile_view', {user_id:app.user.id,user_name:app.user.username|e('url')}) }}">Decklists</a></li>
-                <li><a href="{{ path('user_comments') }}">Comments</a></li>
-                <li><a href="{{ path('fos_user_security_logout') }}">Jack out</a></li>
-              </ul>
+            <li id="login">
+                <a href="#" class="dropdown-toggle loginname" data-toggle="dropdown">Account <b class="caret"></b></a>
             </li>
-          {% else %}
-            <li><a href="{{ path('fos_user_security_login') }}">Login</a></li>
-          {% endif %}
           </ul>
           <form class="navbar-form navbar-right hidden-xs hidden-sm" action="{{ path('netrunnerdb_netrunner_cards_find') }}" target="_blank">
             <div class="form-group">
@@ -146,7 +137,7 @@
     The information presented on this site about Android:Netrunner, both literal and graphical, is copyrighted by Fantasy Flight Games and/or Wizards of the Coast.
     </p>
     <p>
-    This website is not produced, endorsed, supported, or affiliated with Fantasy Flight Games and/or Wizards of the Coast.
+    This website is not produced, endorsed, supported, or affiliated with Fantasy Flight Games and/or Wizards of the Coast. Page generated on <time datetime="{{ "now"|date("c") }}">{{ "now"|date("r") }}</time>.
     </p>
     </div>
     <svg width="0" height="0" viewBox="0 0 677 601" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" id="nrdb_svg_hex">

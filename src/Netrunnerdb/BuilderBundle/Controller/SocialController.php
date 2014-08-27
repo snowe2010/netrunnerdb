@@ -13,18 +13,18 @@ use Netrunnerdb\BuilderBundle\Entity\Decklistslot;
 use Netrunnerdb\BuilderBundle\Entity\Comment;
 use Netrunnerdb\UserBundle\Entity\User;
 use \Michelf\Markdown;
+use Symfony\Component\HttpFoundation\Request;
 
 class SocialController extends Controller
 {
     /*
 	 * checks to see if a deck can be published in its current saved state
 	 */
-    public function publishAction ($deck_id)
+    public function publishAction ($deck_id, Request $request)
     {
         /* @var $em \Doctrine\ORM\EntityManager */
         $em = $this->get('doctrine')->getManager();
         
-        $request = $this->getRequest();
         $deck = $em->getRepository('NetrunnerdbBuilderBundle:Deck')->find($deck_id);
         
         if ($this->getUser()->getId() != $deck->getUser()->getId())
@@ -151,7 +151,8 @@ class SocialController extends Controller
     {
 
         if (! $this->getUser())
-            return array();
+            return array('decklists' => array(), 'count' => 0);
+        
             
             /* @var $dbh \Doctrine\DBAL\Driver\PDOConnection */
         $dbh = $this->get('doctrine')->getConnection();
@@ -606,10 +607,9 @@ class SocialController extends Controller
 	 */
     public function listAction ($type, $code = null, $page = 1)
     {
-
         $response = new Response();
-        
-        $response->setPrivate();
+        $response->setPublic();
+        $response->setMaxAge($this->container->getParameter('short_cache'));
         
         $limit = 30;
         if ($page < 1)
@@ -632,15 +632,20 @@ class SocialController extends Controller
                 $pagetitle = "Hot Topics";
                 break;
             case 'favorites':
+                $response->setPrivate();
                 $result = $this->favorites($start, $limit);
                 $pagetitle = "Favorite Decklists";
                 break;
             case 'mine':
+                $response->setPrivate();
                 if (! $this->getUser())
-                    $result = array();
+                {
+                    $result = array('decklists' => array(), 'count' => 0);
+                }
                 else
-                    $result = $this->by_author($this->getUser()
-                        ->getId(), $start, $limit);
+                {
+                    $result = $this->by_author($this->getUser()->getId(), $start, $limit);
+                }
                 $pagetitle = "My Decklists";
                 break;
             case 'find':
@@ -732,8 +737,9 @@ class SocialController extends Controller
 	 */
     public function viewAction ($decklist_id, $decklist_name)
     {
-
         $response = new Response();
+        $response->setPublic();
+        $response->setMaxAge($this->container->getParameter('short_cache'));
         
         $dbh = $this->get('doctrine')->getConnection();
         $rows = $dbh->executeQuery(
@@ -771,14 +777,6 @@ class SocialController extends Controller
         
         $decklist = $rows[0];
         
-        $response->setPrivate();
-        $user = $this->getUser();
-        $lastModified = new DateTime($decklist['ts']);
-        $response->setLastModified($user && $user->getLastLogin() > $lastModified ? $user->getLastLogin() : $lastModified);
-        if ($response->isNotModified($this->getRequest())) {
-            return $response;
-        }
-        
         $comments = $dbh->executeQuery(
                 "SELECT
 				c.id,
@@ -809,38 +807,6 @@ class SocialController extends Controller
         
         $decklist['comments'] = $comments;
         $decklist['cards'] = $cards;
-        
-        $is_liked = false;
-        if ($this->getUser())
-            $is_liked = (boolean) $dbh->executeQuery("SELECT
-				count(*)
-				from decklist d
-				join vote v on v.decklist_id=d.id
-				where v.user_id=?
-				and d.id=?", array(
-                    $this->getUser()
-                        ->getId(),
-                    $decklist_id
-            ))
-                ->fetch(\PDO::FETCH_NUM)[0];
-        
-        $is_favorite = false;
-        if ($this->getUser())
-            $is_favorite = (boolean) $dbh->executeQuery("SELECT
-				count(*)
-				from decklist d
-				join favorite f on f.decklist_id=d.id
-				where f.user_id=?
-				and d.id=?", array(
-                    $this->getUser()
-                        ->getId(),
-                    $decklist_id
-            ))
-                ->fetch(\PDO::FETCH_NUM)[0];
-        
-        $is_author = false;
-        if ($this->getUser())
-            $is_author = $this->getUser()->getId() == $decklist['user_id'];
         
         $similar_decklists = array(); // $this->findSimilarDecklists($decklist_id,
                                       // 5);
@@ -898,8 +864,9 @@ class SocialController extends Controller
         $em = $this->get('doctrine')->getManager();
         
         $user = $this->getUser();
-        if(!$user)
-            throw new AccessDeniedHttpException();
+        if(!$user) {
+            throw new UnauthorizedHttpException('You must be logged in to comment.');
+        }
         
         $request = $this->getRequest();
         $decklist_id = filter_var($request->get('id'), FILTER_SANITIZE_NUMBER_INT);
@@ -1053,9 +1020,10 @@ class SocialController extends Controller
         $em = $this->get('doctrine')->getManager();
         
         $user = $this->getUser();
-        if (! $user)
-            throw new UnauthorizedHttpException("You must be logged in.");
-        
+        if(!$user) {
+            throw new UnauthorizedHttpException('You must be logged in to comment.');
+        }
+                
         $request = $this->getRequest();
         $decklist_id = filter_var($request->get('id'), FILTER_SANITIZE_NUMBER_INT);
         
@@ -1155,6 +1123,10 @@ class SocialController extends Controller
 	 */
     public function textexportAction ($decklist_id)
     {
+        $response = new Response();
+        $response->setPublic();
+        $response->setMaxAge($this->container->getParameter('long_cache'));
+        
         /* @var $em \Doctrine\ORM\EntityManager */
         $em = $this->get('doctrine')->getManager();
         
@@ -1208,8 +1180,6 @@ class SocialController extends Controller
         $name = preg_replace('/[^a-zA-Z0-9_\-]/', '-', $name);
         $name = preg_replace('/--+/', '-', $name);
         
-        $response = new Response();
-        
         $response->headers->set('Content-Type', 'text/plain');
         $response->headers->set('Content-Disposition', 'attachment;filename=' . $name . ".txt");
         
@@ -1223,6 +1193,10 @@ class SocialController extends Controller
 	 */
     public function octgnexportAction ($decklist_id)
     {
+        $response = new Response();
+        $response->setPublic();
+        $response->setMaxAge($this->container->getParameter('long_cache'));
+        
         /* @var $em \Doctrine\ORM\EntityManager */
         $em = $this->get('doctrine')->getManager();
         
@@ -1256,14 +1230,14 @@ class SocialController extends Controller
         if (empty($identity)) {
             return new Response('no identity found');
         }
-        return $this->octgnexport("$name.o8d", $identity, $rd, $decklist->getRawdescription());
+        return $this->octgnexport("$name.o8d", $identity, $rd, $decklist->getRawdescription(), $response);
     
     }
     
     /*
 	 * does the "downloadable file" part of the export
 	 */
-    public function octgnexport ($filename, $identity, $rd, $description)
+    public function octgnexport ($filename, $identity, $rd, $description, $response)
     {
 
         $content = $this->renderView('NetrunnerdbBuilderBundle::octgn.xml.twig', array(
@@ -1271,8 +1245,6 @@ class SocialController extends Controller
                 "rd" => $rd,
                 "description" => strip_tags($description)
         ));
-        
-        $response = new Response();
         
         $response->headers->set('Content-Type', 'application/octgn');
         $response->headers->set('Content-Disposition', 'attachment;filename=' . $filename);
@@ -1287,10 +1259,9 @@ class SocialController extends Controller
 	 */
     public function indexAction ()
     {
-
         $response = new Response();
-        
-        $response->setPrivate();
+        $response->setPublic();
+        $response->setMaxAge($this->container->getParameter('short_cache'));
         
         $decklists_recent = $this->recent(0, 10)['decklists'];
         
@@ -1427,6 +1398,10 @@ class SocialController extends Controller
 	 */
     public function profileAction ($user_id, $user_name, $page)
     {
+        $response = new Response();
+        $response->setPublic();
+        $response->setMaxAge($this->container->getParameter('short_cache'));
+        
         /* @var $em \Doctrine\ORM\EntityManager */
         $em = $this->get('doctrine')->getManager();
         
@@ -1489,12 +1464,15 @@ class SocialController extends Controller
                                 "user_name" => $user_name,
                                 "page" => $nextpage
                         ))
-                ));
+                ), $response);
     
     }
 
     public function usercommentsAction ($page)
     {
+        $response = new Response();
+        $response->setPrivate();
+        
         /* @var $em \Doctrine\ORM\EntityManager */
         $em = $this->get('doctrine')->getManager();
         
@@ -1566,13 +1544,16 @@ class SocialController extends Controller
                         'nexturl' => $currpage == $nbpages ? null : $this->generateUrl($route, array(
                                 "page" => $nextpage
                         ))
-                ));
+                ), $response);
     
     }
 
     public function commentsAction ($page)
     {
-
+        $response = new Response();
+        $response->setPublic();
+        $response->setMaxAge($this->container->getParameter('short_cache'));
+        
         $limit = 100;
         if ($page < 1)
             $page = 1;
@@ -1636,13 +1617,16 @@ class SocialController extends Controller
                         'nexturl' => $currpage == $nbpages ? null : $this->generateUrl($route, array(
                                 "page" => $nextpage
                         ))
-                ));
+                ), $response);
     
     }
 
     public function searchAction ()
     {
-
+        $response = new Response();
+        $response->setPublic();
+        $response->setMaxAge($this->container->getParameter('long_cache'));
+        
         $dbh = $this->get('doctrine')->getConnection();
         $factions = $dbh->executeQuery(
                 "SELECT
@@ -1672,7 +1656,7 @@ class SocialController extends Controller
                             ->getRequestUri(),
                         'factions' => $factions,
                         'packs' => $packs
-                ));
+                ), $response);
     
     }
 
@@ -1739,6 +1723,10 @@ class SocialController extends Controller
 
     public function donatorsAction ()
     {
+        $response = new Response();
+        $response->setPublic();
+        $response->setMaxAge($this->container->getParameter('long_cache'));
+        
         /* @var $dbh \Doctrine\DBAL\Driver\PDOConnection */
         $dbh = $this->get('doctrine')->getConnection();
         
@@ -1748,7 +1736,7 @@ class SocialController extends Controller
                 array(
                         'pagetitle' => 'The Gracious Donators',
                         'donators' => $users
-                ));
+                ), $response);
     }
 
 }

@@ -14,6 +14,8 @@ var Identity = null,
 	SelectedDeck = DeckDB().first(),
 	DisplaySort = 'type';
 
+NRDB.user.params.decklist_id = Decklist.id;
+	
 </script>
 {% endblock %}
 {% block body %}
@@ -22,37 +24,20 @@ var Identity = null,
 
 <div class="row">
 <div class="col-xs-12">
-<h1>
-    {% if is_author and decklist.nbvotes == 0 and decklist.nbfavorites == 0 and decklist.nbcomments == 0 %}<a href="#" title="Delete decklist" id="decklist-delete"><span class="glyphicon glyphicon-trash pull-right text-danger"></span></a> {% endif %}
-    {% if is_author %}<a href="#" title="Edit decklist name / description" id="decklist-edit"><span class="glyphicon glyphicon-pencil pull-right"></span></a> {% endif %}
+<h1 id="decklist_title">
     <span class="icon icon-{{ decklist.faction_code }} {{ decklist.faction_code }}"></span> {{ decklist.name }}</h1>
 <div class="decklist-social">
 <div class="pull-right" id="decklist-social-icons">
 <span>published {{ decklist.creation|date('M d, Y') }}</span>
-{% if app.user and not is_author and not is_liked %}
 | <a id="decklist-social-icon-like" href="#" class="social-icon-like" data-toggle="tooltip" data-placement="bottom" title="Like">
 	<span class="glyphicon glyphicon-heart"></span> <span class="num">{{ decklist.nbvotes }}</span>
 </a>
-{% else %}
-| <span class="social-icon-like">
-	<span class="glyphicon glyphicon-heart"></span> <span class="num">{{ decklist.nbvotes }}</span>
-</span>
-{% endif %}
-{% if app.user %}
-| <a id="decklist-social-icon-favorite" href="#" class="social-icon-favorite" data-toggle="tooltip" data-placement="bottom" {% if is_favorite %}title="Remove from favorites"{% else %}title="Add to favorites"{% endif %}>
+| <a id="decklist-social-icon-favorite" href="#" class="social-icon-favorite" data-toggle="tooltip" data-placement="bottom">
 	<span class="glyphicon glyphicon-star"></span> <span class="num">{{ decklist.nbfavorites }}</span>
 </a>
 | <a id="decklist-social-icon-comment" href="#comment-form" class="social-icon-comment" data-toggle="tooltip" data-placement="bottom" title="Comment">
 	<span class="glyphicon glyphicon-comment"></span> <span class="num">{{ decklist.nbcomments }}</span>
 </a>
-{% else %}
-| <span class="social-icon-favorite">
-	<span class="glyphicon glyphicon-star"></span> <span class="num">{{ decklist.nbfavorites }}</span>
-</span>
-| <span class="social-icon-comment">
-	<span class="glyphicon glyphicon-comment"></span> <span class="num">{{ decklist.nbcomments }}</span>
-</span>
-{% endif %}
 </div>
 </div>
 </div>
@@ -230,20 +215,7 @@ var Identity = null,
 {% endfor %}
 </tbody>
 </table>
-{% if app.user %}
-<a name="comment-form"></a>
-<form method="POST" action="{{ path('decklist_comment') }}">
-	<input type="hidden" name="id" value="{{ decklist.id }}">
-	<div class="form-group">
-		<textarea id="comment-form-text" class="form-control" rows="4" name="comment" placeholder="Enter your comment in Markdown format. Type # to enter a card name. Type @ to enter a user name."></textarea>
-	</div>
-	<div class="well text-muted" id="comment-form-preview"><small>Preview. Look <a href="http://daringfireball.net/projects/markdown/dingus">here</a> for a Markdown syntax reference.</small></div>
-	<button type="submit" class="btn btn-success">Submit comment</button>
-	</form>
-{% else %}
-<p>You must be logged in to post comments.</p>
-{% endif %}
- 
+<a name="comment-form" id="comment-form"></a>
 </div>
 
 </div>

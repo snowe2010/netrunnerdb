@@ -11,7 +11,7 @@ class ApiController extends Controller
 	{
 		$response = new Response();
 		$response->setPublic();
-		$response->setMaxAge(600);
+		$response->setMaxAge($this->container->getParameter('long_cache'));
 		$response->headers->add(array('Access-Control-Allow-Origin' => '*'));
 		
 		$jsonp = $this->getRequest()->query->get('jsonp');
@@ -38,7 +38,7 @@ class ApiController extends Controller
 
 		$response = new Response();
 		$response->setPublic();
-		$response->setMaxAge(600);
+		$response->setMaxAge($this->container->getParameter('long_cache'));
 		$response->headers->add(array('Access-Control-Allow-Origin' => '*'));
 		
 		$jsonp = $this->getRequest()->query->get('jsonp');
@@ -82,7 +82,7 @@ class ApiController extends Controller
 	{
 		$response = new Response();
 		$response->setPublic();
-		$response->setMaxAge(600);
+		$response->setMaxAge($this->container->getParameter('long_cache'));
 		$response->headers->add(array('Access-Control-Allow-Origin' => '*'));
 	
 		$jsonp = $this->getRequest()->query->get('jsonp');
@@ -111,7 +111,7 @@ class ApiController extends Controller
 		{
 			$content = "$jsonp($content)";
 			$response->headers->set('Content-Type', 'application/javascript');
-		} else 
+		} else
 		{
 			$response->headers->set('Content-Type', 'application/json');
 		}
@@ -124,7 +124,7 @@ class ApiController extends Controller
 	{
 		$response = new Response();
 		$response->setPublic();
-		$response->setMaxAge(600);
+		$response->setMaxAge($this->container->getParameter('long_cache'));
 		$response->headers->add(array('Access-Control-Allow-Origin' => '*'));
 		
 		$locale = $this->getRequest()->query->get('_locale');
@@ -156,7 +156,7 @@ class ApiController extends Controller
 			}
 		}
 
-		if($format == "json") 
+		if($format == "json")
 		{
 			
 			$content = json_encode($cards);
@@ -171,7 +171,7 @@ class ApiController extends Controller
 			$response->setContent($content);
 			
 		}
-		else if($format == "xml") 
+		else if($format == "xml")
 		{
 			
 			$cardsxml = array();
@@ -197,7 +197,7 @@ class ApiController extends Controller
 					if(isset($card['agendapoints'])) $card['strength'] = $card['agendapoints'];
 					else if(isset($card['trash'])) $card['strength'] = $card['trash'];
 					else if(isset($card['influencelimit'])) $card['strength'] = $card['influencelimit'];
-					else if($card['type_code'] == "program") $card['strength'] = '-'; 
+					else if($card['type_code'] == "program") $card['strength'] = '-';
 					else $card['strength'] = '';
 				}
 				
@@ -289,7 +289,7 @@ class ApiController extends Controller
                 $phpCell->setValue($label);
             }
             
-            foreach($cards as $row_index => $card) 
+            foreach($cards as $row_index => $card)
             {
                 $col_index = 0;
                 foreach($columns as $key => $label)
@@ -311,8 +311,6 @@ class ApiController extends Controller
             $response = $this->get('phpexcel')->createStreamedResponse($writer);
             $response->headers->set('Content-Type', 'text/vnd.ms-excel; charset=utf-8');
             $response->headers->set('Content-Disposition', 'attachment;filename='.$pack->getName().'.xlsx');
-    		$response->setPublic();
-    		$response->setMaxAge(600);
     		$response->headers->add(array('Access-Control-Allow-Origin' => '*'));
         }
 		

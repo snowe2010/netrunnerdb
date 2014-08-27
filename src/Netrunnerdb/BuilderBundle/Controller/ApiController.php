@@ -22,7 +22,7 @@ class ApiController extends Controller
 
         $response = new Response();
         $response->setPublic();
-        $response->setMaxAge(600);
+        $response->setMaxAge($this->container->getParameter('long_cache'));
         $response->headers->add(array(
                 'Access-Control-Allow-Origin' => '*'
         ));
@@ -95,7 +95,7 @@ class ApiController extends Controller
 
         $response = new Response();
         $response->setPublic();
-        $response->setMaxAge(600);
+        $response->setMaxAge($this->container->getParameter('long_cache'));
         $response->headers->add(array(
                 'Access-Control-Allow-Origin' => '*'
         ));

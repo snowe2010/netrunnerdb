@@ -14,6 +14,10 @@ class DefaultController extends Controller
 {
 	public function searchAction()
 	{
+	    $response = new Response();
+	    $response->setPublic();
+	    $response->setMaxAge($this->container->getParameter('long_cache'));
+	     
 		$dbh = $this->get('doctrine')->getConnection();
 	
 		$list_packs = $this->getDoctrine()->getRepository('NetrunnerdbCardsBundle:Pack')->findBy(array(), array("released" => "ASC", "number" => "ASC"));
@@ -55,9 +59,6 @@ class DefaultController extends Controller
 			return $elt["illustrator"];
 		}, $list_illustrators);
 	
-		$response = new Response();
-		$response->setPrivate();
-	
 		return $this->render('NetrunnerdbCardsBundle:Search:searchform.html.twig', array(
 		        "pagetitle" => "Card Search",
 				"packs" => $packs,
@@ -76,7 +77,8 @@ class DefaultController extends Controller
 	{
         
 		$response = new Response();
-		$response->setPrivate();
+		$response->setPublic();
+		$response->setMaxAge($this->container->getParameter('long_cache'));
 		
 		$page = $this->get('cards_data')->replaceSymbols($this->renderView('NetrunnerdbCardsBundle:Default:rules.html.twig'));
 		$response->setContent($page);
