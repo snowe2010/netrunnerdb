@@ -12,3 +12,4 @@ src/Netrunnerdb/CardsBundle/Resources/public/images/cards
 .buildpath
 .project
 .DS_Store
+.htaccess
