@@ -1722,7 +1722,7 @@ class SocialController extends Controller
     {
         $response = new Response();
         $response->setPublic();
-        $response->setMaxAge($this->container->getParameter('long_cache'));
+        $response->setMaxAge($this->container->getParameter('short_cache'));
         
         /* @var $dbh \Doctrine\DBAL\Driver\PDOConnection */
         $dbh = $this->get('doctrine')->getConnection();
