@@ -802,8 +802,8 @@ function display_notification()
 {
 	if(!localStorage) return;
 	var Notification = {
-		version: '1.7.3',
-		message: "<strong>New!</strong> 'My decks' is improved. No more scrolling madness.</strong>"
+		version: '2.0.0',
+		message: "Migration completed. Many thanks to the donators, who made it possible to have a better, faster, stronger hosting server.</strong>"
 	};
 	var localStorageNotification = localStorage.getItem('notification');
 	if(localStorageNotification === Notification.version) return;
