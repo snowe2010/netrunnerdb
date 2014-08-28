@@ -846,9 +846,6 @@ class SocialController extends Controller
                         'decklist' => $decklist,
                         'commenters' => $commenters,
                         'similar' => $similar_decklists,
-                        'is_liked' => $is_liked,
-                        'is_favorite' => $is_favorite,
-                        'is_author' => $is_author,
                         'precedent_decklists' => $precedent_decklists,
                         'successor_decklists' => $successor_decklists
                 ), $response);
