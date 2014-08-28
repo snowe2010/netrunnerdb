@@ -27,17 +27,29 @@ NRDB.user = {};
 	}
 	
 	user.retrieve = function () {
-		var storedData;
-		if(localStorage && (storedData = localStorage.getItem('user'))) {
-			user.data = JSON.parse(storedData);
-			user.deferred.resolve();
-		} else {
-			user.query();
+		if(localStorage) {
+			var timestamp = new Date(parseInt(localStorage.getItem('user_timestamp'),10));
+			var now = new Date();
+			if(now - timestamp < 3600000) {
+				var storedData = localStorage.getItem('user');
+				if(storedData) {
+					user.data = JSON.parse(storedData);
+					user.deferred.resolve();
+					return;
+				}
+			}
 		}
+		user.query();
 	}
 	
 	user.wipe = function () {
 		localStorage.removeItem('user');
+		localStorage.removeItem('user_timestamp');
+	}
+	
+	user.store = function () {
+		localStorage.setItem('user', JSON.stringify(user.data));
+		localStorage.setItem('user_timestamp', new Date().getTime());
 	}
 	
 	user.anonymous = function() {
@@ -46,7 +58,7 @@ NRDB.user = {};
 	}
 	
 	user.update = function() {
-		localStorage.setItem('user', JSON.stringify(user.data));
+		user.store();
 		$('#login').addClass('dropdown').append('<ul class="dropdown-menu"><li><a href="'
 				+ Routing.generate('user_profile',{_locale:user.data.locale}) 
 				+ '">Profile page</a></li><li><a href="'
