@@ -101,7 +101,7 @@ class ApiController extends Controller
 				return $response;
 			}
 			for($rowindex = 0; $rowindex < count($rows); $rowindex++) {
-				$card = $this->get('cards_data')->getCardInfo($rows[$rowindex], true, "en");
+				$card = $this->get('cards_data')->getCardInfo($rows[$rowindex], true);
 				$cards[] = $card;
 			}
 		}
