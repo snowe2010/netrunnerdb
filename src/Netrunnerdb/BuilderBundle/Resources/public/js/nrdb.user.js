@@ -14,6 +14,7 @@ NRDB.user = {};
 	});
 	
 	user.query = function () {
+		user.params.ts = new Date().getTime();
 		$.ajax(Routing.generate('user_info', user.params), {
 			dataType: 'json',
 			success: function(data, textStatus, jqXHR) {
