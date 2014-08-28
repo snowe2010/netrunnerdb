@@ -36,8 +36,12 @@ NRDB.user = {};
 		}
 	}
 	
-	user.anonymous = function() {
+	user.wipe = function () {
 		localStorage.removeItem('user');
+	}
+	
+	user.anonymous = function() {
+		user.wipe();
 		$('#login').append('<ul class="dropdown-menu"><li><a href="'+Routing.generate('fos_user_security_login')+'">Login or Register</a></li></ul>');
 	}
 	
@@ -51,7 +55,7 @@ NRDB.user = {};
 				+ Routing.generate('user_comments',{_locale:user.data.locale})
 				+ '">Comments</a></li><li><a href="'
 				+ Routing.generate('fos_user_security_logout') 
-				+ '">Jack out</a></li></ul>');
+				+ '" onclick="NRDB.user.wipe()">Jack out</a></li></ul>');
 	}
 	
 	$(function() {
