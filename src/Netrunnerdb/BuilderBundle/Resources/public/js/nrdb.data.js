@@ -50,6 +50,7 @@ NRDB.data = {};
 	}
 
 	data.parse_sets = function(response) {
+		if(typeof response === "undefined") return;
 		var json = JSON.stringify(sets_data = response);
 		is_modified = is_modified
 				|| json != localStorage.getItem("sets_data_" + NRDB.locale);
@@ -57,6 +58,7 @@ NRDB.data = {};
 	}
 
 	data.parse_cards = function(response) {
+		if(typeof response === "undefined") return;
 		var json = JSON.stringify(cards_data = response);
 		is_modified = is_modified
 				|| json != localStorage.getItem("cards_data_" + NRDB.locale);
