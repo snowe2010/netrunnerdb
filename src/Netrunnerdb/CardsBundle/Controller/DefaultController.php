@@ -8,7 +8,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Netrunnerdb\CardsBundle\Entity\Card;
 use Netrunnerdb\CardsBundle\Entity\Pack;
 use Netrunnerdb\CardsBundle\Entity\Cycle;
-use Netrunnerdb\CardsBundle\Entity\Changelog;
 
 class DefaultController extends Controller
 {

@@ -65,14 +65,6 @@ netrunnerdb_netrunner_cards_about:
     requirements:
         _locale: en|fr|de|es|it|pl
 
-netrunnerdb_netrunner_cards_changelog:
-    pattern:  /{_locale}/changelog
-    defaults:
-        _controller: NetrunnerdbCardsBundle:Default:changelog
-        _locale: en
-    requirements:
-        _locale: en|fr|de|es|it|pl
-
 netrunnerdb_netrunner_cards_api:
     pattern:  /{_locale}/apidoc
     defaults:
