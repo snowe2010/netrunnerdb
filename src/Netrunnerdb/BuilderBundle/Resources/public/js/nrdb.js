@@ -346,7 +346,10 @@ function check_influence() {
 
 $(function () {
 	
-	if(Modernizr.touch) $('#svg').remove();
+	if(Modernizr.touch) {
+		$('#svg').remove();
+		$('form.external').removeAttr('target');
+	}
 		
 	display_notification();
 	
