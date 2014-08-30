@@ -134,7 +134,7 @@ class SearchController extends Controller
 
 		// we may be able to redirect to a better url if the search is on a single set
 		$conditions = $this->get('cards_data')->syntax($q);
-		if(count($conditions) == 1 && $conditions[0][1] == ":" && $conditions[0][0] == "e") {
+		if(count($conditions) == 1 && count($conditions[0]) == 3 && $conditions[0][1] == ":" && $conditions[0][0] == "e") {
 	        $url = $this->get('router')->generate('netrunnerdb_netrunner_cards_list', array('pack_code' => $conditions[0][2], 'view' => $view, 'sort' => $sort, '_locale' => $request->getLocale()));
 	        return $this->redirect($url);
 	    }
@@ -155,7 +155,7 @@ class SearchController extends Controller
 	
 	private function findATitle($conditions) {
 		$title = "";
-		if(count($conditions) == 1 && $conditions[0][1] == ":") {
+		if(count($conditions) == 1 && count($conditions[0]) == 3 && $conditions[0][1] == ":") {
 			if($conditions[0][0] == "e") {
 				$pack = $this->getDoctrine()->getRepository('NetrunnerdbCardsBundle:Pack')->findOneBy(array("code" => $conditions[0][2]));
 				if($pack) $title = $pack->getName($this->getRequest()->getLocale());
