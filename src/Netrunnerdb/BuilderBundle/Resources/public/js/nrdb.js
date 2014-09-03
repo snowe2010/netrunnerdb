@@ -1,6 +1,24 @@
 if (typeof NRDB != "object")
 	var NRDB = { data_loaded: jQuery.Callbacks() };
 
+function display_notification()
+{
+	if(!localStorage) return;
+	var Notification = {
+		version: '2.0.5',
+		message: "<strong>New!</strong> Option to compare two or more decks (with selection) + option to duplicate a deck."
+	};
+	var localStorageNotification = localStorage.getItem('notification');
+	if(localStorageNotification === Notification.version) return;
+	var alert = $('<div class="alert alert-info"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>'+Notification.message+'</div>');
+	alert.bind('closed.bs.alert', function () {
+		localStorage.setItem('notification', Notification.version);  
+	})
+	$('#wrapper>div.container').prepend(alert);
+}
+
+
+
 function debounce(fn, delay) {
 	var timer = null;
 	return function() {
@@ -799,23 +817,6 @@ var hypergeometric = {};
 })(hypergeometric);
 
 
-
-
-function display_notification()
-{
-	if(!localStorage) return;
-	var Notification = {
-		version: '2.0.0',
-		message: "Migration completed. Many thanks to the donators, who made it possible to have a better, faster, stronger hosting server.</strong>"
-	};
-	var localStorageNotification = localStorage.getItem('notification');
-	if(localStorageNotification === Notification.version) return;
-	var alert = $('<div class="alert alert-info"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>'+Notification.message+'</div>');
-	alert.bind('closed.bs.alert', function () {
-		localStorage.setItem('notification', Notification.version);  
-	})
-	$('#wrapper>div.container').prepend(alert);
-}
 
 
 
