@@ -122,6 +122,82 @@ function do_diff(ids) {
 	$('#diffModal').modal('show');
 }
 
+function do_diff_collection(ids) {
+	if(ids.length < 2) return;
+	var decks = [];
+	
+	var ensembles = [];
+	var lengths = [];
+	for(var decknum=0; decknum<ids.length; decknum++) {
+		var deck = DeckDB({id:String(ids[decknum])}).first();
+		decks.push(deck);
+		var cards = [];
+		for(var slotnum=0; slotnum<deck.cards.length; slotnum++) {
+			var slot = deck.cards[slotnum];
+			for(var copynum=0; copynum<slot.qty; copynum++) {
+				cards.push(slot.card_code);
+			}
+		}
+		ensembles.push(cards);
+		lengths.push(cards.length);
+	}
+	
+	var imax = 0;
+	for(var i=0; i<lengths.length; i++) {
+		if(lengths[imax] < lengths[i]) imax = i;
+	}
+	var collection = ensembles.splice(imax, 1);
+	var rest = [];
+	for(var i=0; i<ensembles.length; i++) {
+		rest = rest.concat(ensembles[i]);
+	}
+	ensembles = [collection[0], rest];
+	var names = [decks[imax].name, "The rest"];
+	
+	var conjonction = [];
+	for(var i=0; i<ensembles[0].length; i++) {
+		var code = ensembles[0][i];
+		var indexes = [ i ];
+		for(var j=1; j<ensembles.length; j++) {
+			var index = ensembles[j].indexOf(code);
+			if(index > -1) indexes.push(index);
+			else break;
+		}
+		if(indexes.length === ensembles.length) {
+			conjonction.push(code);
+			for(var j=0; j<indexes.length; j++) {
+				ensembles[j].splice(indexes[j], 1);
+			}
+			i--;
+		}
+	}
+	
+	var listings = [];
+	for(var i=0; i<ensembles.length; i++) {
+		listings[i] = array_count(ensembles[i]);
+	}
+	var intersect = array_count(conjonction);
+	
+	var container = $('#diff_content');
+	container.empty();
+	container.append("<h4>Cards in all decks</h4>");
+	var list = $('<ul></ul>').appendTo(container);
+	$.each(intersect, function (card_code, qty) {
+		var card = NRDB.data.cards({code:card_code}).first();
+		if(card) list.append('<li>'+card.title+' x'+qty+'</li>');
+	});
+
+	for(var i=0; i<listings.length; i++) {
+		container.append("<h4>Cards only in <b>"+names[i]+"</b></h4>");
+		var list = $('<ul></ul>').appendTo(container);
+		$.each(listings[i], function (card_code, qty) {
+			var card = NRDB.data.cards({code:card_code}).first();
+			if(card) list.append('<li>'+card.title+' x'+qty+'</li>');
+		});
+	}
+	$('#diffModal').modal('show');
+}
+
 // takes an array of strings and returns an object where each string of the array
 // is a key of the object and the value is the number of occurences of the string in the array
 function array_count(list) {
@@ -176,6 +252,7 @@ function do_action_selection(event) {
 	if(!action_id || !ids.length) return;
 	switch(action_id) {
 		case 'btn-compare': do_diff(ids); break;
+		case 'btn-compare-collection': do_diff_collection(ids); break;
 		case 'btn-tag-add': tag_add(ids); break;
 		case 'btn-tag-remove-one': tag_remove(ids); break;
 		case 'btn-tag-remove-all': tag_clear(ids); break;
