@@ -36,22 +36,30 @@ NRDB.data_loaded.add(function() {
 	}).remove();
 	var sets_in_deck = {};
 	NRDB.data.cards().each(function(record) {
-		var max_qty = 3, indeck = 0;
-		if (record.set_code == 'core')
-			max_qty = Math.min(record.quantity * CoreSets, 3);
-		if (record.type_code == "identity" || record.limited)
-			max_qty = 1;
+		var indeck = 0;
 		if (Deck[record.code]) {
 			indeck = parseInt(Deck[record.code], 10);
 			sets_in_deck[record.set_code] = 1;
 		}
 		NRDB.data.cards(record.___id).update({
 			indeck : indeck,
-			maxqty : max_qty,
 			factioncost : record.factioncost || 0
 		});
 	});
 	update_deck();
+	NRDB.data.cards().each(function(record) {
+		var max_qty = 3;
+		if (record.set_code == 'core')
+			max_qty = Math.min(record.quantity * CoreSets, 3);
+		if (record.type_code == "identity" || record.limited)
+			max_qty = 1;
+		if(Identity.faction_code == "neutral") {
+			max_qty = 9;
+		}
+		NRDB.data.cards(record.___id).update({
+			maxqty : max_qty
+		});
+	});
 
 	$('#faction_code').empty();
 	$.each(NRDB.data.cards().distinct("faction_code").sort(
@@ -460,6 +468,7 @@ function update_core_sets() {
 		var max_qty = Math.min(record.quantity * CoreSets, 3);
 		if (record.type_code == "identity" || record.limited)
 			max_qty = 1;
+		if(Identity.faction_code == "neutral") max_qty = 9;
 		NRDB.data.cards(record.___id).update({
 			maxqty : max_qty
 		});

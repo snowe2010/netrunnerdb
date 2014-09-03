@@ -5,9 +5,9 @@ namespace Netrunnerdb\BuilderBundle\Services;
 
 
 /*
- * 
+ *
  */
-class Judge 
+class Judge
 {
 	public function __construct($doctrine) {
 		$this->doctrine = $doctrine;
@@ -15,7 +15,7 @@ class Judge
 	
 	/**
 	 * Decoupe un deckcontent pour son affichage par type
-	 * 
+	 *
 	 * @param \Netrunnerdb\CardsBundle\Entity\Card $identity
 	 */
 	public function classe($cards, $identity)
@@ -95,6 +95,12 @@ class Judge
 		foreach($deck as $card) {
 			$qty = $cards[$card->getCode()]['qty'];
 			
+			if($qty > 3 && $identity->getFaction()->getCode() != "neutral") {
+			    return 'copies';
+			}
+			if($qty > 1 && $card->getLimited() && $identity->getFaction()->getCode() != "neutral") {
+			    return 'limited';
+			}
 			if($card->getSide() != $identity->getSide()) {
 				return 'side';
 			}
@@ -132,13 +138,15 @@ class Judge
 	public function problem($problem)
 	{
 		switch($problem) {
-			case 'identity': return "The deck lacks an Identity card.";
-			case 'deckSize': return "The deck has less cards than the minimum required by the Identity.";
-			case 'side': return "The deck mixes Corp and Runner cards.";
-			case 'forbidden': return "The deck includes forbidden cards.";
-			case 'agendas': return "The deck uses Agendas from a different faction.";
-			case 'influence': return "The deck spends more influence than available on the Identity.";
-			case 'agendapoints': return "The deck has a wrong number of Agenda Points.";
+			case 'identity': return "The deck lacks an Identity card."; break;
+			case 'deckSize': return "The deck has less cards than the minimum required by the Identity."; break;
+			case 'side': return "The deck mixes Corp and Runner cards."; break;
+			case 'forbidden': return "The deck includes forbidden cards."; break;
+			case 'agendas': return "The deck uses Agendas from a different faction."; break;
+			case 'influence': return "The deck spends more influence than available on the Identity."; break;
+			case 'agendapoints': return "The deck has a wrong number of Agenda Points."; break;
+			case 'copies' : return "The deck has more than 3 copies of a card."; break;
+			case 'limited': return "The deck has more than 1 copy of a limited card."; break;
 		}
 	}
 	

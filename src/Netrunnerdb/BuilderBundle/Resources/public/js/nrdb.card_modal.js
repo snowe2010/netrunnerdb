@@ -48,7 +48,7 @@ NRDB.card_modal = {};
 				if(index == card.indeck) $(element).addClass('active');
 				else $(element).removeClass('active');
 			});
-			if(card.type_code == "agenda" && card.faction_code != "neutral" && card.faction_code != Identity.faction_code) {
+			if(card.type_code == "agenda" && card.faction_code != "neutral" && Identity.faction_code != "neutral" && card.faction_code != Identity.faction_code) {
 				qtyelt.find('label').addClass("disabled").find('input[type=radio]').attr("disabled", true);
 			}
 			if(card.code == Identity.code) {
