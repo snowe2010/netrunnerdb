@@ -60,6 +60,83 @@ $(function() {
 	});
 });
 
+function do_diff(ids) {
+	if(ids.length < 2) return;
+	var decks = [];
+	
+	var ensembles = [];
+	for(var decknum=0; decknum<ids.length; decknum++) {
+		var deck = DeckDB({id:String(ids[decknum])}).first();
+		decks.push(deck);
+		var cards = [];
+		for(var slotnum=0; slotnum<deck.cards.length; slotnum++) {
+			var slot = deck.cards[slotnum];
+			for(var copynum=0; copynum<slot.qty; copynum++) {
+				cards.push(slot.card_code);
+			}
+		}
+		ensembles.push(cards);
+	}
+	
+	var conjonction = [];
+	for(var i=0; i<ensembles[0].length; i++) {
+		var code = ensembles[0][i];
+		var indexes = [ i ];
+		for(var j=1; j<ensembles.length; j++) {
+			var index = ensembles[j].indexOf(code);
+			if(index > -1) indexes.push(index);
+			else break;
+		}
+		if(indexes.length === ensembles.length) {
+			conjonction.push(code);
+			for(var j=0; j<indexes.length; j++) {
+				ensembles[j].splice(indexes[j], 1);
+			}
+			i--;
+		}
+	}
+	
+	var listings = [];
+	for(var i=0; i<ensembles.length; i++) {
+		listings[i] = array_count(ensembles[i]);
+	}
+	var intersect = array_count(conjonction);
+	
+	var container = $('#diff_content');
+	container.empty();
+	container.append("<h4>Cards in all decks</h4>");
+	var list = $('<ul></ul>').appendTo(container);
+	$.each(intersect, function (card_code, qty) {
+		var card = NRDB.data.cards({code:card_code}).first();
+		if(card) list.append('<li>'+card.title+' x'+qty+'</li>');
+	});
+	
+	for(var i=0; i<listings.length; i++) {
+		container.append("<h4>Cards only in <b>"+decks[i].name+"</b></h4>");
+		var list = $('<ul></ul>').appendTo(container);
+		$.each(listings[i], function (card_code, qty) {
+			var card = NRDB.data.cards({code:card_code}).first();
+			if(card) list.append('<li>'+card.title+' x'+qty+'</li>');
+		});
+	}
+	$('#diffModal').modal('show');
+}
+
+// takes an array of strings and returns an object where each string of the array
+// is a key of the object and the value is the number of occurences of the string in the array
+function array_count(list) {
+	var obj = {};
+	var list = list.sort();
+	for(var i=0; i<list.length; ) {
+		for(var j=i+1; j<list.length; j++) {
+			if(list[i] !== list[j]) break;
+		}
+		obj[list[i]] = (j-i);
+		i=j;
+	}
+	return obj;
+}
+
 function filter_decks() {
 	var buttons = $('#tag_toggles button.active');
 	var list_id = [];
@@ -82,6 +159,7 @@ function do_action_deck(event) {
 		case 'btn-view': location.href=Routing.generate('deck_view', {deck_id:SelectedDeck.id}); break;
 		case 'btn-edit': location.href=Routing.generate('deck_edit', {deck_id:SelectedDeck.id}); break;
 		case 'btn-publish': confirm_publish(); break;
+		case 'btn-duplicate': location.href=Routing.generate('deck_duplicate', {deck_id:SelectedDeck.id}); break;
 		case 'btn-delete': confirm_delete(); break;
 		case 'btn-download-text': location.href=Routing.generate('deck_export_text', {deck_id:SelectedDeck.id}); break;
 		case 'btn-download-octgn': location.href=Routing.generate('deck_export_octgn', {deck_id:SelectedDeck.id}); break;
@@ -97,6 +175,7 @@ function do_action_selection(event) {
 	$('#decks a.deck-list-group-item.selected').each(function (index, elt) { ids.push($(elt).data('id')) });
 	if(!action_id || !ids.length) return;
 	switch(action_id) {
+		case 'btn-compare': do_diff(ids); break;
 		case 'btn-tag-add': tag_add(ids); break;
 		case 'btn-tag-remove-one': tag_remove(ids); break;
 		case 'btn-tag-remove-all': tag_clear(ids); break;

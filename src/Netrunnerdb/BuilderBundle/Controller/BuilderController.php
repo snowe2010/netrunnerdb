@@ -490,7 +490,7 @@ class BuilderController extends Controller
         }
         
         $this->get('decks')->save($this->getUser(), $deck, $decklist_id, $name, $description, $tags, $content);
-        
+
         return $this->redirect($this->generateUrl('decks_list'));
     
     }
@@ -711,4 +711,24 @@ class BuilderController extends Controller
     
     }
 
+    public function duplicateAction ($deck_id)
+    {
+        /* @var $em \Doctrine\ORM\EntityManager */
+        $em = $this->get('doctrine')->getManager();
+    
+        /* @var $deck \Netrunnerdb\BuilderBundle\Entity\Deck */
+        $deck = $em->getRepository('NetrunnerdbBuilderBundle:Deck')->find($deck_id);
+    
+        $content = array();
+        foreach ($deck->getSlots() as $slot) {
+            $content[$slot->getCard()->getCode()] = $slot->getQuantity();
+        }
+        return $this->forward('NetrunnerdbBuilderBundle:Builder:save',
+                array(
+                        'name' => $deck->getName().' (copy)',
+                        'content' => json_encode($content),
+                        'deck_id' => $deck->getParent() ? $deck->getParent()->getId() : null
+                ));
+    
+    }
 }
