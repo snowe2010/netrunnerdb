@@ -17,11 +17,6 @@ class User extends BaseUser
     /**
      * @var integer
      */
-    protected $id;
-
-    /**
-     * @var integer
-     */
     private $reputation;
 
     /**
@@ -95,16 +90,6 @@ class User extends BaseUser
     private $followers;
     
     /**
-     * Get id
-     *
-     * @return integer
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    /**
      * Set reputation
      *
      * @param integer $reputation
@@ -173,39 +158,6 @@ class User extends BaseUser
         return $this->resume;
     }
 
-    /**
-     * Set role
-     *
-     * @param integer $role
-     * @return User
-     */
-    public function setRole($role)
-    {
-        $this->role = $role;
-    
-        return $this;
-    }
-
-    /**
-     * Get role
-     *
-     * @return integer
-     */
-    public function getRole()
-    {
-        return $this->role;
-    }
-
-    /**
-     * @return Role[]
-     */
-    public function getRoles()
-    {
-    	$roles = array('ROLE_USER');
-    	if($this->getEmail() == "alsciende@gmail.com") $roles[] = 'ROLE_ADMIN';
-    	return $roles;
-    }
-    
     /**
      * Set status
      *
