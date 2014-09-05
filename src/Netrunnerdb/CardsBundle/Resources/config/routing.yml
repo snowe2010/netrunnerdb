@@ -126,20 +126,20 @@ ffg:
         _controller: NetrunnerdbCardsBundle:Default:ffg
 
 
-trad_upload_form:
-    pattern: /admin/trad_upload_form
+excel_form:
+    pattern: /admin/excel/form
     defaults:
-        _controller: NetrunnerdbCardsBundle:Trad:uploadForm
+        _controller: NetrunnerdbCardsBundle:Excel:form
 
-trad_upload:
-    pattern: /admin/trad_upload
+excel_upload:
+    pattern: /admin/excel/upload
     defaults:
-        _controller: NetrunnerdbCardsBundle:Trad:upload
+        _controller: NetrunnerdbCardsBundle:Excel:upload
 
-trad_upload_confirm:
-    pattern: /admin/trad_upload_confirm
+excel_confirm:
+    pattern: /admin/excel/confirm
     defaults:
-        _controller: NetrunnerdbCardsBundle:Trad:confirm
+        _controller: NetrunnerdbCardsBundle:Excel:confirm
 
 
 

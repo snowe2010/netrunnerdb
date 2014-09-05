@@ -5,12 +5,13 @@ namespace Netrunnerdb\CardsBundle\Controller;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
+use Netrunnerdb\CardsBundle\Entity\Card;
 
-class TradController extends Controller
+class ExcelController extends Controller
 {
-    public function uploadFormAction()
+    public function formAction()
     {
-        return $this->render('NetrunnerdbCardsBundle:Trad:form.html.twig');
+        return $this->render('NetrunnerdbCardsBundle:Excel:form.html.twig');
     }
     
     public function uploadAction(Request $request)
@@ -45,11 +46,29 @@ class TradController extends Controller
                 switch($c)
                 {
                 	case 'A': $card['code'] = $cell->getValue(); break;
+                	case 'B': $card['pack'] = $cell->getValue(); break;
+                	case 'C': $card['number'] = $cell->getValue(); break;
+                	case 'D': $card['uniqueness'] = $cell->getValue(); break;
                 	case 'E': $card['title'] = $cell->getValue(); break;
+                	case 'F': $card['cost'] = $cell->getValue(); break;
+                	case 'G': $card['type'] = $cell->getValue(); break;
                 	case 'H': $card['keywords'] = $cell->getValue(); break;
                 	case 'I': $card['text'] = str_replace("\n", "\r\n", $cell->getValue()); break;
+                	case 'J': $card['side'] = $cell->getValue(); break;
+                	case 'K': $card['faction'] = $cell->getValue(); break;
+                	case 'L': $card['factionCost'] = $cell->getValue(); break;
+                	case 'M': $card['strength'] = $cell->getValue(); break;
+                	case 'N': $card['trashCost'] = $cell->getValue(); break;
+                	case 'O': $card['memoryUnits'] = $cell->getValue(); break;
+                	case 'P': $card['advancementCost'] = $cell->getValue(); break;
+                	case 'Q': $card['agendaPoints'] = $cell->getValue(); break;
+                	case 'R': $card['minimumDeckSize'] = $cell->getValue(); break;
+                	case 'S': $card['influenceLimit'] = $cell->getValue(); break;
+                	case 'T': $card['baseLink'] = $cell->getValue(); break;
                 	case 'U': $card['illustrator'] = $cell->getValue(); break;
                 	case 'V': $card['flavor'] = $cell->getValue(); break;
+                	case 'W': $card['quantity'] = $cell->getValue(); break;
+                	case 'X': $card['limited'] = $cell->getValue(); break;
                 }
                 
             }
@@ -65,24 +84,24 @@ class TradController extends Controller
         
         foreach($cards as $i => $card)
         {
+            $cards[$i]['warning'] = TRUE;
+            
             /* @var $dbcard \Netrunnerdb\CardsBundle\Entity\Card */
             $dbcard = $repo->findOneBy(array('code' => $card['code']));
-            if(!$dbcard) continue;
-            $cards[$i]['oldtitle'] = $dbcard->getTitle($locale, true);
-            $cards[$i]['oldkeywords'] = $dbcard->getKeywords($locale, true);
-            $cards[$i]['oldtext'] = $dbcard->getText($locale, true);
-            $cards[$i]['oldillustrator'] = $dbcard->getIllustrator();
-            $cards[$i]['oldflavor'] = $dbcard->getFlavor($locale, true);
+            
+            $cards[$i]['oldtitle'] = $dbcard ? $dbcard->getTitle($locale, true) : '';
+            $cards[$i]['oldkeywords'] = $dbcard ? $dbcard->getKeywords($locale, true) : '';
+            $cards[$i]['oldtext'] = $dbcard ? $dbcard->getText($locale, true) : '';
+            $cards[$i]['oldflavor'] = $dbcard ? $dbcard->getFlavor($locale, true) : '';
             
             $cards[$i]['warning'] = ($cards[$i]['oldtitle'] && $cards[$i]['oldtitle'] != $cards[$i]['title']) ||
             ($cards[$i]['oldkeywords'] && $cards[$i]['oldkeywords'] != $cards[$i]['keywords']) ||
             ($cards[$i]['oldtext'] && $cards[$i]['oldtext'] != $cards[$i]['text']) ||
-            ($cards[$i]['oldillustrator'] && $cards[$i]['oldillustrator'] != $cards[$i]['illustrator']) ||
             ($cards[$i]['oldflavor'] && $cards[$i]['oldflavor'] != $cards[$i]['flavor']);
         }
         
-        return $this->render('NetrunnerdbCardsBundle:Trad:confirm.html.twig', array(
-                'locale' => $locale,
+        return $this->render('NetrunnerdbCardsBundle:Excel:confirm.html.twig', array(
+            'locale' => $locale,
         	'cards' => $cards
         ));
     }
@@ -96,16 +115,28 @@ class TradController extends Controller
         $em = $this->get('doctrine')->getManager();
         $repo = $em->getRepository('Netrunnerdb\CardsBundle\Entity\Card');
         
+        $loc = $locale != "en" ? ucfirst($locale) : "";
+        
         foreach($cards as $i => $card)
         {
             /* @var $dbcard \Netrunnerdb\CardsBundle\Entity\Card */
             $dbcard = $repo->findOneBy(array('code' => $card['code']));
-            if(!$dbcard) continue;
-            $dbcard->setTitle($card['title'], $locale);
-            $dbcard->setKeywords($card['keywords'], $locale);
-            $dbcard->setText($card['text'], $locale);
-            $dbcard->setIllustrator($card['illustrator']);
-            $dbcard->setFlavor($card['flavor'], $locale);
+            if(!$dbcard) {
+                $dbcard = new Card();
+                $dbcard->setTs(new \DateTime());
+            }
+            
+            $card['pack'] = $em->getRepository('NetrunnerdbCardsBundle:Pack')->findOneBy(array("name$loc" => $card['pack']));
+            $card['type'] = $em->getRepository('NetrunnerdbCardsBundle:Type')->findOneBy(array("name$loc" => $card['type']));
+            $card['side'] = $em->getRepository('NetrunnerdbCardsBundle:Side')->findOneBy(array("name$loc" => $card['side']));
+            $card['faction'] = $em->getRepository('NetrunnerdbCardsBundle:Faction')->findOneBy(array("name$loc" => $card['faction']));
+            
+            foreach($card as $key => $value) {
+                $func = 'set'.ucfirst($key);
+                $dbcard->$func($value, $locale);
+            }
+            
+            $em->persist($dbcard);
         }
         $em->flush();
         
