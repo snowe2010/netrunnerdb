@@ -134,6 +134,12 @@ deck_meteorimport:
     requirements:
         _locale: en|fr|de|es|it|pl
 
+decks_download_all:
+    pattern: /deck/export/all
+    methods: [GET]
+    defaults:
+        _controller: NetrunnerdbBuilderBundle:Builder:downloadall
+
 deck_export_octgn:
     pattern: /deck/export/octgn/{deck_id}
     methods: [GET]
@@ -161,7 +167,6 @@ deck_export_text_list:
     methods: [GET]
     defaults:
         _controller: NetrunnerdbBuilderBundle:Builder:textexportList
-
 
 deck_email:
     pattern: /deck/export/email/{deck_id}
