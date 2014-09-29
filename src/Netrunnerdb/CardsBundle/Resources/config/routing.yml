@@ -141,6 +141,11 @@ excel_confirm:
     defaults:
         _controller: NetrunnerdbCardsBundle:Excel:confirm
 
-
+datasucker:
+    pattern: /datasucker/{url}
+    defaults:
+        _controller: NetrunnerdbCardsBundle:Datasucker:load
+    requirements:
+        url: .+
 
         
