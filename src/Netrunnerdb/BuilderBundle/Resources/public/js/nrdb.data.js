@@ -23,7 +23,12 @@ NRDB.data = {};
 						+ NRDB.locale);
 		data.promise_cards = $
 				.ajax(NRDB.api_url.cards+"?jsonp=NRDB.data.parse_cards&_locale="
-						+ NRDB.locale);
+						+ NRDB.locale, {
+							dataType: 'json',
+							success: function(response) {
+								 NRDB.data.parse_cards(response);
+							}
+						});
 		$.when(data.promise_sets, data.promise_cards).done(data.initialize);
 	}
 
